@@ -10,7 +10,8 @@ The Repo structure.
 portfolio_frontend/       (Root Repository Folder)
 │
 ├── html/                
-│   └── portfolio.html
+│   ├── portfolio.html
+│   └── image.jpg
 ├── css/             
 │   └── style.css
 ├── js/                  
