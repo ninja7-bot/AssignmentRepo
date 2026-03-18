@@ -14,7 +14,7 @@
         <h1>Keshav Vishwakarma</h1>
         <h2>AI/ML Enthusiast | Python Developer | Game Dev Hobbyist</h2>
 
-        <img src="placeholder.img" alt="Portrait Image" width="150" height="150">
+        <img src="image.jpg" alt="Portrait Image" width="150" height="150">
 
         <p>Personal Haven to my creak in Development and Destruction.</p>
     </header>
@@ -149,13 +149,74 @@
     </section>
 
     <hr>
+    <!-- Modification 7: Adding the Contact Me form. -->
 
     <section id="contact">
-        <h3>Contacts</h3>
+        <h3>Contact Me</h3>
+        <p>Please fill out the form below to get in touch.</p>
+
+        <form action="#" method="POST">
+            <div>
+                <label for="fullname">Full Name:</label><br>
+                <input type="text" id="fullname" name="fullname" placeholder="Dark Samurai" required>
+            </div>
+            <br>
+
+            <!-- Email Input -->
+            <div>
+                <label for="email">Email Address:</label><br>
+                <input type="email" id="email" name="email" placeholder="dark@mail.com" required>
+            </div>
+            <br>
+
+            <!-- Radio Buttons -->
+            <div>
+                <p>Gender</p>
+                <input type="radio" id="genderMale" name="gender" value="male">
+                <label for="genderMale">Male</label><br>
+                
+                <input type="radio" id="genderFemale" name="gender" value="female">
+                <label for="genderFemale">Female</label><br>
+
+            </div>
+
+            <div>
+                <p>Reason for Contact:</p>
+                <input type="radio" id="job" name="reason" value="job">
+                <label for="job">Job Offer</label><br>
+                
+                <input type="radio" id="freelance" name="reason" value="freelance">
+                <label for="freelance">Freelance Project</label><br>
+
+                <input type="radio" id="other" name="reason" value="other" checked>
+                <label for="other">General Inquiry</label>
+            </div>
+            <br>
+
+            <!-- Textarea -->
+            <div>
+                <label for="message">Your Message:</label><br>
+                <textarea id="message" name="message" rows="5" cols="40" placeholder="Type your message here..."></textarea>
+            </div>
+            <br>
+
+            <button type="submit">Send Message</button>
+        </form>
+
     </section>
 
     <hr>
+    <!-- Modification 8: Adding Footer. -->
 
+    <footer>
+        <p>&copy; 2026 Dark Samurai. All rights reserved.</p>
+        <p>
+            Find me on: 
+            <a href="https://linkedin.com/in/keshavv03" target="_blank">LinkedIn</a> | 
+            <a href="https://github.com/ninja7-bot" target="_blank">GitHub</a> | 
+            <a href="keshavv03@duck.com" target="_blank">Mail</a>
+        </p>
+    </footer>
 
 </body>
 
