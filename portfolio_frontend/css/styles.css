@@ -206,3 +206,66 @@ section h3 {
 #projects a:hover {
     text-decoration: underline;
 }
+
+/* Styling the Contact form using card within card layout.  */
+/* Inner card to highlight the form and fill up extra space. */
+#contact form {
+    max-width: 500px;
+    margin: 0 auto;
+
+    background-color: #2f2e2c;
+    padding: 15px;
+    border-radius: 6px;
+
+    border: 1px solid #444;
+}
+
+/* Spacing between the fields. */
+#contact div {
+    margin-bottom: 6px;
+}
+
+/* Contact Form Labels. */
+#contact label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: bold;
+}
+
+/* Input fields. */
+#contact input,
+#contact textarea,
+#contact select {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid var(--text-secondary);
+    border-radius: 3px;
+}
+
+/* Textarea */
+#contact textarea {
+    height: 80px;
+}
+
+/* Radio buttons inline */
+#contact input[type="radio"] {
+    width: auto;
+    margin-right: 5px;
+}
+
+#contact input[type="radio"] + label {
+    display: inline;
+    margin-right: 10px;
+    font-weight: normal;
+}
+
+/* Submit Button */
+#contact button {
+    margin-top: 8px;
+    padding: 8px;
+    width: 100%;
+    background-color: var(--accent);
+    color: var(--text-main);
+    border-radius: 4px;
+    cursor: pointer;
+}
