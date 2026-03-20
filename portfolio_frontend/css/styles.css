@@ -117,3 +117,34 @@ section h3 {
     color: var(--text-secondary);
 }
 
+/* Styling the Education Table with spacing, rounded borders for cleaner look and hover effect. */
+#education table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: var(--bg-light);
+    border-radius: 6px;
+    border-style: var(--bg-dark);
+    overflow: hidden;
+}
+
+/* Header styling with accented background color, and header text with text main. */
+#education th {
+    background-color: var(--accent);
+    color: var(--text-main);
+    padding: 12px;
+    text-align: center;
+}
+
+/* Table cells aligned to center with border being darkened for better visibility. */
+#education td {
+    padding: 10px;
+    text-align: center;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--bg-dark);
+}
+
+/* Hover effect to buff the text effect and highlights. */
+#education tr:hover {
+    background-color: var(--bg-dark);
+}
