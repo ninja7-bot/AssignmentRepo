@@ -29,3 +29,25 @@ hr {
   margin: 20px 0;
   border: 1px solid var(--bg-light);
 }
+
+/* Styling the Header with basic properties.  */
+header {
+    text-align: center;
+    background-color: var(--bg-light);
+    padding: 30px;
+    border-radius: 8px;
+}
+
+/* Added circular border to the header image. */
+header img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    margin: 15px 0;
+    border: 3px solid var(--accent);
+}
+
+/* The h2 level heading beneath the name. */
+header h2 {
+    color: #eb5e28;
+}
