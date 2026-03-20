@@ -5,3 +5,27 @@
   box-sizing: border-box;
 }
 
+/* Color Variables */
+:root {
+  --bg-dark: #252422;
+  --bg-light: #403d39;
+  --text-main: #fffcf2;
+  --text-secondary: #ccc5b9;
+  --accent: #eb5e28;
+}
+
+/*  Body styling such as fonts and background color.
+    Used Georgia for a professional look. */
+body {
+  font-family: Georgia, serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* Divider */
+hr {
+  margin: 20px 0;
+  border: 1px solid var(--bg-light);
+}
