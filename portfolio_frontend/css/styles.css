@@ -213,11 +213,11 @@ section h3 {
     max-width: 500px;
     margin: 0 auto;
 
-    background-color: #2f2e2c;
+    background-color: var(--bg-dark);
     padding: 15px;
     border-radius: 6px;
 
-    border: 1px solid #444;
+    border: 1px solid var(--bg-light);
 }
 
 /* Spacing between the fields. */
@@ -268,4 +268,50 @@ section h3 {
     color: var(--text-main);
     border-radius: 4px;
     cursor: pointer;
+}
+
+/* Styling the Footer.  */
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: var(--bg-light);
+  margin-top: 20px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+/* Using the accent color for the anchor links. */
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Adding hover animation when hovering over anchor links. */
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Center aligning the footer. */
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: var(--bg-light);
+  margin-top: 20px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav ul li {
+    margin: 8px 0;
+  }
+
+  body {
+    padding: 15px;
+  }
 }
