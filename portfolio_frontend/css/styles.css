@@ -78,3 +78,17 @@ nav ul li a {
 nav ul li a:hover {
     color: var(--accent)
 }
+
+/*  Style the sections by adding the background color, card layout, proper spacing. */
+section {
+    background-color: var(--bg-light);
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Add accent color to the Section Headings. */
+section h3 {
+    color: var(--accent);
+    margin-bottom: 10px;
+}
