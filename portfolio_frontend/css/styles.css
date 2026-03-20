@@ -92,3 +92,28 @@ section h3 {
     color: var(--accent);
     margin-bottom: 10px;
 }
+
+/* Modifying the skills section with spacing, formatting and color scheme. */
+#skills > ul > li {
+    margin-left: 30px;
+    margin-bottom: 15px;
+}
+
+/* Style the Categories with accent and padding. */
+#skills strong {
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+/* Proper indentation to the sub bullet points. */
+#skills ul ul {
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+/* Padding the bullet points and setting text color. */
+#skills ul ul li {
+    padding: 3px;
+    color: var(--text-secondary);
+}
+
