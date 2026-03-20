@@ -51,3 +51,30 @@ header img {
 header h2 {
     color: #eb5e28;
 }
+
+/* Styling the Navigation Section using a flexbox. */
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    background-color: var(--bg-light);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* Add padding via margin between list items. */
+nav ul li {
+    margin: 0 10px;
+}
+
+/* Changing the color of the anchor link items. */
+nav ul li a {
+    text-decoration: none;
+    color: var(--text-main);
+    padding: 8px;
+}
+
+/* Add color change on hover to the anchor links. */
+nav ul li a:hover {
+    color: var(--accent)
+}
