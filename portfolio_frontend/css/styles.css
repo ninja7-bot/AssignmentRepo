@@ -148,3 +148,61 @@ section h3 {
 #education tr:hover {
     background-color: var(--bg-dark);
 }
+
+/* Styling the Projects section with card layout. */
+/* Fix bullet alignment. */
+#projects ol {
+    padding-left: 20px;
+}
+
+/* Space between projects. */
+#projects li {
+    margin-bottom: 10px;
+}
+
+/* Project article styled as a card. */
+#projects article {
+    background-color: var(--bg-dark);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--bg-light);
+}
+
+/* Title Text. */
+#projects h4 {
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+/* Tech stack line. */
+#projects strong {
+    color: var(--text-main);  
+}
+
+/* Project Description paragraphs. */
+#projects p {
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+/* Fix bullet alignment. */
+#projects ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+/* List items spacing. */
+#projects ul li {
+    margin-bottom: 6px;   
+}
+
+/* View Source Code styling. */
+#projects a {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* Hover effect on the anchor link. */
+#projects a:hover {
+    text-decoration: underline;
+}
