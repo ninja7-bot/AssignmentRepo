@@ -38,7 +38,7 @@ const students = [
         marks: [
             { subject: "Math", score: 88 },
             { subject: "English", score: 90 },
-            { subject: "Science", score: 35 }, 
+            { subject: "Science", score: 35 },
             { subject: "History", score: 80 },
             { subject: "Computer", score: 85 }
         ],
@@ -61,24 +61,24 @@ function calcAvgMarks(totalMarks, subCount) {
     if (subCount == 0) {
         return 0
     } else {
-        return totalMarks/subCount
+        return totalMarks / subCount
     }
 }
 
-/* Fail conditions check for low attendance and score. */
+/* 3.1 [function needed to accurately grade] Fail conditions check for low attendance and score. */
 function checkFailConditions(marksArray, attendance) {
     if (attendance < 75) {
         return "Low Attendance";
     }
-    for (let i = 0; i < marksArray.length; i++) {
+    for (i = 0; i < marksArray.length; i++) {
         if (marksArray[i].score <= 40) {
-        return `Failed in ${marksArray[i].subject}`;
+            return `Failed in ${marksArray[i].subject}`;
         }
     }
     return false;
 }
 
-/* Grades based on scores. */
+/* 3. Grades based on scores. */
 function assignGrade(average, marksArray, attendance) {
     const failReason = checkFailConditions(marksArray, attendance);
     if (failReason) {
@@ -90,7 +90,48 @@ function assignGrade(average, marksArray, attendance) {
     return "Fail"; // Falls through if average < 50
 }
 
+/* 4. Subject Wise Highest scores and scorers. Creating a hashmap to store the highest scores and scorers 
+    by generating a list of subjects from the first student record.
+    -> Possible problem can be if the subjects do not remain consistent or if two students have same marks. */
+function subjectWiseHighest(records) {
+    subjectHighest = {};
 
+    subjects = [];
+    for (subject of records[0]['marks']) {
+        subjects.push(subject['subject']);
+    }
+
+    for (s = 0; s < subjects.length; s++) {
+        currentSubject = subjects[s];
+
+        highestScore = 0;
+        topScorer = "";
+
+        for (i = 0; i < records.length; i++) {
+            student = records[i];
+
+            for (j = 0; j < student['marks'].length; j++) {
+                mark = student['marks'][j];
+
+                if (mark['subject'] === currentSubject) {
+                    if (mark['score'] > highestScore) {
+                        highestScore = mark['score'];
+                        topScorer = student['name'];
+                    }
+                }
+            }
+        }
+
+        subjectHighest[currentSubject] = {
+            name: topScorer,
+            score: highestScore
+        };
+    }
+
+    return subjectHighest;
+}
+
+console.log(subjectWiseHighest(students))
 
 /* Generate the results by combining the testing block. */
 function generateResults(records) {
@@ -117,10 +158,10 @@ function generateResults(records) {
     }
 
     return results
-}    
+}
 
 // Displaying the results generated from the generate function.
-function displayResults(results){
+function displayResults(results) {
     console.log("----- STUDENT RESULTS -----");
 
     for (res of results) {
@@ -141,5 +182,5 @@ function displayResults(results){
     return results;
 }
 
-results = generateResults(students)
-displayResults(results)
+// results = generateResults(students)
+// displayResults(results)
