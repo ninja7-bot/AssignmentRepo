@@ -47,7 +47,6 @@ const students = [
 ];
 
 /* Adding Required Functionalities */
-
 /* 1. Total Marks for Each Student */
 function calcTotalMarks(studentMarksArray) {
     total = 0
@@ -57,7 +56,7 @@ function calcTotalMarks(studentMarksArray) {
     return total
 }
 
-/* 2. Average Marks. Added a clause to check if the subject count is 0 to tackle division by 0. */
+/* 2. Average Marks. Added a clause to check if the subject count is 0 to avoid division by 0. */
 function calcAvgMarks(totalMarks, subCount) {
     if (subCount == 0) {
         return 0
@@ -66,7 +65,33 @@ function calcAvgMarks(totalMarks, subCount) {
     }
 }
 
-/* totalMarks dictionary used to store records for each student. */
+/* Fail conditions check for low attendance and score. */
+function checkFailConditions(marksArray, attendance) {
+    if (attendance < 75) {
+        return "Low Attendance";
+    }
+    for (let i = 0; i < marksArray.length; i++) {
+        if (marksArray[i].score <= 40) {
+        return `Failed in ${marksArray[i].subject}`;
+        }
+    }
+    return false;
+}
+
+/* Grades based on scores. */
+function assignGrade(average, marksArray, attendance) {
+    const failReason = checkFailConditions(marksArray, attendance);
+    if (failReason) {
+        return `Fail (${failReason})`;
+    }
+    if (average >= 85) return "A";
+    if (average >= 70) return "B";
+    if (average >= 50) return "C";
+    return "Fail"; // Falls through if average < 50
+}
+
+/* TESTING PURPOSES ONLY!
+// totalMarks dictionary used to store records for each student. 
 totalMarks = {}
 
 for (stu of students){
@@ -76,7 +101,7 @@ for (stu of students){
     totalMarks[student] = total
 }
 
-/* Displaying the records. */ 
+// Displaying the records. 
 console.log("-----TOTAL MARKS RECORDS-----")
 
 for (rec in totalMarks){
@@ -87,3 +112,16 @@ for (stu of students){
     count = stu['marks'].length
     console.log(stu['name'], calcAvgMarks(totalMarks[stu['name']], count))
 }
+
+
+for (stu of students) {
+    total = calcTotalMarks(stu.marks);
+    avg = calcAvgMarks(total, stu.marks.length);
+
+    grade = assignGrade(avg, stu.marks, stu.attendance);
+
+    console.log(stu.name + " Grade:", grade);
+    console.log(stu['name'], checkFailConditions(stu['marks'], stu['attendance']))
+}
+
+*/
