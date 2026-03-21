@@ -90,38 +90,56 @@ function assignGrade(average, marksArray, attendance) {
     return "Fail"; // Falls through if average < 50
 }
 
-/* TESTING PURPOSES ONLY!
-// totalMarks dictionary used to store records for each student. 
-totalMarks = {}
 
-for (stu of students){
-    student = stu['name']
-    marksArr = stu['marks']
-    total = calcTotalMarks(marksArr)
-    totalMarks[student] = total
+
+/* Generate the results by combining the testing block. */
+function generateResults(records) {
+    results = [];
+
+    for (stu of records) {
+        student = stu;
+        marksArray = stu['marks']
+
+        total = calcTotalMarks(marksArray);
+        avg = calcAvgMarks(total, marksArray.length);
+        grade = assignGrade(avg, marksArray, student['attendance']);
+
+        result = {};
+
+        result['name'] = student['name'];
+        result['attendance'] = student['attendance'];
+        result['total'] = total;
+        result['average'] = avg;
+        result['grade'] = grade;
+        result['marks'] = student['marks'];
+
+        results.push(result);
+    }
+
+    return results
+}    
+
+// Displaying the results generated from the generate function.
+function displayResults(results){
+    console.log("----- STUDENT RESULTS -----");
+
+    for (res of results) {
+        console.log("|- Name:", res['name']);
+        console.log("|- Attendance:", res['attendance']);
+        console.log("|- Total:", res['total']);
+        console.log("|- Average:", res['average']);
+        console.log("|- Grade:", res['grade']);
+
+        console.log("|- Marks:");
+        for (mark of res['marks']) {
+            console.log("|- \t\t", mark.subject + ": " + mark.score);
+        }
+
+        console.log("----------------------");
+    }
+
+    return results;
 }
 
-// Displaying the records. 
-console.log("-----TOTAL MARKS RECORDS-----")
-
-for (rec in totalMarks){
-    console.log("|- ", rec, totalMarks[rec])
-}
-
-for (stu of students){
-    count = stu['marks'].length
-    console.log(stu['name'], calcAvgMarks(totalMarks[stu['name']], count))
-}
-
-
-for (stu of students) {
-    total = calcTotalMarks(stu.marks);
-    avg = calcAvgMarks(total, stu.marks.length);
-
-    grade = assignGrade(avg, stu.marks, stu.attendance);
-
-    console.log(stu.name + " Grade:", grade);
-    console.log(stu['name'], checkFailConditions(stu['marks'], stu['attendance']))
-}
-
-*/
+results = generateResults(students)
+displayResults(results)
