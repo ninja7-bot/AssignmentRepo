@@ -1,5 +1,5 @@
 /* Data Structure: Creating the students structure to store the student records along with their attendance. */
-students = [
+let students = [
     {
         name: "Lalit",
         marks: [
@@ -49,8 +49,8 @@ students = [
 /* Adding Required Functionalities */
 /* 1. Total Marks for Each Student */
 function calcTotalMarks(studentMarksArray) {
-    total = 0
-    for (i of studentMarksArray) {
+    let total = 0
+    for (let i of studentMarksArray) {
         total += i['score']
     }
     return total
@@ -70,7 +70,7 @@ function checkFailConditions(marksArray, attendance) {
     if (attendance < 75) {
         return "Low Attendance";
     }
-    for (i = 0; i < marksArray.length; i++) {
+    for (let i = 0; i < marksArray.length; i++) {
         if (marksArray[i].score <= 40) {
             return `Failed in ${marksArray[i].subject}`;
         }
@@ -80,7 +80,7 @@ function checkFailConditions(marksArray, attendance) {
 
 /* 3. Grades based on scores. */
 function assignGrade(average, marksArray, attendance) {
-    failReason = checkFailConditions(marksArray, attendance);
+    let failReason = checkFailConditions(marksArray, attendance);
     if (failReason) {
         return `Fail (${failReason})`;
     }
@@ -94,24 +94,24 @@ function assignGrade(average, marksArray, attendance) {
     by generating a list of subjects from the first student record.
     -> Possible problem can be if the subjects do not remain consistent or if two students have same marks. */
 function subjectWiseHighest(records) {
-    subjectHighest = {};
+    let subjectHighest = {};
 
-    subjects = [];
-    for (subject of records[0]['marks']) {
+    let subjects = [];
+    for (let subject of records[0]['marks']) {
         subjects.push(subject['subject']);
     }
 
-    for (s = 0; s < subjects.length; s++) {
-        currentSubject = subjects[s];
+    for (let s = 0; s < subjects.length; s++) {
+        let currentSubject = subjects[s];
 
-        highestScore = 0;
-        topScorer = "";
+        let highestScore = 0;
+        let topScorer = "";
 
-        for (i = 0; i < records.length; i++) {
-            student = records[i];
+        for (let i = 0; i < records.length; i++) {
+            let student = records[i];
 
-            for (j = 0; j < student['marks'].length; j++) {
-                mark = student['marks'][j];
+            for (let j = 0; j < student['marks'].length; j++) {
+                let mark = student['marks'][j];
 
                 if (mark['subject'] === currentSubject) {
                     if (mark['score'] > highestScore) {
@@ -133,25 +133,25 @@ function subjectWiseHighest(records) {
 
 /* 5. Subject Wise Average subject and the average score. */
 function subjectWiseAverage(records) {
-    subjectAverages = {};
+    let subjectAverages = {};
 
-    subjects = [];
-    for (subject of records[0]['marks']) {
+    let subjects = [];
+    for (let subject of records[0]['marks']) {
         subjects.push(subject['subject']);
     }
 
-    studentCount = records.length;
+    let studentCount = records.length;
 
-    for (s = 0; s < subjects.length; s++) {
-        currentSubject = subjects[s];
+    for (let s = 0; s < subjects.length; s++) {
+        let currentSubject = subjects[s];
 
-        totalScore = 0;
+        let totalScore = 0;
 
-        for (i = 0; i < records.length; i++) {
-            student = records[i];
+        for (let i = 0; i < records.length; i++) {
+            let student = records[i];
 
-            for (j = 0; j < student['marks'].length; j++) {
-                mark = student['marks'][j];
+            for (let j = 0; j < student['marks'].length; j++) {
+                let mark = student['marks'][j];
 
                 if (mark.subject === currentSubject) {
                     totalScore += mark['score'];
@@ -168,31 +168,31 @@ function subjectWiseAverage(records) {
 /* 6. Class topper using the results data generated from the generateResult function. 
     Logging the name and grade of the topper. Returning the record of the topper. */
 function findClassTopper(studentResults) {
-  let topper = studentResults[0];
-  for (let i = 1; i < studentResults.length; i++) {
-    if (studentResults[i].total > topper.total) {
-      topper = studentResults[i];
+    let topper = studentResults[0];
+    for (let i = 1; i < studentResults.length; i++) {
+        if (studentResults[i].total > topper.total) {
+            topper = studentResults[i];
+        }
     }
-  }
-  console.log(topper['name'], topper['grade']);
-  return topper;
+    return topper;
 }
 
-console.log(subjectWiseAverage(students))
-
-/* Generate the results by combining the testing block. */
+/* 7. Modifying the generateResults function to utilize all the above functions and return a final record. */
 function generateResults(records) {
-    results = [];
+    let results = [];
 
-    for (stu of records) {
-        student = stu;
-        marksArray = stu['marks']
+    let subjectHighest = subjectWiseHighest(records);
+    let subjectAverages = subjectWiseAverage(records);
 
-        total = calcTotalMarks(marksArray);
-        avg = calcAvgMarks(total, marksArray.length);
-        grade = assignGrade(avg, marksArray, student['attendance']);
+    for (let stu of records) {
+        let student = stu;
+        let marksArray = student['marks'];
 
-        result = {};
+        let total = calcTotalMarks(marksArray);
+        let avg = calcAvgMarks(total, marksArray.length);
+        let grade = assignGrade(avg, marksArray, student['attendance']);
+
+        let result = {};
 
         result['name'] = student['name'];
         result['attendance'] = student['attendance'];
@@ -204,14 +204,27 @@ function generateResults(records) {
         results.push(result);
     }
 
-    return results
+    let topper = findClassTopper(results);
+
+    return {
+        results: results,
+        subjectHighest: subjectHighest,
+        subjectAverages: subjectAverages,
+        topper: topper
+    };
 }
 
-// Displaying the results generated from the generate function.
-function displayResults(results) {
+/* Modifying the displayResults function to display the results in a much more proper mannerism. */
+function displayResults(data) {
+
+    let results = data['results'];
+    let subjectHighest = data['subjectHighest'];
+    let subjectAverages = data['subjectAverages'];
+    let topper = data['topper'];
+
     console.log("----- STUDENT RESULTS -----");
 
-    for (res of results) {
+    for (let res of results) {
         console.log("|- Name:", res['name']);
         console.log("|- Attendance:", res['attendance']);
         console.log("|- Total:", res['total']);
@@ -219,16 +232,40 @@ function displayResults(results) {
         console.log("|- Grade:", res['grade']);
 
         console.log("|- Marks:");
-        for (mark of res['marks']) {
+        for (let mark of res['marks']) {
             console.log("|- \t\t", mark.subject + ": " + mark.score);
         }
 
         console.log("----------------------");
     }
 
-    return results;
+    console.log("\n----- SUBJECT HIGHEST -----");
+
+    for (let subject in subjectHighest) {
+        console.log(
+            "Highest in " + subject + ": " +
+            subjectHighest[subject].name + " (" +
+            subjectHighest[subject].score + ")"
+        );
+    }
+
+    console.log("\n----- SUBJECT AVERAGE -----");
+
+    for (let subject in subjectAverages) {
+        console.log(
+            "Average " + subject + " Score: " +
+            subjectAverages[subject]
+        );
+    }
+
+    console.log("\n----- CLASS TOPPER -----");
+
+    console.log(
+        "Class Topper: " +
+        topper['name'] + " with " +
+        topper['total'] + " marks"
+    );
 }
 
-results = generateResults(students)
-console.log(findClassTopper(results))
-// displayResults(results)
+results = generateResults(students);
+displayResults(results);
