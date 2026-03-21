@@ -165,6 +165,19 @@ function subjectWiseAverage(records) {
     return subjectAverages;
 }
 
+/* 6. Class topper using the results data generated from the generateResult function. 
+    Logging the name and grade of the topper. Returning the record of the topper. */
+function findClassTopper(studentResults) {
+  let topper = studentResults[0];
+  for (let i = 1; i < studentResults.length; i++) {
+    if (studentResults[i].total > topper.total) {
+      topper = studentResults[i];
+    }
+  }
+  console.log(topper['name'], topper['grade']);
+  return topper;
+}
+
 console.log(subjectWiseAverage(students))
 
 /* Generate the results by combining the testing block. */
@@ -216,5 +229,6 @@ function displayResults(results) {
     return results;
 }
 
-// results = generateResults(students)
+results = generateResults(students)
+console.log(findClassTopper(results))
 // displayResults(results)
