@@ -45,3 +45,45 @@ const students = [
         attendance: 85
     }
 ];
+
+/* Adding Required Functionalities */
+
+/* 1. Total Marks for Each Student */
+function calcTotalMarks(studentMarksArray) {
+    total = 0
+    for (i of studentMarksArray) {
+        total += i['score']
+    }
+    return total
+}
+
+/* 2. Average Marks. Added a clause to check if the subject count is 0 to tackle division by 0. */
+function calcAvgMarks(totalMarks, subCount) {
+    if (subCount == 0) {
+        return 0
+    } else {
+        return totalMarks/subCount
+    }
+}
+
+/* totalMarks dictionary used to store records for each student. */
+totalMarks = {}
+
+for (stu of students){
+    student = stu['name']
+    marksArr = stu['marks']
+    total = calcTotalMarks(marksArr)
+    totalMarks[student] = total
+}
+
+/* Displaying the records. */ 
+console.log("-----TOTAL MARKS RECORDS-----")
+
+for (rec in totalMarks){
+    console.log("|- ", rec, totalMarks[rec])
+}
+
+for (stu of students){
+    count = stu['marks'].length
+    console.log(stu['name'], calcAvgMarks(totalMarks[stu['name']], count))
+}
