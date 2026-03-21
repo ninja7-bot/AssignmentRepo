@@ -1,5 +1,5 @@
 /* Data Structure: Creating the students structure to store the student records along with their attendance. */
-const students = [
+students = [
     {
         name: "Lalit",
         marks: [
@@ -80,7 +80,7 @@ function checkFailConditions(marksArray, attendance) {
 
 /* 3. Grades based on scores. */
 function assignGrade(average, marksArray, attendance) {
-    const failReason = checkFailConditions(marksArray, attendance);
+    failReason = checkFailConditions(marksArray, attendance);
     if (failReason) {
         return `Fail (${failReason})`;
     }
@@ -131,7 +131,41 @@ function subjectWiseHighest(records) {
     return subjectHighest;
 }
 
-console.log(subjectWiseHighest(students))
+/* 5. Subject Wise Average subject and the average score. */
+function subjectWiseAverage(records) {
+    subjectAverages = {};
+
+    subjects = [];
+    for (subject of records[0]['marks']) {
+        subjects.push(subject['subject']);
+    }
+
+    studentCount = records.length;
+
+    for (s = 0; s < subjects.length; s++) {
+        currentSubject = subjects[s];
+
+        totalScore = 0;
+
+        for (i = 0; i < records.length; i++) {
+            student = records[i];
+
+            for (j = 0; j < student['marks'].length; j++) {
+                mark = student['marks'][j];
+
+                if (mark.subject === currentSubject) {
+                    totalScore += mark['score'];
+                }
+            }
+        }
+
+        subjectAverages[currentSubject] = totalScore / studentCount;
+    }
+
+    return subjectAverages;
+}
+
+console.log(subjectWiseAverage(students))
 
 /* Generate the results by combining the testing block. */
 function generateResults(records) {
