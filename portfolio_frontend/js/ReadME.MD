@@ -16,6 +16,7 @@ This is a basic JavaScript console program to analyze student performance using 
 ## Features
 
 ### Total Marks
+![Screenshot 1](https://i.postimg.cc/Zv4G8pHY/Screenshot-2026-03-21-185730.png)
 
 * Add all subject scores for each student
 * Function used: `calcTotalMarks()`
@@ -23,6 +24,7 @@ This is a basic JavaScript console program to analyze student performance using 
 ---
 
 ### Average Marks
+![Screenshot 2](https://i.postimg.cc/n9py4B2H/Screenshot-2026-03-21-185736.png)
 
 * Average = total marks / number of subjects
 * Function used: `calcAvgMarks()`
@@ -30,6 +32,7 @@ This is a basic JavaScript console program to analyze student performance using 
 ---
 
 ### Grade Calculation
+![Screenshot 3](https://i.postimg.cc/YLM56YRM/Screenshot-2026-03-21-185742.png)
 
 * Based on average marks:
 
@@ -50,6 +53,7 @@ This is a basic JavaScript console program to analyze student performance using 
 ---
 
 ### Subject-wise Highest
+![Screenshot 4](https://i.postimg.cc/N2B36mDh/Screenshot-2026-03-21-185749.png)
 
 * Find highest score for each subject
 * Also stores the student name
@@ -58,6 +62,7 @@ This is a basic JavaScript console program to analyze student performance using 
 ---
 
 ### Subject-wise Average
+![Screenshot 5](https://i.postimg.cc/0KPTYDfF/Screenshot-2026-03-21-185756.png)
 
 * Calculate average score for each subject
 * Function used: `subjectWiseAverage()`
@@ -72,6 +77,7 @@ This is a basic JavaScript console program to analyze student performance using 
 ---
 
 ### Final Results
+[![image.png](https://i.postimg.cc/k4ypRR3w/image.png)](https://postimg.cc/XGp8TJvy)
 
 * Combines all calculations
 * Stores:
@@ -85,6 +91,7 @@ This is a basic JavaScript console program to analyze student performance using 
 ---
 
 ### Display Output
+[![image.png](https://i.postimg.cc/rFDfMPmQ/image.png)](https://postimg.cc/qzdsGQ23)
 
 * Prints:
 
