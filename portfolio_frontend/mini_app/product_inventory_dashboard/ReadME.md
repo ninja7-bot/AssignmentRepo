@@ -2,7 +2,7 @@
 
 A simple Frontend project built using HTML, CSS and JS (Vanilla) based Product Inventory Dashboard. 
 
-The Dashboard uses pure CSS and JS without external libraries or frameworks.
+The dashboard uses pure CSS and JS without external libraries or frameworks.
 
 The dashboard allows users to view, search, filter, sort, and manage products. All data is stored in the browser using localStorage so it persists across page reloads.
 
@@ -38,9 +38,9 @@ product_inventory_dashboard/       (Root Repository Folder)
 ```
 product_inventory_dashboard/       (Root Repository Folder)
 │
-├── main Main Parent Branch.
+├── main Main Parent Branch. <-- Current Branch
 │
-├── frontend/mini_app The main production branch. <-- Current Branch
+├── frontend/mini_app The main production branch. 
 │
 └── test/_api_mock The mock API and DB Integration branch.
 ```
