@@ -38,7 +38,9 @@ product_inventory_dashboard/       (Root Repository Folder)
 ```
 product_inventory_dashboard/       (Root Repository Folder)
 │
-├── frontend/mini_app The main production branch.
+├── main Main Parent Branch.
+│
+├── frontend/mini_app The main production branch. <-- Current Branch
 │
 └── test/_api_mock The mock API and DB Integration branch.
 ```
