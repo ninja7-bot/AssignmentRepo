@@ -19,3 +19,39 @@ var products = JSON.parse(localStorage.getItem("products")) || defaultProducts;
 function saveProducts() {
     localStorage.setItem("products", JSON.stringify(products));
 }
+
+// Render product cards to the grid
+function renderProducts() {
+    var grid = document.getElementById("product-grid");
+    grid.innerHTML = "";
+
+    var filtered = getFilteredProducts();
+
+    // Show message if no products found
+    if (filtered.length === 0) {
+        var msg = document.createElement("p");
+        msg.id = "no-products-msg";
+        msg.textContent = "No products found.";
+        grid.appendChild(msg);
+        return;
+    }
+
+    // Create a card for each product
+    for (var i = 0; i < filtered.length; i++) {
+        var product = filtered[i];
+        var card = document.createElement("div");
+        card.className = "product-card";
+
+        card.innerHTML =
+            "<h3>" + product.name + "</h3>" +
+            "<p>Category: " + product.category + "</p>" +
+            "<p>Price: ₹" + product.price + "</p>" +
+            "<p>Stock: " + product.stock + "</p>" +
+            "<button class='delete-btn' data-id='" + product.id + "'>Delete</button>";
+
+        grid.appendChild(card);
+    }
+}
+
+// Initial render when page loads
+renderProducts();
