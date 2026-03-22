@@ -131,3 +131,72 @@ function updateAnalytics() {
 
 // Call on page load
 updateAnalytics();
+
+// Delete a product by its id
+function deleteProduct(id) {
+    // Filter out the product with matching id
+    products = products.filter(function (product) {
+        return product.id !== id;
+    });
+
+    saveProducts();
+    renderProducts();
+    updateAnalytics();
+}
+
+// Handle add product form submission
+function handleAddProduct(event) {
+    event.preventDefault();
+
+    var name = document.getElementById("product-name").value.trim();
+    var price = parseFloat(document.getElementById("product-price").value);
+    var stock = parseInt(document.getElementById("product-stock").value);
+    var category = document.getElementById("product-category").value;
+
+    // Validate inputs
+    if (name === "") {
+        alert("Please enter a product name.");
+        return;
+    }
+    if (isNaN(price) || price <= 0) {
+        alert("Please enter a valid price greater than 0.");
+        return;
+    }
+    if (isNaN(stock) || stock < 0) {
+        alert("Please enter a valid stock quantity.");
+        return;
+    }
+    if (category === "") {
+        alert("Please select a category.");
+        return;
+    }
+
+    // Create new product with unique id using timestamp
+    var newProduct = {
+        id: Date.now(),
+        name: name,
+        price: price,
+        stock: stock,
+        category: category
+    };
+
+    // Add to products array and save
+    products.push(newProduct);
+    saveProducts();
+    renderProducts();
+    updateAnalytics();
+
+    // Clear the form
+    document.getElementById("add-product-form").reset();
+}
+
+// Handle delete button clicks using event delegation on the grid
+document.getElementById("product-grid").addEventListener("click", function (event) {
+    if (event.target.classList.contains("delete-btn")) {
+        var id = Number(event.target.getAttribute("data-id"));
+        deleteProduct(id);
+    }
+});
+
+// Add event listener for form submission
+document.getElementById("add-product-form").addEventListener("submit", handleAddProduct);
