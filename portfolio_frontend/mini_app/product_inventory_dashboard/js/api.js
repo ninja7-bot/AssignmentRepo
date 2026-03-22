@@ -20,7 +20,7 @@ async function getProducts() {
     }
 
     // If localStorage is empty, fetch from db.json
-    var response = await fetch("db.json");
+    var response = await fetch("../db/db.json");
     var data = await response.json();
     localStorage.setItem("products", JSON.stringify(data));
     return data;

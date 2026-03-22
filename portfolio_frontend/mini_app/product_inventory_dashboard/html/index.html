@@ -15,6 +15,11 @@
         <h1>Product Inventory Dashboard</h1>
     </header>
 
+    <!-- Loading Message - shown while API fetches data -->
+    <div id="loading-message">
+        <p>Loading products...</p>
+    </div>
+
     <!-- Controls Section -->
     <section id="controls">
         <input type="text" id="search-input" placeholder="Search by product name...">
@@ -91,6 +96,7 @@
         </form>
     </section>
 
+    <script src="../js/api.js"></script>
     <script src="../js/script.js"></script>
 </body>
 
