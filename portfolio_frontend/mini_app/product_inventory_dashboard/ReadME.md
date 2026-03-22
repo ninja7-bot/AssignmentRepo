@@ -44,3 +44,15 @@ product_inventory_dashboard/       (Root Repository Folder)
 │
 └── test/_api_mock The mock API and DB Integration branch.
 ```
+
+## Screenshots
+
+[![image.png](https://i.postimg.cc/nL3msnSM/image.png)](https://postimg.cc/7CThdrky)
+Product Inventory Dashboard with the Search, Sort and Categories Section.
+Also, showcases the Product Grid.
+
+[![image.png](https://i.postimg.cc/9zHw3001/image.png)](https://postimg.cc/9w1QZWGq)
+Add Product Form
+
+[![image.png](https://i.postimg.cc/JntT6rst/image.png)](https://postimg.cc/PpszNkzk)
+The Data being stored in the localStorage.
