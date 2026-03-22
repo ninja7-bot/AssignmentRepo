@@ -103,3 +103,31 @@ document.getElementById("search-input").addEventListener("input", renderProducts
 document.getElementById("category-filter").addEventListener("change", renderProducts);
 document.getElementById("low-stock-filter").addEventListener("change", renderProducts);
 document.getElementById("sort-option").addEventListener("change", renderProducts);
+
+// Update analytics section based on current inventory
+function updateAnalytics() {
+    // Count total products
+    var totalProducts = products.length;
+
+    // Calculate total inventory value (price * stock)
+    var totalValue = 0;
+    for (var i = 0; i < products.length; i++) {
+        totalValue = totalValue + (products[i].price * products[i].stock);
+    }
+
+    // Count out of stock products
+    var outOfStock = 0;
+    for (var i = 0; i < products.length; i++) {
+        if (products[i].stock === 0) {
+            outOfStock = outOfStock + 1;
+        }
+    }
+
+    // Display the values
+    document.getElementById("total-products").textContent = totalProducts;
+    document.getElementById("total-value").textContent = "₹" + totalValue;
+    document.getElementById("out-of-stock").textContent = outOfStock;
+}
+
+// Call on page load
+updateAnalytics();
