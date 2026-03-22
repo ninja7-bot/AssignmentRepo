@@ -11,3 +11,11 @@ var defaultProducts = [
     { id: 9, name: "Wrist Watch", price: 3000, stock: 7, category: "accessories" },
     { id: 10, name: "Sunglasses", price: 800, stock: 4, category: "accessories" }
 ];
+
+// Load products from localStorage or use defaults
+var products = JSON.parse(localStorage.getItem("products")) || defaultProducts;
+
+// Save products to localStorage
+function saveProducts() {
+    localStorage.setItem("products", JSON.stringify(products));
+}
