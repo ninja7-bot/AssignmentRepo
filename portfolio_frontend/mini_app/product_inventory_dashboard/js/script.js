@@ -1,24 +1,5 @@
-/* 2. Default Products data variable. */
-var defaultProducts = [
-    { id: 1, name: "Laptop", price: 55000, stock: 5, category: "electronics" },
-    { id: 2, name: "Headphones", price: 1500, stock: 12, category: "electronics" },
-    { id: 3, name: "Smartphone", price: 25000, stock: 0, category: "electronics" },
-    { id: 4, name: "T-Shirt", price: 500, stock: 20, category: "clothing" },
-    { id: 5, name: "Jeans", price: 1200, stock: 3, category: "clothing" },
-    { id: 6, name: "Jacket", price: 2500, stock: 0, category: "clothing" },
-    { id: 7, name: "JavaScript Book", price: 450, stock: 8, category: "books" },
-    { id: 8, name: "HTML & CSS Guide", price: 350, stock: 2, category: "books" },
-    { id: 9, name: "Wrist Watch", price: 3000, stock: 7, category: "accessories" },
-    { id: 10, name: "Sunglasses", price: 800, stock: 4, category: "accessories" }
-];
-
-// Load products from localStorage or use defaults
-var products = JSON.parse(localStorage.getItem("products")) || defaultProducts;
-
-// Save products to localStorage
-function saveProducts() {
-    localStorage.setItem("products", JSON.stringify(products));
-}
+/* API fills the Products data variable. */
+var products = [];
 
 // Render product cards to the grid
 function renderProducts() {
@@ -52,9 +33,6 @@ function renderProducts() {
         grid.appendChild(card);
     }
 }
-
-// Initial render when page loads
-renderProducts();
 
 // Get filtered and sorted products based on current controls
 function getFilteredProducts() {
@@ -129,23 +107,16 @@ function updateAnalytics() {
     document.getElementById("out-of-stock").textContent = outOfStock;
 }
 
-// Call on page load
-updateAnalytics();
-
-// Delete a product by its id
-function deleteProduct(id) {
-    // Filter out the product with matching id
-    products = products.filter(function (product) {
-        return product.id !== id;
-    });
-
-    saveProducts();
+// Delete the product by its id using API
+async function deleteProduct(id) {
+    var updatedProducts = await API_deleteProduct(id);
+    products = updatedProducts;
     renderProducts();
     updateAnalytics();
 }
 
-// Handle add product form submission
-function handleAddProduct(event) {
+// Handle add product form submission through API
+async function handleAddProduct(event) {
     event.preventDefault();
 
     var name = document.getElementById("product-name").value.trim();
@@ -181,8 +152,8 @@ function handleAddProduct(event) {
     };
 
     // Add to products array and save
-    products.push(newProduct);
-    saveProducts();
+    var updatedProducts = await API_addProduct(newProduct);
+    products = updatedProducts;
     renderProducts();
     updateAnalytics();
 
@@ -200,3 +171,34 @@ document.getElementById("product-grid").addEventListener("click", function (even
 
 // Add event listener for form submission
 document.getElementById("add-product-form").addEventListener("submit", handleAddProduct);
+
+// Show the loading message and hide everything else
+function showLoading() {
+    document.getElementById("loading-message").style.display = "block";
+    document.getElementById("controls").style.display = "none";
+    document.getElementById("analytics").style.display = "none";
+    document.getElementById("product-grid").style.display = "none";
+    document.getElementById("add-product-section").style.display = "none";
+}
+
+// Hide the loading message and show everything
+function hideLoading() {
+    document.getElementById("loading-message").style.display = "none";
+    document.getElementById("controls").style.display = "flex";
+    document.getElementById("analytics").style.display = "flex";
+    document.getElementById("product-grid").style.display = "grid";
+    document.getElementById("add-product-section").style.display = "block";
+}
+
+// Load products from the API when page starts
+async function loadProducts() {
+    showLoading();
+    var data = await API_getProducts();
+    products = data;
+    hideLoading();
+    renderProducts();
+    updateAnalytics();
+}
+
+// Start the service.
+loadProducts();
