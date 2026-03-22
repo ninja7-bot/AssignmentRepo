@@ -1,10 +1,15 @@
-# Product Inventory Dashboard
+# Product Inventory Dashboard | API Testing Branch
 
 A simple Frontend project built using HTML, CSS and JS (Vanilla) based Product Inventory Dashboard. 
 
 The Dashboard uses pure CSS and JS without external libraries or frameworks.
 
 The dashboard allows users to view, search, filter, sort, and manage products. All data is stored in the browser using localStorage so it persists across page reloads.
+
+* Use db.json and api.js to coordinate between data calls.
+```
+        db.json <--> api.js <--> script.js <--> html
+```
 
 ## Features
 
@@ -17,18 +22,22 @@ The dashboard allows users to view, search, filter, sort, and manage products. A
 - Delete products from the inventory
 - Inventory analytics (total products, total value, out of stock count)
 - Data persistence using localStorage
+- Data storage to a db.json mock storage.
 
 ## Repo Structure
 
 ```
-product_inventory_dashboard/       (Root Repository Folder)
+product_inventory_dashboard/       (Testing Branch Repository Folder)
 │
 ├── html/                
 │   └── index.html
 ├── css/             
 │   └── style.css
 ├── js/          
+│   ├── api.js
 │   └── script.js
+├── db/          
+│   └── db.json
 │           
 └── ReadME.md
 ```
@@ -40,5 +49,5 @@ product_inventory_dashboard/       (Root Repository Folder)
 │
 ├── frontend/mini_app The main production branch.
 │
-└── test/_api_mock The mock API and DB Integration branch.
+└── test/_api_mock The mock API and DB Integration branch. <-- Current Branch
 ```
