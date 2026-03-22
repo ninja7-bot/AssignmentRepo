@@ -55,3 +55,51 @@ function renderProducts() {
 
 // Initial render when page loads
 renderProducts();
+
+// Get filtered and sorted products based on current controls
+function getFilteredProducts() {
+    var searchText = document.getElementById("search-input").value.toLowerCase();
+    var categoryValue = document.getElementById("category-filter").value;
+    var lowStockChecked = document.getElementById("low-stock-filter").checked;
+    var sortValue = document.getElementById("sort-option").value;
+
+    // Start with all products
+    var filtered = products;
+
+    // Filter by search text
+    filtered = filtered.filter(function (product) {
+        return product.name.toLowerCase().indexOf(searchText) !== -1;
+    });
+
+    // Filter by category
+    if (categoryValue !== "all") {
+        filtered = filtered.filter(function (product) {
+            return product.category === categoryValue;
+        });
+    }
+
+    // Filter by low stock
+    if (lowStockChecked) {
+        filtered = filtered.filter(function (product) {
+            return product.stock < 5;
+        });
+    }
+    // Sort products
+    if (sortValue === "price-low") {
+        filtered.sort(function (a, b) { return a.price - b.price; });
+    } else if (sortValue === "price-high") {
+        filtered.sort(function (a, b) { return b.price - a.price; });
+    } else if (sortValue === "name-az") {
+        filtered.sort(function (a, b) { return a.name.localeCompare(b.name); });
+    } else if (sortValue === "name-za") {
+        filtered.sort(function (a, b) { return b.name.localeCompare(a.name); });
+    }
+
+    return filtered;
+}
+
+// Add event listeners for search and filters
+document.getElementById("search-input").addEventListener("input", renderProducts);
+document.getElementById("category-filter").addEventListener("change", renderProducts);
+document.getElementById("low-stock-filter").addEventListener("change", renderProducts);
+document.getElementById("sort-option").addEventListener("change", renderProducts);
