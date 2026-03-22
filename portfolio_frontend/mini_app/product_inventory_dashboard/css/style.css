@@ -1,50 +1,122 @@
 /* Basic reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  padding: 20px;
 }
 
 /* Header */
 header {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    margin-bottom: 20px;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 /* Controls Section */
 #controls {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 #controls input[type="text"] {
-    padding: 8px;
-    border: 1px solid #ccc;
-    width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  width: 200px;
 }
 
 #controls select {
-    padding: 8px;
-    border: 1px solid #ccc;
+  padding: 8px;
+  border: 1px solid #ccc;
 }
 
 #controls label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Analytics Section */
+#analytics {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.analytics-card {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 15px;
+  flex: 1;
+  text-align: center;
+  min-width: 150px;
+}
+
+.analytics-card h3 {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.analytics-card p {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Product Grid */
+#product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.product-card {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 15px;
+}
+
+.product-card h3 {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.product-card p {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.product-card .delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* No products message */
+#no-products-msg {
+  text-align: center;
+  padding: 30px;
+  color: #888;
+  font-size: 16px;
+  grid-column: 1 / -1;
 }
