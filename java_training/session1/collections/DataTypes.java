@@ -1,3 +1,5 @@
+package collections;
+
 public class DataTypes {
     public static void main(String[] args) {
         // Primitive Data Types
