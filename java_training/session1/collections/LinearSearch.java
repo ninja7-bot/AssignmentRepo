@@ -1,3 +1,4 @@
+package collections;
 import java.util.Scanner;
 
 public class LinearSearch {
