@@ -37,3 +37,50 @@ portfolio_frontend/       (Root Repository Folder)
 ├── js/                  
 └── mini_app/            
 ```
+
+## Java Assignment
+### Session 1
+Session 1 covers basic concepts of Java like OOPs, Datatypes, Exception Handling, File Handling and such. 
+
+The directory contains java code files and markdown files for respective answers.
+
+**Repo Structure**
+```
+java_assignment/        (Root Repository Folder)
+│
+├── collections/
+│   ├── Anagram.java
+│   ├── ArrayAverage.java
+│   ├── CountVowel.java
+│   ├── DataTypes.java
+│   ├── Datatypes.MD
+│   ├── LinearSearch.java
+│   ├── ReverseString.java
+│   └── SelectionSort.java
+│
+├── exception/
+│   ├── ExceptionHandling.java
+│   ├── FileHandling.java
+│   └── Multithreading.java
+│
+├── generics/
+│   ├── AreaCalculator.java
+│   ├── EvenOdd.java
+│   ├── EvenSum.java
+│   ├── Factorial.java
+│   ├── Fibonacci.java
+│   ├── LargestNumber.java
+│   ├── MultiplicationTable.java
+│   ├── Operators.java
+│   ├── PrimeNumber.java
+│   ├── TemperatureConverter.java
+│   └── TrianglePattern.java
+│
+└── oop/
+    ├── Abstract.MD
+    ├── Encapsulation.java
+    ├── Encapsulation.md
+    ├── GraduateStudent.java
+    ├── Polymorphism.java
+    └── Student.java
+```
