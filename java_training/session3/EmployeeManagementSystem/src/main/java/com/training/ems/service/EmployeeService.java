@@ -154,4 +154,35 @@ public class EmployeeService {
 
         return savedEmployee;
     }
+
+    // Delete Employee with Confirmation
+    /**
+     * Delete an employee from the system with confirmation check
+     *
+     * Logic:
+     * - If confirm is false or not provided -> do not delete
+     *   Return: "Confirmation required to delete this employee"
+     * - If confirm is true -> proceed with deletion
+     * - Employee must exist
+     */
+    public String deleteEmployee(Long id, boolean confirm) {
+
+        // Check if employee exists first
+        if (!employeeRepository.existsById(id)) {
+            throw new RuntimeException("Employee not found with ID: " + id);
+        }
+
+        // Check confirmation
+        if (!confirm) {
+            // Do not delete - return a message asking for confirmation
+            return "Confirmation required. "
+                    + "Please send ?confirm=true to delete employee with ID: " + id;
+        }
+
+        // Confirmed - proceed with deletion
+        employeeRepository.deleteById(id);
+        System.out.println("Employee deleted with ID: " + id);
+
+        return "Employee with ID " + id + " has been successfully deleted.";
+    }
 }
