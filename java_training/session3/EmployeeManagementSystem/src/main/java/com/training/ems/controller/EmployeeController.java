@@ -105,4 +105,46 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+
+    // Delete Employee with Confirmation
+    // DELETE /ems/{id}
+    /**
+     * Delete an employee - requires confirmation
+     *
+     * @PathVariable Long id:
+     * - Extracts the ID number from the URL
+     * - Example: /ems/3 -> id = 3
+     *
+     * @RequestParam(required = false, defaultValue = "false") boolean confirm:
+     * - Gets the confirmation value from the URL query parameter
+     * - If not provided -> defaults to false -> will NOT delete
+     * - Must be true to actually delete
+     *
+     * URL Examples:
+     * DELETE /ems/1              -> "Confirmation required"
+     * DELETE /ems/1?confirm=false -> "Confirmation required"
+     * DELETE /ems/1?confirm=true  -> Employee deleted
+     * DELETE /ems/999?confirm=true -> 404 Not Found
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteEmployee(
+            @PathVariable Long id,
+            @RequestParam(required = false, defaultValue = "false") boolean confirm) {
+
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            String message = employeeService.deleteEmployee(id, confirm);
+            response.put("message", message);
+
+            // 200 OK - whether deleted or confirmation required
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            response.put("error", e.getMessage());
+
+            // 404 Not Found - employee doesn't exist
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
 }
