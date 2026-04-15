@@ -92,4 +92,66 @@ public class EmployeeService {
 
         return filtered;
     }
+
+    // Add New Employee
+    /**
+     * Add a new employee to the system with validation
+     *
+     * Validation Rules:
+     * 1. Name is required and cannot be empty
+     * 2. Age is required, must be between 18 and 65
+     * 3. Department is required and cannot be empty
+     * 4. Designation is required and cannot be empty
+     * 5. Salary is required, must be greater than 0
+     */
+    public Employee addEmployee(Employee employee) {
+
+        // Name is required
+        if (employee.getName() == null || employee.getName().trim().isEmpty()) {
+            throw new RuntimeException("Employee name is required");
+        }
+
+        // Age is required
+        if (employee.getAge() == null) {
+            throw new RuntimeException("Employee age is required");
+        }
+
+        // Age must be within working range
+        if (employee.getAge() < 18 || employee.getAge() > 65) {
+            throw new RuntimeException(
+                    "Employee age must be between 18 and 65. Provided: "
+                            + employee.getAge()
+            );
+        }
+
+        // Department is required
+        if (employee.getDepartment() == null || employee.getDepartment().trim().isEmpty()) {
+            throw new RuntimeException("Department is required");
+        }
+
+        // Designation is required
+        if (employee.getDesignation() == null || employee.getDesignation().trim().isEmpty()) {
+            throw new RuntimeException("Designation is required");
+        }
+
+        // Salary is required
+        if (employee.getSalary() == null) {
+            throw new RuntimeException("Salary is required");
+        }
+
+        // Salary must be positive
+        if (employee.getSalary() <= 0) {
+            throw new RuntimeException(
+                    "Salary must be greater than 0. Provided: "
+                            + employee.getSalary()
+            );
+        }
+
+        // Save the employee
+        Employee savedEmployee = employeeRepository.save(employee);
+        System.out.println("New employee added: " + savedEmployee.getName()
+                + " | Department: " + savedEmployee.getDepartment());
+
+        return savedEmployee;
+    }
 }
