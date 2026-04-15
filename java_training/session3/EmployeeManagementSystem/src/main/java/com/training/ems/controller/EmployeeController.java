@@ -66,4 +66,43 @@ public class EmployeeController {
         // Return 200 OK with the list
         return ResponseEntity.ok(employees);
     }
+
+    // Add New Employee
+    // POST /ems/add
+    /**
+     * Add a new employee to the system
+     *
+     * @RequestBody:
+     * - Takes the JSON from the request body
+     * - Converts it to an Employee object automatically
+     * - Spring handles this conversion using getters/setters
+     *
+     * Example:
+     * {
+     *   "name": "New Employee",
+     *   "age": 27,
+     *   "department": "IT",
+     *   "designation": "Developer",
+     *   "salary": 70000
+     * }
+     *
+     * Returns:
+     * - 201 Created if successful
+     * - 400 Bad Request if validation fails
+     */
+    @PostMapping("/add")
+    public ResponseEntity<Object> addEmployee(@RequestBody Employee employee) {
+        try {
+            Employee savedEmployee = employeeService.addEmployee(employee);
+
+            // 201 Created - new resource created successfully
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee);
+
+        } catch (RuntimeException e) {
+            // 400 Bad Request - validation failed
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
 }
