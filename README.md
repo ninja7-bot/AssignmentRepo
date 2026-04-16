@@ -84,3 +84,53 @@ java_assignment/        (Root Repository Folder)
     ├── Polymorphism.java
     └── Student.java
 ```
+
+## Session 2: Student Management System
+
+A basic Spring Boot project to manage students using REST APIs and in-memory data.
+
+**Repo Structure**
+
+```
+java_training/session2/
+└── student-management-system
+    ├── StudentManagementApplication.java
+    ├── model/
+    │   └── Student.java
+    ├── repository/
+    │   └── StudentRepository.java
+    ├── service/
+    │   ├── StudentService.java
+    │   ├── NotificationService.java
+    │   └── MessageService.java
+    ├── controller/
+    │   ├── StudentController.java
+    │   ├── NotificationController.java
+    │   ├── MessageController.java
+    │   └── GlobalExceptionHandler.java
+    └── component/
+        ├── NotificationComponent.java
+        ├── ShortMessageFormatter.java
+        └── LongMessageFormatter.java
+```
+
+## Session 3: Employee Management System
+
+A Spring Boot REST API project to manage employees with search, add, and delete operations.
+
+**Repo Structure**
+
+```
+java_training/session3/
+└── employee-management-system
+    ├── EmployeeManagementApplication.java
+    ├── model/
+    │   └── Employee.java
+    ├── repository/
+    │   └── EmployeeRepository.java
+    ├── service/
+    │   └── EmployeeService.java
+    └── controller/
+        ├── EmployeeController.java
+        └── GlobalExceptionHandler.java
+```
