@@ -242,4 +242,36 @@ public class TaskService {
         return "Task '" + task.getTitle()
                 + "' (ID: " + id + ") deleted successfully.";
     }
+
+
+    // FEATURE 6: DELETE ALL TASKS
+    /**
+     * Delete all tasks.
+     *
+     * Requires confirmation with ?confirm=true
+     * Defaults to false.
+     */
+    public String deleteAllTasks(boolean confirm) {
+
+        // Check confirmation first
+        if (!confirm) {
+            return "Confirmation required. "
+                    + "Send ?confirm=true to delete ALL tasks. "
+                    + "Warning: This action cannot be undone!";
+        }
+
+        // Check if there is anything to delete
+        long totalTasks = taskRepository.count();
+
+        if (totalTasks == 0) {
+            return "No tasks found. Nothing to delete.";
+        }
+
+        // Confirmed - delete everything
+        taskRepository.deleteAll();
+
+        System.out.println("🗑️ ALL TASKS DELETED → Total deleted: " + totalTasks);
+
+        return "All " + totalTasks + " task(s) have been successfully deleted.";
+    }
 }

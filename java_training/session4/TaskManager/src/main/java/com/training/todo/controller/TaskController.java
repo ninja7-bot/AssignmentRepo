@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -115,6 +116,28 @@ public class TaskController {
             @PathVariable Long id) {
 
         String message = taskService.deleteTask(id);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", message);
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // API 6: DELETE ALL TASKS
+    // DELETE /tasks
+
+    /**
+     * Delete ALL tasks.
+     *
+     * NON-REVERSIBLE
+     * Returns success message on completion.
+     */
+    @DeleteMapping
+    public ResponseEntity<Map<String, String>> deleteAllTasks(
+            @RequestParam(required = false, defaultValue = "false") boolean confirm) {
+
+        String message = taskService.deleteAllTasks(confirm);
 
         Map<String, String> response = new HashMap<>();
         response.put("message", message);
