@@ -159,4 +159,87 @@ public class TaskService {
                 .map(this::convertToResponseMap)
                 .collect(Collectors.toList());
     }
+
+
+    // FEATURE 3: GET TASK BY ID
+    /**
+     * Get a single task by ID
+     * Throws error if not found
+     */
+    public Map<String, Object> getTaskById(Long id) {
+        Tasks task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "Task not found with ID: " + id
+                ));
+
+        System.out.println("🔍 Fetched Task -> ID: " + id);
+
+        return convertToResponseMap(task);
+    }
+
+
+    // FEATURE 4: UPDATE TASK
+    /**
+     * Update an existing task
+     *
+     * Can update: title, description, status
+     * Cannot update: id, createdAt
+     */
+    public Map<String, Object> updateTask(Long id, TaskDTO taskDTO) {
+
+        // Find existing task
+        Tasks existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "Task not found with ID: " + id
+                ));
+
+        // Update title if provided
+        if (taskDTO.getTitle() != null
+                && !taskDTO.getTitle().trim().isEmpty()) {
+            existingTask.setTitle(taskDTO.getTitle().trim());
+        }
+
+        // Update description if provided
+        if (taskDTO.getDescription() != null) {
+            existingTask.setDescription(taskDTO.getDescription());
+        }
+
+        // Update status with transition validation
+        if (taskDTO.getStatus() != null) {
+            validateStatusTransition(
+                    existingTask.getStatus(),
+                    taskDTO.getStatus()
+            );
+            existingTask.setStatus(taskDTO.getStatus());
+        }
+
+        // Save updated task
+        Tasks updatedTask = taskRepository.save(existingTask);
+
+        System.out.println("✏️ Task UPDATED -> ID: " + id
+                + " | Status: " + updatedTask.getStatus());
+
+        return convertToResponseMap(updatedTask);
+    }
+
+
+    // FEATURE 5: DELETE TASK
+    /**
+     * Delete a task by ID
+     * Throws error if not found
+     */
+    public String deleteTask(Long id) {
+        Tasks task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "Task not found with ID: " + id
+                ));
+
+        taskRepository.deleteById(id);
+
+        System.out.println("🗑️ Task DELETED -> ID: " + id
+                + " | " + task.getTitle());
+
+        return "Task '" + task.getTitle()
+                + "' (ID: " + id + ") deleted successfully.";
+    }
 }
