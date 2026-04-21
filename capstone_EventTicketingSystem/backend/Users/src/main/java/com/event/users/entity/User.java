@@ -2,10 +2,7 @@ package com.event.users.entity;
 
 import com.event.users.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
@@ -24,11 +21,15 @@ public class User {
 
     @NotBlank(message = "Name is required")
     @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    @Pattern(regexp = "^[a-zA-Z\\s]+$",
+            message = "Name must contain only alphabets")
     @Column(nullable = false, length = 100)
     private String name;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$",
+            message = "Email must be a valid Gmail address")
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
@@ -38,6 +39,8 @@ public class User {
 
     @NotBlank(message = "Phone number is required")
     @Size(min = 10, max = 15, message = "Phone number must be between 10 and 15 characters")
+    @Pattern(regexp = "^[0-9]{10}$",
+            message = "Phone number must be exactly 10 digits")
     @Column(nullable = false, length = 15)
     private String phone;
 

@@ -8,6 +8,9 @@ public class UsersApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(UsersApplication.class, args);
+        System.out.println("----------------------------------------------------");
+        System.out.println("|--> User Microservice Service is up and  running.  |");
+        System.out.println("|--> Running on http://localhost:8081               |");
+        System.out.println("----------------------------------------------------");
     }
-
 }
