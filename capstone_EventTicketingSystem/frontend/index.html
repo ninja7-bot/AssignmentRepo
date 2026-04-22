@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Ticketing System</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .landing {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom right, #4A90E2, #7B68EE);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .landing h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .landing p {
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+        
+        .landing-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .landing-btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            background: white;
+            color: #4A90E2;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .landing-btn:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="landing">
+        <h1>Event Ticketing System</h1>
+        <p>Got an event to host? Or an event to visit!</p>
+        
+        <div class="landing-buttons">
+            <a href="pages/auth/login.html" class="landing-btn">Login</a>
+            <a href="pages/auth/register.html" class="landing-btn">Register</a>
+        </div>
+    </div>
+    
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script>
+        if (Utils.isLoggedIn()) {
+            Utils.redirectToDashboard();
+        }
+    </script>
+</body>
+</html>
