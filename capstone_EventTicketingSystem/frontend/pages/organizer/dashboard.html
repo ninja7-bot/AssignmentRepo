@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard - Event Ticketing System</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <div>
+                <h1>Organizer Dashboard</h1>
+                <p style="margin: 5px 0 0 0; color: #666;">Welcome, <span id="userName"></span>!</p>
+            </div>
+            <button onclick="logout()" class="btn btn-danger">Logout</button>
+        </div>
+
+        <div style="background: white; padding: 40px; border-radius: 4px; text-align: center;">
+            <h2>Coming Soon!</h2>
+            <p>Create and manage your events here</p>
+        </div>
+    </div>
+
+    <script src="../../assets/js/config.js"></script>
+    <script src="../../assets/js/utils.js"></script>
+    <script>
+        // Check if logged in
+        if (!Utils.isLoggedIn()) {
+            window.location.href = '../auth/login.html';
+        }
+
+        // Check role
+        if (Utils.getUserRole() !== 'ORGANIZER') {
+            window.location.href = '../customer/dashboard.html';
+        }
+
+        // Display name
+        const userInfo = Utils.getUserInfo();
+        document.getElementById('userName').textContent = userInfo.name;
+
+        function logout() {
+            Utils.logout();
+        }
+    </script>
+</body>
+
+</html>
