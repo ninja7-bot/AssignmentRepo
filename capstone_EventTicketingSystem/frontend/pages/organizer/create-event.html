@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event - Organizer (ETS)</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/organizer.css">
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="topbar-brand">🎫 Event Ticketing System</a>
+            <ul class="topbar-nav">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="create-event.html" class="active">Create Event</a></li>
+                <li><a href="my-events.html">My Events</a></li>
+                <li>
+                    <span class="topbar-user" id="userName"></span>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page -->
+    <div class="page-wrap">
+
+        <div class="page-heading">
+            <h1>Create New Event</h1>
+            <p>Fill in the details below to publish your event.</p>
+        </div>
+
+        <div class="form-wrap">
+            <form id="createEventForm" novalidate>
+
+                <!-- Basic Info -->
+                <div class="form-section">
+                    <div class="form-section-title">Basic Information</div>
+                    <div class="form-section-sub">Name, description and category of your event.</div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Event Name <span class="required">*</span>
+                        </label>
+                        <input type="text" id="name" class="form-input"
+                               placeholder="e.g. AAGMAN" maxlength="200">
+                        <span class="error-text" id="eventNameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Description <span class="required">*</span>
+                        </label>
+                        <textarea id="description" class="form-textarea" rows="5"
+                                  placeholder="Event Description..."
+                                  maxlength="1000"></textarea>
+                        <small class="form-hint">Minimum 10 characters, maximum 1000</small>
+                        <span class="error-text" id="descriptionError"></span>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select id="category" class="form-select">
+                                <option value="">Select (optional)</option>
+                                <option value="MUSIC">Music</option>
+                                <option value="SPORTS">Sports</option>
+                                <option value="TECH">Technology</option>
+                                <option value="EDUCATION">Education</option>
+                                <option value="ART">Art</option>
+                                <option value="HACKATHON">Hackathon</option>
+                                <option value="CULTURE">Culture</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule -->
+                <div class="form-section">
+                    <div class="form-section-title">Schedule & Venue</div>
+                    <div class="form-section-sub">When and where your event will take place?</div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Date <span class="required">*</span>
+                            </label>
+                            <input type="date" id="eventDate" class="form-input">
+                            <span class="error-text" id="eventDateError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Time <span class="required">*</span>
+                            </label>
+                            <input type="time" id="eventTime" class="form-input">
+                            <span class="error-text" id="eventTimeError"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Venue <span class="required">*</span>
+                        </label>
+                        <input type="text" id="venue" class="form-input"
+                               placeholder="e.g. City Arena, Mumbai" maxlength="200">
+                        <small class="form-hint">Enter a clear venue name or location</small>
+                        <span class="error-text" id="venueError"></span>
+                    </div>
+                </div>
+
+                <!-- Capacity & Pricing -->
+                <div class="form-section">
+                    <div class="form-section-title">Capacity & Pricing</div>
+                    <div class="form-section-sub">Set how many seats and what price per ticket.</div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Total Seats <span class="required">*</span>
+                            </label>
+                            <input type="number" id="totalSeats" class="form-input"
+                                   min="1" placeholder="e.g. 500">
+                            <span class="error-text" id="totalSeatsError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Ticket Price (₹) <span class="required">*</span>
+                            </label>
+                            <input type="number" id="ticketPrice" class="form-input"
+                                   min="0" step="0.01" placeholder="Pricing">
+                            <span class="error-text" id="ticketPriceError"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-note">
+                        <p>⚠️ Fields marked <strong>*</strong> are required.</p>
+                        <p>📅 Event date and time must be in the future.</p>
+                        <p>✏️ You can edit event details up to 4 hours before start.</p>
+                    </div>
+                </div>
+
+                <!-- Form Footer -->
+                <div class="form-footer">
+                    <button type="button" id="resetBtn" class="btn btn-secondary">Reset</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary">Create Event</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-backdrop hidden" id="successModal">
+        <div class="modal-box">
+            <div class="modal-top">
+                <h2>Event Created</h2>
+                <button class="modal-x" id="closeSuccessBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="success-box">
+                    <div class="success-icon">✓</div>
+                    <h3>Your event is now live!</h3>
+                    <p>Customers can see it and start booking tickets.</p>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button id="createAnotherBtn" class="btn btn-secondary">Create Another</button>
+                        <a href="my-events.html" class="btn btn-primary">View My Events</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification hidden"></div>
+
+    <script src="../../assets/js/config.js"></script>
+    <script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/organizer/createEvents.js"></script>
+</body>
+</html>

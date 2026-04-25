@@ -1,73 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organizer Dashboard - Event Ticketing System</title>
+    <title>Dashboard - Organizer</title>
     <link rel="stylesheet" href="../../assets/css/main.css">
-    <style>
-        .dashboard {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            background: white;
-            padding: 20px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-    </style>
+    <link rel="stylesheet" href="../../assets/css/organizer.css">
 </head>
-
 <body>
-    <div class="dashboard">
-        <div class="header">
-            <div>
-                <h1>Organizer Dashboard</h1>
-                <p style="margin: 5px 0 0 0; color: #666;">Welcome, <span id="userName"></span>!</p>
-            </div>
-            <button onclick="logout()" class="btn btn-danger">Logout</button>
-        </div>
 
-        <div style="background: white; padding: 40px; border-radius: 4px; text-align: center;">
-            <h2>Coming Soon!</h2>
-            <p>Create and manage your events here</p>
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="topbar-brand">🎫 Event Booking</a>
+            <ul class="topbar-nav">
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="create-event.html">Create Event</a></li>
+                <li><a href="my-events.html">My Events</a></li>
+                <li>
+                    <span class="topbar-user" id="userName"></span>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </li>
+            </ul>
         </div>
     </div>
 
+    <!-- Page -->
+    <div class="page-wrap">
+
+        <div class="page-heading">
+            <h1>Dashboard</h1>
+            <p>Here's a quick overview of your events.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-row">
+            <div class="stat-box">
+                <span class="stat-num" id="statTotal">-</span>
+                <span class="stat-lbl">Total Events</span>
+            </div>
+            <div class="stat-box green">
+                <span class="stat-num" id="statActive">-</span>
+                <span class="stat-lbl">Active</span>
+            </div>
+            <div class="stat-box orange">
+                <span class="stat-num" id="statBookings">-</span>
+                <span class="stat-lbl">Total Bookings</span>
+            </div>
+            <div class="stat-box red">
+                <span class="stat-num" id="statCancelled">-</span>
+                <span class="stat-lbl">Cancelled</span>
+            </div>
+        </div>
+
+        <!-- Content grid -->
+        <div class="dash-grid">
+
+            <!-- Recent events -->
+            <div class="content-card">
+                <div class="content-card-header">
+                    <h2>Upcoming Events</h2>
+                    <a href="my-events.html" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+                <div class="content-card-body">
+                    <div id="recentList">
+                        <div class="state-loading">Loading events...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick actions -->
+            <div>
+                <div class="content-card">
+                    <div class="content-card-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="content-card-body">
+
+                        <a href="create-event.html" class="quick-link">
+                            <h3>➕ Create New Event</h3>
+                            <p>Publish a new event and start receiving bookings.</p>
+                        </a>
+
+                        <a href="my-events.html" class="quick-link">
+                            <h3>📂 Manage Events</h3>
+                            <p>Edit details, update seats, or view bookings.</p>
+                        </a>
+
+                        <div class="tips-panel">
+                            <h4>💡 Tips</h4>
+                            <ul>
+                                <li>You can edit events up to 4 hours before they start.</li>
+                                <li>Update seat count anytime under Manage Events.</li>
+                                <li>Check Bookings tab regularly for updates.</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="notification" class="notification hidden"></div>
+
     <script src="../../assets/js/config.js"></script>
     <script src="../../assets/js/utils.js"></script>
-    <script>
-        // Check if logged in
-        if (!Utils.isLoggedIn()) {
-            window.location.href = '../auth/login.html';
-        }
-
-        // Check role
-        if (Utils.getUserRole() !== 'ORGANIZER') {
-            window.location.href = '../customer/dashboard.html';
-        }
-
-        // Display name
-        const userInfo = Utils.getUserInfo();
-        document.getElementById('userName').textContent = userInfo.name;
-
-        function logout() {
-            Utils.logout();
-        }
-    </script>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/organizer/dashboard.js"></script>
 </body>
-
 </html>

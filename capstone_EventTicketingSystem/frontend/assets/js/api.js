@@ -41,7 +41,15 @@ const API = {
             }
             
             // Parse response
-            const data = await response.json();
+            const text = await response.text();
+
+            let data;
+
+            try {
+                data = JSON.parse(text);        // try parsing JSON
+            } catch {
+                data = text;                    // fallback to plain text
+            }
             
             // Return data with status
             return {
@@ -77,14 +85,56 @@ const API = {
         return await this.request(url, 'POST', credentials, false);
     },
     
-    // Future Implementation
+
+    // Events Service
 
     /**
-     * Get all events
-     * Create event (organizer only)
-     * Get user's bookings
-     * Create booking
+     * Fetches all events
      */
+    async getEvents() {
+        const url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.EVENTS;
+        return this.request(url, 'GET', null, false);
+    },
+
+    /**
+     * Fetches event by id
+     */
+    async getEventById(id) {
+        const url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.EVENT_BY_ID + id;
+        return this.request(url, 'GET', null, false);
+    },
+
+    /**
+     * Organizer's events (organizer)
+     */
+    async getMyEvents() {
+        const url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.MY_EVENTS;
+        return this.request(url, 'GET', null, true);
+    },
+
+    /**
+     * Create Event (organizer)
+     */
+    async createEvent(eventData) {
+        const url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.EVENTS;
+        return this.request(url, 'POST', eventData, true);
+    },
+
+    /**
+     * Update Event (organizer)
+     */
+    async updateEvent(id, eventUpdatedData) {
+        const url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.EVENT_BY_ID + id;
+        return this.request(url, 'PUT', eventUpdatedData, true);
+    },
+
+    /**
+     * Cancel Event (organizer)
+     */
+    async cancelEvent(id) {
+        const url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.EVENT_BY_ID + id;
+        return this.request(url, 'DELETE', null, true);
+    }
 };
 
 // Make API available globally
