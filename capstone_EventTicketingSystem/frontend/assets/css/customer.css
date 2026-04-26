@@ -1,0 +1,1000 @@
+/* ========================================
+   CUSTOMER CSS
+   Extends main.css for customer pages
+   ======================================== */
+
+
+/* ========================================
+   PAGE SHELL
+   ======================================== */
+
+.page-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px;
+}
+
+
+/* ========================================
+   TOP NAV BAR
+   ======================================== */
+
+.topbar {
+    background: #fff;
+    border-bottom: 2px solid #007bff;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.topbar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 56px;
+}
+
+.topbar-brand {
+    font-size: 17px;
+    font-weight: 700;
+    color: #007bff;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+}
+
+.topbar-nav {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.topbar-nav a {
+    text-decoration: none;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+}
+
+.topbar-nav a:hover {
+    background: #f0f4ff;
+    color: #007bff;
+}
+
+.topbar-nav a.active {
+    background: #007bff;
+    color: #fff;
+}
+
+.topbar-user {
+    font-size: 13px;
+    color: #888;
+    margin-right: 8px;
+    font-family: Arial, sans-serif;
+}
+
+
+/* ========================================
+   PAGE HEADING
+   ======================================== */
+
+.page-heading {
+    margin-bottom: 20px;
+}
+
+.page-heading h1 {
+    font-size: 24px;
+    color: #222;
+    margin: 0 0 4px 0;
+    font-family: Arial, sans-serif;
+}
+
+.page-heading p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+/* ========================================
+   SEARCH + FILTER BAR
+   ======================================== */
+
+.search-bar {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background: #fff;
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+
+/* ========================================
+   EVENTS GRID
+   ======================================== */
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 18px;
+}
+
+
+/* ========================================
+   EVENT CARD
+   ======================================== */
+
+.event-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card-top {
+    background: linear-gradient(135deg, #007bff, #4dabf7);
+    color: #fff;
+    padding: 16px 18px;
+}
+
+.event-card-top h3 {
+    margin: 0 0 4px 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+.event-card-category {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: Arial, sans-serif;
+}
+
+.event-card-body {
+    padding: 14px 16px;
+    flex: 1;
+}
+
+.event-description {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+}
+
+.event-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 8px;
+    font-family: Arial, sans-serif;
+}
+
+.event-detail-row span:first-child {
+    color: #888;
+}
+
+.event-detail-row span:last-child {
+    color: #333;
+    font-weight: 600;
+}
+
+.seats-low {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.event-card-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.event-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #007bff;
+    font-family: Arial, sans-serif;
+}
+
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Arial, sans-serif;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.btn-primary   { background: #007bff; color: #fff; }
+.btn-primary:hover:not(:disabled)   { background: #0069d9; }
+
+.btn-secondary { background: #6c757d; color: #fff; }
+.btn-secondary:hover:not(:disabled) { background: #5a6268; }
+
+.btn-danger    { background: #dc3545; color: #fff; }
+.btn-danger:hover:not(:disabled)    { background: #c82333; }
+
+.btn-success   { background: #28a745; color: #fff; }
+.btn-success:hover:not(:disabled)   { background: #218838; }
+
+.btn-outline {
+    background: #fff;
+    color: #007bff;
+    border: 1px solid #007bff;
+}
+
+.btn-outline:hover:not(:disabled) { background: #eef4ff; }
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: center;
+}
+
+
+/* ========================================
+   MODAL
+   ======================================== */
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    padding: 20px;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 480px;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-top {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-top h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.modal-x {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.modal-x:hover { color: #dc3545; }
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-foot {
+    padding: 14px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+
+/* ========================================
+   FORM ELEMENTS
+   ======================================== */
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    font-family: Arial, sans-serif;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.form-input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background: #fff;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.12);
+}
+
+.form-hint {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    font-family: Arial, sans-serif;
+}
+
+.error-text {
+    display: block;
+    font-size: 12px;
+    color: #dc3545;
+    margin-top: 4px;
+    font-weight: 500;
+    font-family: Arial, sans-serif;
+}
+
+
+/* ========================================
+   SUMMARY BOX
+   ======================================== */
+
+.summary-box {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.summary-box h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-family: Arial, sans-serif;
+}
+
+.summary-row span:first-child { color: #888; }
+.summary-row span:last-child  { color: #333; font-weight: 600; }
+
+.summary-row.total {
+    border-top: 1px solid #ddd;
+    padding-top: 8px;
+    margin-top: 8px;
+    margin-bottom: 0;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.summary-row.total span:last-child {
+    color: #007bff;
+    font-size: 16px;
+}
+
+
+/* ========================================
+   EVENT DETAILS PAGE
+   ======================================== */
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 20px;
+    align-items: start;
+}
+
+
+/* ── Info Card (left column) ───────────── */
+
+.info-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.info-card-header {
+    background: linear-gradient(135deg, #007bff, #4dabf7);
+    color: #fff;
+    padding: 20px 24px;
+}
+
+.info-card-header h2 {
+    margin: 0 0 4px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+.info-card-header .event-cat {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: Arial, sans-serif;
+}
+
+.info-card-body {
+    padding: 20px 24px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+.info-row:last-of-type {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #666;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.info-value {
+    color: #222;
+    font-weight: 600;
+    text-align: right;
+    font-size: 14px;
+}
+
+
+/* ── Description block ────────────────── */
+
+.desc-block {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #eee;
+}
+
+.desc-block h4 {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    color: #333;
+    font-weight: 600;
+    font-family: Arial, sans-serif;
+}
+
+.desc-block p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.7;
+    font-family: Arial, sans-serif;
+}
+
+
+/* ── Booking / Seat Card (right column) ── */
+
+.booking-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    overflow: hidden;
+    position: sticky;
+    top: 76px;
+}
+
+.booking-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    background: #f8f9fb;
+}
+
+.booking-card-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.booking-card-body {
+    padding: 20px;
+}
+
+
+/* ── Seat Tiles ─────────────────────────── */
+
+.seat-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.seat-tile {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 14px 10px;
+    text-align: center;
+}
+
+.seat-tile-label {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+}
+
+.seat-tile-value {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.seat-tile-value.booked    { color: #fd7e14; }
+.seat-tile-value.available { color: #007bff; }
+
+
+/* ── Availability Bar ────────────────────── */
+
+.avail-bar {
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.avail-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #007bff, #4dabf7);
+    border-radius: 4px;
+}
+
+
+/* ── Booking Note ────────────────────────── */
+
+.booking-note {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    margin-top: 12px;
+    font-family: Arial, sans-serif;
+}
+
+
+/* ========================================
+   DASHBOARD LAYOUT (2 columns)
+   ======================================== */
+
+.dash-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 18px;
+}
+
+
+/* ========================================
+   CONTENT CARD (white box)
+   ======================================== */
+
+.content-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.content-card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.content-card-header h2 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.content-card-body {
+    padding: 18px;
+}
+
+
+/* ========================================
+   QUICK ACTION PANELS
+   ======================================== */
+
+.quick-link {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    background: #f8fbff;
+    border: 1px solid #d6e4ff;
+    border-radius: 5px;
+    padding: 14px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+}
+
+.quick-link:hover {
+    border-color: #007bff;
+    background: #eef4ff;
+}
+
+.quick-link h3 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    color: #007bff;
+}
+
+.quick-link p {
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+}
+
+.tips-panel {
+    margin-top: 14px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 5px;
+    padding: 14px;
+}
+
+.tips-panel h4 {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #92400e;
+    font-family: Arial, sans-serif;
+}
+
+.tips-panel ul {
+    margin: 0;
+    padding-left: 16px;
+    font-size: 13px;
+    color: #78350f;
+    line-height: 1.7;
+}
+
+
+/* ========================================
+   STATUS PILLS
+   ======================================== */
+
+.pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-family: Arial, sans-serif;
+}
+
+.pill-confirmed { background: #d4edda; color: #155724; }
+.pill-cancelled { background: #f8d7da; color: #721c24; }
+.pill-pending   { background: #fff3cd; color: #856404; }
+.pill-active    { background: #d4edda; color: #155724; }
+.pill-completed { background: #e2e3e5; color: #383d41; }
+
+
+/* ========================================
+   TABLE (bookings - for future use)
+   ======================================== */
+
+.table-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.table-card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+}
+
+.table-card-header h2 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+.data-table th {
+    background: #f8f9fa;
+    padding: 11px 14px;
+    text-align: left;
+    font-weight: 600;
+    color: #555;
+    font-size: 12px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tr:hover td {
+    background: #fafafa;
+}
+
+
+/* ========================================
+   LOADING / EMPTY / ERROR STATES
+   ======================================== */
+
+.state-loading {
+    padding: 50px 20px;
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+.state-empty {
+    padding: 50px 20px;
+    text-align: center;
+    color: #888;
+    font-family: Arial, sans-serif;
+}
+
+.state-empty h3 {
+    margin: 0 0 6px 0;
+    font-size: 18px;
+    color: #555;
+    font-family: Arial, sans-serif;
+}
+
+.state-empty p {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+}
+
+.state-error {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 50px 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.state-error h3 {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    color: #dc3545;
+}
+
+.state-error p {
+    margin: 0 0 18px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+
+/* ========================================
+   UTILITY
+   ======================================== */
+
+.hidden {
+    display: none !important;
+}
+
+.mb-1 { margin-bottom: 10px; }
+.mb-2 { margin-bottom: 20px; }
+.mt-1 { margin-top: 10px; }
+.mt-2 { margin-top: 20px; }
+
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 900px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-card {
+        position: static;
+    }
+
+    .dash-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .topbar-inner {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 20px;
+        gap: 8px;
+    }
+
+    .topbar-nav {
+        flex-wrap: wrap;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input,
+    .filter-select {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .seat-tiles {
+        grid-template-columns: 1fr;
+    }
+
+    .info-card-header {
+        padding: 16px 18px;
+    }
+
+    .info-card-body {
+        padding: 16px 18px;
+    }
+
+    .booking-card-body {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-wrap {
+        padding: 14px 12px;
+    }
+
+    .modal-box {
+        max-width: 95%;
+    }
+
+    .info-card-header h2 {
+        font-size: 18px;
+    }
+}

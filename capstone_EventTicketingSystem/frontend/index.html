@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Ticketing System</title>
+    <title>Event Ticket Booking</title>
     <link rel="stylesheet" href="assets/css/main.css">
     <style>
         body {
@@ -12,64 +11,81 @@
             padding: 0;
             font-family: Arial, sans-serif;
         }
-        
+
         .landing {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(to bottom right, #4A90E2, #7B68EE);
+            background: linear-gradient(135deg, #007bff, #4dabf7);
             color: white;
             text-align: center;
             padding: 20px;
         }
-        
+
         .landing h1 {
-            font-size: 48px;
+            font-size: 42px;
             margin-bottom: 10px;
         }
-        
+
         .landing p {
             font-size: 18px;
             margin-bottom: 40px;
+            opacity: 0.9;
         }
-        
+
         .landing-buttons {
             display: flex;
-            gap: 20px;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-        
+
         .landing-btn {
-            padding: 15px 30px;
+            padding: 14px 28px;
             font-size: 16px;
+            font-weight: 600;
             background: white;
-            color: #4A90E2;
+            color: #007bff;
             border: none;
             border-radius: 4px;
             text-decoration: none;
-            font-weight: bold;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
         }
-        
+
         .landing-btn:hover {
-            background: #f0f0f0;
+            background: #f0f4ff;
+        }
+
+        .landing-btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .landing-btn-outline:hover {
+            background: rgba(255,255,255,0.1);
         }
     </style>
 </head>
 <body>
     <div class="landing">
-        <h1>Event Ticketing System</h1>
-        <p>Got an event to host? Or an event to visit!</p>
-        
+        <h1>🎫 Event Ticketing System</h1>
+        <p>Browse events, book tickets, or create your own!</p>
+
         <div class="landing-buttons">
+            <a href="pages/browse.html" class="landing-btn">Browse Events</a>
             <a href="pages/auth/login.html" class="landing-btn">Login</a>
-            <a href="pages/auth/register.html" class="landing-btn">Register</a>
+            <a href="pages/auth/register.html" class="landing-btn landing-btn-outline">Register</a>
         </div>
     </div>
-    
+
     <script src="assets/js/config.js"></script>
     <script src="assets/js/utils.js"></script>
     <script>
+        // If already logged in, redirect to dashboard
         if (Utils.isLoggedIn()) {
             Utils.redirectToDashboard();
         }

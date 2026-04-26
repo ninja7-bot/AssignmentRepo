@@ -67,7 +67,7 @@ const CONFIG = {
         REGISTER: '/frontend/pages/auth/register.html',
         CUSTOMER_DASHBOARD: '/frontend/pages/customer/dashboard.html',
         ORGANIZER_DASHBOARD: '/frontend/pages/organizer/dashboard.html',
-        CREATE_EVENT: '/frontend/pages/organizer/create-event.html',
+        CREATE_EVENT: '/pages/organizer/create-event.html',
         MY_EVENTS: '/frontend/pages/organizer/my-events.html'
     }
 };

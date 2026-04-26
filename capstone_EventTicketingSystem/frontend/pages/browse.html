@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Events - Event Ticketing System</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/public.css">
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <a href="browse.html" class="topbar-brand">🎫 Event Ticketing System</a>
+
+            <ul class="topbar-nav">
+                <li><a href="browse.html" class="active">Browse Events</a></li>
+
+                <!-- Show when NOT logged in -->
+                <li id="authLinks">
+                    <a href="../pages/auth/login.html">Login</a>
+                    <a href="../pages/auth/register.html">Register</a>
+                </li>
+
+                <!-- Show when logged in -->
+                <li id="userLinks" class="hidden">
+                    <span style="font-size: 13px; color: #888; margin-right: 6px;" id="publicUserName"></span>
+                    <a href="#" id="dashboardLink">Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page -->
+    <div class="page-wrap">
+
+        <!-- Hero Banner -->
+        <div class="hero">
+            <h1>🎉 Discover Upcoming Events</h1>
+            <p>Browse events near you. Login to book tickets!</p>
+            <div class="hero-buttons" id="heroBtns">
+                <a href="../pages/auth/login.html" class="btn btn-white">Login</a>
+                <a href="../pages/auth/register.html" class="btn btn-outline">Register</a>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name, venue...">
+            <select id="categoryFilter" class="filter-select">
+                <option value="">All Categories</option>
+                <option value="MUSIC">Music</option>
+                <option value="SPORTS">Sports</option>
+                <option value="TECH">Technology</option>
+                <option value="EDUCATION">Education</option>
+                <option value="ART">Art</option>
+                <option value="HACKATHON">Hackathon</option>
+                <option value="CULTURE">Culture</option>
+                <option value="OTHER">Other</option>
+            </select>
+            <button id="searchBtn" class="btn btn-primary">Search</button>
+            <button id="clearBtn" class="btn btn-secondary">Clear</button>
+        </div>
+
+        <!-- Results Info -->
+        <div class="results-info">
+            <span class="results-count" id="resultsCount"></span>
+        </div>
+
+        <!-- Event Detail Panel (shown when "View Details" is clicked) -->
+        <div id="detailContainer" class="hidden"></div>
+
+        <!-- Events Grid -->
+        <div id="eventsContainer">
+            <div class="state-loading">Loading events...</div>
+        </div>
+
+    </div>
+
+    <div id="notification" class="notification hidden"></div>
+
+    <script src="../../assets/js/config.js"></script>
+    <script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/browse.js"></script>
+</body>
+
+</html>
