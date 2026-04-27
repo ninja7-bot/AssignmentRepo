@@ -11,7 +11,7 @@ public class EventRequest {
 
     @NotBlank(message = "Event name is required")
     @Size(min = 2, max = 200, message = "Event name must be between 2 and 200 characters")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Event name must contain only alphabets")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s,.-]+$", message = "Event name must be alphanumeric")
     private String name;
 
     @NotBlank(message = "Description is required")
