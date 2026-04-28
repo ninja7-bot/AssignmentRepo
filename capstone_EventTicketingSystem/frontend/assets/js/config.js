@@ -20,7 +20,10 @@ const CONFIG = {
         EVENT_BY_ID: '/events/',
 
         // Booking endpoints to be created later on.
-        BOOKINGS: '/bookings'
+        BOOKINGS          : '/bookings',
+        MY_BOOKINGS       : '/bookings/my-bookings',
+        BOOKINGS_BY_EVENT : '/bookings/event/',
+        CANCEL_BOOKING    : '/bookings/'
     },
 
     /** JWT Token configuration
@@ -63,12 +66,13 @@ const CONFIG = {
      *  ease the implementation of redirection or transition between pages.
      */
     ROUTES: {
-        LOGIN: '/frontend/pages/auth/login.html',
-        REGISTER: '/frontend/pages/auth/register.html',
-        CUSTOMER_DASHBOARD: '/frontend/pages/customer/dashboard.html',
-        ORGANIZER_DASHBOARD: '/frontend/pages/organizer/dashboard.html',
-        CREATE_EVENT: '/pages/organizer/create-event.html',
-        MY_EVENTS: '/frontend/pages/organizer/my-events.html'
+        LOGIN               : '../../pages/auth/login.html',
+        REGISTER            : '../../pages/auth/register.html',
+        CUSTOMER_DASHBOARD  : '../../pages/customer/dashboard.html',
+        MY_BOOKINGS         : '../../pages/customer/my-bookings.html',
+        ORGANIZER_DASHBOARD : '../../pages/organizer/dashboard.html',
+        CREATE_EVENT        : '../../pages/organizer/create-event.html',
+        MY_EVENTS           : '../../pages/organizer/my-events.html'
     }
 };
 

@@ -3,7 +3,7 @@
  */
 
 const API = {
-    
+
     /**
      * GET request fetch wrapper
      */
@@ -68,7 +68,8 @@ const API = {
             };
         }
     },
-    
+
+
     /**
      * Register new user
      */
@@ -76,7 +77,7 @@ const API = {
         const url = CONFIG.USER_SERVICE_URL + CONFIG.ENDPOINTS.REGISTER;
         return await this.request(url, 'POST', userData, false);
     },
-    
+
     /**
      * Login user
      */
@@ -84,7 +85,7 @@ const API = {
         const url = CONFIG.USER_SERVICE_URL + CONFIG.ENDPOINTS.LOGIN;
         return await this.request(url, 'POST', credentials, false);
     },
-    
+
 
     // Events Service
 
@@ -134,6 +135,38 @@ const API = {
     async cancelEvent(id) {
         const url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.EVENT_BY_ID + id;
         return this.request(url, 'DELETE', null, true);
+    },
+
+    /**
+     * Create Booking (customer)
+     */
+    createBooking(bookingInfo) {
+        var url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.BOOKINGS;
+        return this.request(url, 'POST', bookingInfo, true);
+    },
+
+    /**
+     * Get User Bookings (customer)
+     */
+    getMyBookings() {
+        var url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.MY_BOOKINGS;
+        return this.request(url, 'GET', null, true);
+    },
+
+    /**
+     * Get Event Bookings (organizer)
+     */
+    getBookingsByEvent(eventId) {
+        var url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.BOOKINGS_BY_EVENT + eventId;
+        return this.request(url, 'GET', null, true);
+    },
+
+    /**
+     * Cancel Booking (customer)
+     */
+    cancelBooking(bookingId) {
+        var url = CONFIG.EVENT_SERVICE_URL + CONFIG.ENDPOINTS.CANCEL_BOOKING + bookingId + '/cancel';
+        return this.request(url, 'PATCH', null, true);
     }
 };
 

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -11,12 +10,14 @@
 </head>
 
 <body>
+
     <!-- Top Bar -->
     <div class="topbar">
         <div class="topbar-inner">
             <a href="dashboard.html" class="topbar-brand">🎫 Event Ticketing System</a>
             <ul class="topbar-nav">
                 <li><a href="dashboard.html" class="active">Browse Events</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
                 <li>
                     <span class="topbar-user" id="userName"></span>
                     <a href="#" id="logoutBtn">Logout</a>
@@ -28,109 +29,95 @@
     <!-- Page -->
     <div class="page-wrap">
 
-        <!-- Heading -->
         <div class="page-heading">
             <h1>Browse Events</h1>
             <p>Find and book tickets for upcoming events.</p>
         </div>
 
-        <!-- Search Section -->
-        <div class="content-card">
-            <div class="content-card-header">
-                <h2>Find Events</h2>
-            </div>
-            <div class="content-card-body">
-                <div class="search-bar">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name, venue...">
-
-                    <select id="categoryFilter" class="filter-select">
-                        <option value="">All Categories</option>
-                        <option value="MUSIC">Music</option>
-                        <option value="SPORTS">Sports</option>
-                        <option value="TECH">Technology</option>
-                        <option value="EDUCATION">Education</option>
-                        <option value="ART">Art</option>
-                        <option value="HACKATHON">Hackathon</option>
-                        <option value="CULTURE">Culture</option>
-                        <option value="OTHER">Other</option>
-                    </select>
-
-                    <button id="searchBtn" class="btn btn-primary">Search</button>
-                    <button id="clearBtn" class="btn btn-secondary">Clear</button>
-                </div>
-            </div>
+        <!-- Search + Filter -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name, venue...">
+            <select id="categoryFilter" class="filter-select">
+                <option value="">All Categories</option>
+                <option value="MUSIC">Music</option>
+                <option value="SPORTS">Sports</option>
+                <option value="TECH">Technology</option>
+                <option value="EDUCATION">Education</option>
+                <option value="ART">Art</option>
+                <option value="HACKATHON">Hackathon</option>
+                <option value="CULTURE">Culture</option>
+                <option value="OTHER">Other</option>
+            </select>
+            <button id="searchBtn" class="btn btn-primary">Search</button>
+            <button id="clearBtn" class="btn btn-secondary">Clear</button>
         </div>
 
-        <!-- Main Grid -->
-        <div class="dash-grid mt-2">
-
-            <!-- LEFT: Events -->
-            <div>
-                <div class="content-card">
-                    <div class="content-card-header">
-                        <h2>Available Events</h2>
-                    </div>
-
-                    <div class="content-card-body">
-
-                        <!-- Events Container -->
-                        <div id="eventsContainer">
-                            <div class="state-loading">Loading events...</div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- RIGHT: Sidebar -->
-            <div>
-
-                <!-- Quick Actions -->
-                <div class="content-card">
-                    <div class="content-card-header">
-                        <h2>Quick Actions</h2>
-                    </div>
-
-                    <div class="content-card-body">
-
-                        <a href="my-bookings.html" class="quick-link">
-                            <h3>🎟 My Bookings</h3>
-                            <p>View and manage your booked events.</p>
-                        </a>
-
-                        <a href="dashboard.html" class="quick-link">
-                            <h3>🔍 Browse Events</h3>
-                            <p>Explore available events and book tickets.</p>
-                        </a>
-
-                        <div class="tips-panel">
-                            <h4>💡 Tips</h4>
-                            <ul>
-                                <li>Cancelation before 3 hours strictly.</li>
-                                <li>Popular events sell out quickly.</li>
-                                <li>Max 10 tickets per booking.</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
+        <!-- Events Grid -->
+        <div id="eventsContainer">
+            <div class="state-loading">Loading events...</div>
         </div>
 
     </div>
 
-    <!-- Notification -->
+    <!-- Booking Modal -->
+    <div class="modal-backdrop hidden" id="bookingModal">
+        <div class="modal-box">
+            <div class="modal-top">
+                <h2>Book Tickets</h2>
+                <button class="modal-x" id="closeBookingModal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="summary-box">
+                    <h4>Event Details</h4>
+                    <div class="summary-row">
+                        <span>Event</span>
+                        <span id="modalEventName">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Date</span>
+                        <span id="modalEventDate">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Venue</span>
+                        <span id="modalEventVenue">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Price per ticket</span>
+                        <span id="modalEventPrice">-</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Number of Tickets <span class="required">*</span>
+                    </label>
+                    <input type="number" id="ticketCount" class="form-input" value="1" min="1" max="10">
+                    <span class="error-text" id="ticketCountError"></span>
+                    <small class="form-hint">Maximum 10 tickets per booking</small>
+                </div>
+
+                <div class="summary-box">
+                    <div class="summary-row total">
+                        <span>Total Amount</span>
+                        <span id="modalTotal">₹0</span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-foot">
+                <button id="cancelBookingBtn" class="btn btn-secondary">Cancel</button>
+                <button id="confirmBookingBtn" class="btn btn-primary">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
     <div id="notification" class="notification hidden"></div>
 
-    <!-- Scripts -->
     <script src="../../assets/js/config.js"></script>
     <script src="../../assets/js/utils.js"></script>
     <script src="../../assets/js/api.js"></script>
     <script src="../../assets/js/customer/dashboard.js"></script>
-    ```
-
 </body>
 
 </html>

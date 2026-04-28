@@ -1,12 +1,10 @@
 /* 
    PUBLIC CSS
    For pages that don't require login
-    */
+*/
 
 
-/* 
-   PAGE SHELL
-    */
+/* PAGE SHELL */
 
 .page-wrap {
     max-width: 1100px;
@@ -15,9 +13,7 @@
 }
 
 
-/* 
-   TOP BAR (public version)
-    */
+/* TOP BAR (public version) */
 
 .topbar {
     background: #fff;
@@ -76,9 +72,7 @@
 }
 
 
-/* 
-   PAGE HEADING
-    */
+/* PAGE HEADING */
 
 .page-heading {
     margin-bottom: 20px;
@@ -99,9 +93,7 @@
 }
 
 
-/* 
-   HERO BANNER
-    */
+/* HERO BANNER */
 
 .hero {
     background: linear-gradient(135deg, #007bff, #4dabf7);
@@ -134,9 +126,7 @@
 }
 
 
-/* 
-   SEARCH + FILTER BAR
-    */
+/* SEARCH + FILTER BAR */
 
 .search-bar {
     background: #fff;
@@ -183,9 +173,7 @@
 }
 
 
-/* 
-   EVENTS GRID
-    */
+/* EVENTS GRID */
 
 .events-grid {
     display: grid;
@@ -194,9 +182,7 @@
 }
 
 
-/* 
-   EVENT CARD
-    */
+/* EVENT CARD */
 
 .event-card {
     background: #fff;
@@ -273,9 +259,7 @@
 }
 
 
-/* 
-   EVENT DETAIL VIEW (inline expand)
-    */
+/* EVENT DETAIL VIEW (inline expand) */
 
 .event-detail-panel {
     background: #fff;

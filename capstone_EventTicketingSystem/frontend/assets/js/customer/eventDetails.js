@@ -43,9 +43,48 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    bindBookingForm();
+    bindConfirmModal();
     loadEventDetails(eventId);
 });
 
+
+// Bind Booking Form
+function bindBookingForm() {
+    var ticketInput = document.getElementById('numTickets');
+    if (ticketInput) {
+        ticketInput.addEventListener('input', updateDetailsTotal);
+    }
+
+    var bookBtn = document.getElementById('bookNowBtn');
+    if (bookBtn) {
+        bookBtn.addEventListener('click', submitDetailsBooking);
+    }
+}
+
+
+// Bind Confirm Modal
+function bindConfirmModal() {
+    var closeBtn = document.getElementById('closeConfirmModal');
+    var cancelBtn = document.getElementById('cancelConfirmBtn');
+    var processBtn = document.getElementById('processBookingBtn');
+    var backdrop = document.getElementById('confirmModal');
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeConfirmModal);
+    }
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeConfirmModal);
+    }
+    if (processBtn) {
+        processBtn.addEventListener('click', processBooking);
+    }
+    if (backdrop) {
+        backdrop.addEventListener('click', function (e) {
+            if (e.target === backdrop) closeConfirmModal();
+        });
+    }
+}
 
 
 // Load Event Details
@@ -114,9 +153,114 @@ function renderEventDetails(event) {
         sidebarCategory.textContent = event.category || 'General';
     }
 
+    // Update total on load
+    updateDetailsTotal();
+
+    // Book button state
+    var bookBtn = document.getElementById('bookNowBtn');
+    if (bookBtn) {
+        if (available <= 0) {
+            bookBtn.disabled = true;
+            bookBtn.textContent = 'Sold Out';
+        } else if (event.status !== 'ACTIVE') {
+            bookBtn.disabled = true;
+            bookBtn.textContent = 'Booking Closed';
+        }
+    }
+
     showDetailsContent();
 }
 
+
+// Update Total Price
+function updateDetailsTotal() {
+    if (!currentEvent) return;
+
+    var ticketInput = document.getElementById('numTickets');
+    var count = parseInt(ticketInput ? ticketInput.value : 1, 10) || 0;
+    var totalEl = document.getElementById('detailsTotal');
+
+    if (!totalEl) return;
+
+    if (currentEvent.ticketPrice) {
+        totalEl.textContent = '₹' + (count * currentEvent.ticketPrice);
+    } else {
+        totalEl.textContent = 'Free';
+    }
+}
+
+
+
+// Submit Booking — opens confirm modal
+function submitDetailsBooking() {
+    if (!currentEvent) return;
+
+    var ticketInput = document.getElementById('numTickets');
+    var count = parseInt(ticketInput ? ticketInput.value : 1, 10);
+    var errEl = document.getElementById('numTicketsError');
+    var available = (currentEvent.totalSeats || 0) - (currentEvent.bookedSeats || 0);
+    var maxAllowed = currentEvent.maxTicketsPerBooking || 10;
+
+    if (errEl) errEl.textContent = '';
+
+    if (!count || count < 1) {
+        if (errEl) errEl.textContent = 'Please select at least 1 ticket.';
+        return;
+    }
+    if (count > maxAllowed) {
+        if (errEl) errEl.textContent = 'Maximum ' + maxAllowed + ' tickets per booking.';
+        return;
+    }
+    if (count > available) {
+        if (errEl) errEl.textContent = 'Only ' + available + ' seats available.';
+        return;
+    }
+
+    bookingTickets = count;
+
+    // Fill confirm modal
+    document.getElementById('confirmEventName').textContent = currentEvent.eventName;
+    document.getElementById('confirmEventDate').textContent = Utils.formatDate(currentEvent.eventDate);
+    document.getElementById('confirmTickets').textContent = count + ' ticket(s)';
+    document.getElementById('confirmTotal').textContent = currentEvent.ticketPrice
+        ? '₹' + (count * currentEvent.ticketPrice) : 'Free';
+
+    var modal = document.getElementById('confirmModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeConfirmModal() {
+    var modal = document.getElementById('confirmModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+
+
+// Process Booking
+// Calls: POST /api/bookings
+async function processBooking() {
+    if (!currentEvent) return;
+
+    // Close confirm modal
+    closeConfirmModal();
+
+    // Calculate total
+    var price = currentEvent.ticketPrice || 0;
+    var total = bookingTickets * price;
+
+    // Build payment page URL with booking details
+    var params = new URLSearchParams();
+    params.set('eventId', currentEvent.id);
+    params.set('eventName', currentEvent.eventName || '');
+    params.set('eventDate', Utils.formatDate(currentEvent.eventDate));
+    params.set('venue', currentEvent.venue || '');
+    params.set('tickets', bookingTickets);
+    params.set('price', price);
+    params.set('total', total);
+
+    // Redirect to payment page
+    window.location.href = 'payment.html?' + params.toString();
+}
 
 
 // UI State Helpers
