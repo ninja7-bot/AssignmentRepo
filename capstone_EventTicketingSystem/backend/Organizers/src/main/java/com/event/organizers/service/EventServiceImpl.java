@@ -2,12 +2,15 @@ package com.event.organizers.service;
 
 import com.event.organizers.dto.EventRequest;
 import com.event.organizers.dto.EventResponse;
+import com.event.organizers.entity.Booking;
 import com.event.organizers.entity.Event;
+import com.event.organizers.enums.BookingStatus;
 import com.event.organizers.enums.EventStatus;
 import com.event.organizers.exception.EventNotFoundException;
 import com.event.organizers.exception.InvalidEventDataException;
 import com.event.organizers.exception.PastEventException;
 import com.event.organizers.exception.UnauthorizedAccessException;
+import com.event.organizers.repository.BookingRepository;
 import com.event.organizers.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,13 +30,15 @@ import java.util.stream.Collectors;
 @Service
 public class EventServiceImpl implements EventService {
 
-    private final EventRepository eventRepository;
+    private final EventRepository   eventRepository;
+    private final BookingRepository bookingRepository;
 
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
+    public EventServiceImpl(EventRepository eventRepository,
+                            BookingRepository bookingRepository) {
+        this.eventRepository   = eventRepository;
+        this.bookingRepository = bookingRepository;
     }
-
     @Override
     @Transactional
     public EventResponse createEvent(EventRequest request, String organizerEmail) {
@@ -192,22 +197,34 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void cancelEvent(Long eventId, String organizerEmail) {
-        System.out.println("Cancelling event ID: " + eventId + " by organizer: " + organizerEmail);
+        System.out.print("Cancelling event ID: "+ eventId + " by organizer: "+ organizerEmail);
 
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException("Event not found with ID: " + eventId));
+                .orElseThrow(() -> new EventNotFoundException(
+                        "Event not found with ID: " + eventId));
 
-        // Check ownership
         if (!event.getOrganizerEmail().equals(organizerEmail)) {
-            throw new UnauthorizedAccessException("You are not authorized to cancel this event");
+            throw new UnauthorizedAccessException(
+                    "You are not authorized to cancel this event.");
         }
 
-        // Update status to CANCELLED
+        // Cancel the event
         event.setStatus(EventStatus.CANCELLED);
         eventRepository.save(event);
 
-        System.out.println("Event cancelled successfully: " + eventId);
+        // Cancel all CONFIRMED bookings for this event
+        List<Booking> confirmedBookings =
+                bookingRepository.findByEventIdAndBookingStatus(
+                        eventId, BookingStatus.CONFIRMED);
+
+        for (Booking booking : confirmedBookings) {
+            booking.setBookingStatus(BookingStatus.CANCELLED_BY_ORGANIZER);
+            bookingRepository.save(booking);
+        }
+
+        System.out.print("Event cancelled. ID: " + eventId + " | " + confirmedBookings.size() + " bookings also cancelled.");
     }
+
 
     /**
      * Convert Event entity to EventResponse DTO
