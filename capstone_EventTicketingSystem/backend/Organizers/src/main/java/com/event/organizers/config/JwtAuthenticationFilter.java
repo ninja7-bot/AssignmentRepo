@@ -36,12 +36,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Validate token
                 if (jwtUtil.validateToken(token)) {
                     // Extract user information
+                    String name = jwtUtil.extractName(token);
                     String email = jwtUtil.extractEmail(token);
                     String role = jwtUtil.extractRole(token);
+
+                    System.out.print(name + " " + email + " " + role);
 
                     // Set user info in request attributes
                     request.setAttribute("userEmail", email);
                     request.setAttribute("userRole", role);
+                    request.setAttribute("userName", name);
                 }
             } catch (Exception e) {
                 System.err.println("JWT validation failed: " + e.getMessage());

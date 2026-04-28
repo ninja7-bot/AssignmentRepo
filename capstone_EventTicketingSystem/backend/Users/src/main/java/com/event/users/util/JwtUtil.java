@@ -36,11 +36,12 @@ public class JwtUtil {
      * @param role - user role (CUSTOMER/ORGANIZER)
      * @return JWT token string
      */
-    public String generateToken(String email, String role) {
+    public String generateToken(String name, String email, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("name", name);
 
-        logger.info("Generating JWT token for user: {}", email);
+        logger.info("Generating JWT token for user {}: {}", name, email);
         return createToken(claims, email);
     }
 
@@ -52,7 +53,7 @@ public class JwtUtil {
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         return Jwts.builder()
-                .setClaims(claims)                    // User Role
+                .setClaims(claims)                    // User Role and Name
                 .setSubject(subject)                  // User Mail
                 .setIssuedAt(now)                     // Timestamp issued at.
                 .setExpiration(expiryDate)            // Expiration: IssuedAt + 30 Mins (30 min)

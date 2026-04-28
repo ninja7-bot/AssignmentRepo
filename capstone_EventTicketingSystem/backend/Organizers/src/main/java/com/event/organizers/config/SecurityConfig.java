@@ -18,7 +18,11 @@ public class SecurityConfig {
     public FilterRegistrationBean<JwtAuthenticationFilter> jwtFilter() {
         FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(jwtAuthenticationFilter);
-        registrationBean.addUrlPatterns("/api/events/*");
+        registrationBean.addUrlPatterns(
+                "/api/events",
+                "/api/events/*",
+                "/api/bookings",
+                "/api/bookings/*");
         return registrationBean;
     }
 }
