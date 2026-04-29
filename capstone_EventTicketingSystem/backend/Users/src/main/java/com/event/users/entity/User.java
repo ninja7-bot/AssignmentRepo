@@ -38,10 +38,10 @@ public class User {
     private String password; // This will store hashed password
 
     @NotBlank(message = "Phone number is required")
-    @Size(min = 10, max = 15, message = "Phone number must be between 10 and 15 characters")
+    @Size(max = 10, message = "Phone number must be exactly 10 digits")
     @Pattern(regexp = "^[0-9]{10}$",
             message = "Phone number must be exactly 10 digits")
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 10)
     private String phone;
 
     @NotNull(message = "Role is required")
