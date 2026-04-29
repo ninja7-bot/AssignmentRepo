@@ -28,6 +28,7 @@ var allMyEvents = [];
 var currentFilter = 'all';
 var currentSearch = '';
 var selectedEventId = null;
+var currentEventBookings = [];
 
 
 // Initialization
@@ -85,7 +86,9 @@ function bindModalCloseButtons() {
         ['closeCapBtn', 'capModal'],
         ['cancelCapBtn', 'capModal'],
         ['closeCancelBtn', 'cancelModal'],
-        ['keepEventBtn', 'cancelModal']
+        ['keepEventBtn', 'cancelModal'],
+        ['closeBookBtn',       'bookModal'],
+        ['closeBookFooterBtn', 'bookModal']
     ];
 
     pairs.forEach(function (pair) {
@@ -114,6 +117,11 @@ function bindModalActionButtons() {
     var confirmCancelBtn = document.getElementById('confirmCancelBtn');
     if (confirmCancelBtn) {
         confirmCancelBtn.addEventListener('click', confirmCancelEvent);
+    }
+
+    var downloadBtn = document.getElementById('downloadEventBookingsBtn');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', downloadEventBookingsCsv);
     }
 }
 
@@ -303,16 +311,18 @@ function buildEventRowHtml(event) {
         '<span><strong>' + (event.totalSeats || 0) + '</strong> total seats</span>' +
         '<span><strong>' + pct + '%</strong> filled</span>' +
         '</div>' +
-        '<div class="event-row-actions">' +
-        (canEdit
-            ? '<button class="btn btn-primary btn-sm" onclick="openEditModal(' + event.id + ')">Edit</button>'
-            : '') +
-        (label !== 'CANCELLED'
-            ? '<button class="btn btn-outline btn-sm" onclick="openCapModal(' + event.id + ')">Capacity</button>'
-            : '') + (canCancel
-                ? '<button class="btn btn-danger btn-sm" onclick="openCancelModal(' + event.id + ')">Cancel</button>'
-                : '') +
-        '</div>' +
+            '<div class="event-row-actions">' +
+                (canEdit
+                    ? '<button class="btn btn-primary btn-sm" onclick="openEditModal(' + event.id + ')">Edit</button>'
+                    : '') +
+                (label !== 'CANCELLED'
+                    ? '<button class="btn btn-outline btn-sm" onclick="openCapModal(' + event.id + ')">Capacity</button>'
+                    : '') +
+                '<button class="btn btn-secondary btn-sm" onclick="openBookModal(' + event.id + ')">Bookings</button>' +
+                (canCancel
+                    ? '<button class="btn btn-danger btn-sm" onclick="openCancelModal(' + event.id + ')">Cancel</button>'
+                    : '') +
+            '</div>' +
         '</div>' +
 
         '</div>';
@@ -577,8 +587,160 @@ function showEventsLoadError() {
     }
 }
 
+// Bookings Modal
+//  Calls: GET /api/bookings/event/{eventId}
+async function openBookModal(eventId) {
+    selectedEventId = eventId;
+    currentEventBookings = [];
+
+    openOrgModal('bookModal');
+
+    document.getElementById('bookLoading').classList.remove('hidden');
+    document.getElementById('bookTableWrap').classList.add('hidden');
+    document.getElementById('bookEmpty').classList.add('hidden');
+    document.getElementById('bookTableBody').innerHTML = '';
+
+    // Hide download button until bookings load
+    var downloadBtn = document.getElementById('downloadEventBookingsBtn');
+    if (downloadBtn) downloadBtn.classList.add('hidden');
+
+    try {
+        var res = await API.getBookingsByEvent(eventId);
+
+        document.getElementById('bookLoading').classList.add('hidden');
+
+        if (res.success) {
+            renderOrgBookings(res.data || []);
+        } else {
+            Utils.showNotification('Failed to load bookings.', 'error');
+            closeOrgModal('bookModal');
+        }
+
+    } catch (err) {
+        console.error('Load bookings error:', err);
+        Utils.showNotification('Something went wrong.', 'error');
+        closeOrgModal('bookModal');
+    }
+}
+
+function renderOrgBookings(bookings) {
+    // Store for CSV download
+    currentEventBookings = bookings;
+
+    var totalTickets = bookings.reduce(function(s, b) {
+        return s + (b.numberOfTickets || 0);
+    }, 0);
+
+    var cancelled = bookings.filter(function(b) {
+        return b.bookingStatus && b.bookingStatus.indexOf('CANCELLED') >= 0;
+    }).length;
+
+    document.getElementById('bookTotal').textContent     = bookings.length;
+    document.getElementById('bookTickets').textContent   = totalTickets;
+    document.getElementById('bookCancelled').textContent = cancelled;
+
+    // Show/hide download button
+    var downloadBtn = document.getElementById('downloadEventBookingsBtn');
+    if (downloadBtn) {
+        if (bookings.length > 0) {
+            downloadBtn.classList.remove('hidden');
+        } else {
+            downloadBtn.classList.add('hidden');
+        }
+    }
+
+    if (bookings.length === 0) {
+        document.getElementById('bookEmpty').classList.remove('hidden');
+        return;
+    }
+
+    var rows = bookings.map(function(b) {
+        var status  = b.bookingStatus || 'UNKNOWN';
+        var pillCls = status.indexOf('CANCELLED') >= 0 ? 'cancelled' : 'confirmed';
+
+        return '' +
+            '<tr>' +
+                '<td>' + myEscHtml(b.customerName  || 'N/A') + '</td>' +
+                '<td>' + myEscHtml(b.customerEmail || 'N/A') + '</td>' +
+                '<td>' + (b.numberOfTickets || 0) + '</td>' +
+                '<td>' + Utils.formatDateTime(b.bookingDate) + '</td>' +
+                '<td><span class="pill pill-' + pillCls + '">' + status + '</span></td>' +
+            '</tr>';
+    }).join('');
+
+    document.getElementById('bookTableBody').innerHTML = rows;
+    document.getElementById('bookTableWrap').classList.remove('hidden');
+}
+
+
+//  Download Event Bookings as CSV
+function downloadEventBookingsCsv() {
+    if (!currentEventBookings || currentEventBookings.length === 0) {
+        Utils.showNotification('No bookings to download.', 'error');
+        return;
+    }
+
+    // Get event name for the filename
+    var event    = findEvent(selectedEventId);
+    var fileName = event
+        ? 'bookings-' + event.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() + '.csv'
+        : 'event-bookings.csv';
+
+    // CSV header
+    var headers = [
+        'Booking ID',
+        'Customer Name',
+        'Customer Email',
+        'Tickets',
+        'Total Amount',
+        'Status',
+        'Booked On'
+    ];
+
+    // CSV rows
+    var rows = currentEventBookings.map(function(b) {
+        return [
+            b.id || '-',
+            orgCsvEscape(b.customerName  || '-'),
+            orgCsvEscape(b.customerEmail || '-'),
+            b.numberOfTickets || 0,
+            b.totalAmount ? b.totalAmount : 'Free',
+            b.bookingStatus || 'UNKNOWN',
+            b.bookingDate || '-'
+        ].join(',');
+    });
+
+    // Combine
+    var csvContent = headers.join(',') + '\n' + rows.join('\n');
+
+    // Create blob and trigger download
+    var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    var url  = URL.createObjectURL(blob);
+
+    var link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', fileName);
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+    Utils.showNotification('CSV downloaded!', 'success');
+}
+
 
 //  Helper Functions
 function findEvent(id) {
     return allMyEvents.find(function (e) { return e.id === id; }) || null;
+}
+
+function orgCsvEscape(value) {
+    var str = String(value || '');
+    if (str.indexOf(',') >= 0 || str.indexOf('"') >= 0 || str.indexOf('\n') >= 0) {
+        return '"' + str.replace(/"/g, '""') + '"';
+    }
+    return str;
 }

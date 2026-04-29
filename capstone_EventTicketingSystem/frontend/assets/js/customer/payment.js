@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     paymentData = {
         eventId: parseInt(params.get('eventId'), 10),
-        eventName: params.get('eventName') || '-',
+        eventName: params.get('name') || '-',
         eventDate: params.get('eventDate') || '-',
         venue: params.get('venue') || '-',
         tickets: parseInt(params.get('tickets'), 10) || 1,
