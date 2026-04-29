@@ -5,6 +5,8 @@ import com.event.organizers.dto.EventResponse;
 import com.event.organizers.service.EventService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,9 @@ import java.util.List;
 @RequestMapping("/api/events")
 @CrossOrigin(origins = "*")
 public class EventController {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(EventController.class);
 
     @Autowired
     private EventService eventService;
@@ -48,7 +53,7 @@ public class EventController {
                     .body("Only organizers can create events");
         }
 
-        System.out.println("Creating event by organizer: " + userEmail);
+        logger.info("Creating event by organizer: {}", userEmail);
 
         EventResponse response = eventService.createEvent(request, userEmail);
 
@@ -78,7 +83,7 @@ public class EventController {
                     .body("Only organizers can update events");
         }
 
-        System.out.println("Updating event ID: " + id + " by organizer: " + userEmail);
+        logger.info("Updating event ID: {} by organizer: {}", id, userEmail);
 
         EventResponse response = eventService.updateEvent(id, request, userEmail);
 
@@ -91,7 +96,7 @@ public class EventController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<EventResponse> getEventById(@PathVariable Long id) {
-        System.out.println("Fetching event ID: " + id);
+        logger.info("Fetching event ID: {}", id);
 
         EventResponse response = eventService.getEventById(id);
 
@@ -118,7 +123,7 @@ public class EventController {
                     .body("Only organizers can view their events");
         }
 
-        System.out.println("Fetching events for organizer: " + userEmail);
+        logger.info("Fetching events for organizer: {}", userEmail);
 
         List<EventResponse> events = eventService.getEventsByOrganizer(userEmail);
 
@@ -131,7 +136,7 @@ public class EventController {
      */
     @GetMapping
     public ResponseEntity<List<EventResponse>> getAllEvents() {
-        System.out.println("Fetching all active events");
+        logger.info("Fetching all active events");
 
         List<EventResponse> events = eventService.getAllActiveEvents();
 
@@ -160,7 +165,7 @@ public class EventController {
                     .body("Only organizers can cancel events");
         }
 
-        System.out.println("Cancelling event ID: " + id + " by organizer: " + userEmail);
+        logger.info("Cancelling event ID: {} by organizer: {}", id, userEmail);
 
         eventService.cancelEvent(id, userEmail);
 

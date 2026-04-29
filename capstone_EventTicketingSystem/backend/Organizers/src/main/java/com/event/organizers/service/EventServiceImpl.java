@@ -12,6 +12,8 @@ import com.event.organizers.exception.PastEventException;
 import com.event.organizers.exception.UnauthorizedAccessException;
 import com.event.organizers.repository.BookingRepository;
 import com.event.organizers.repository.EventRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,9 @@ import java.util.stream.Collectors;
 @Service
 public class EventServiceImpl implements EventService {
 
+    private static final Logger logger =
+            LoggerFactory.getLogger(EventServiceImpl.class);
+
     private final EventRepository   eventRepository;
     private final BookingRepository bookingRepository;
 
@@ -39,34 +43,35 @@ public class EventServiceImpl implements EventService {
         this.eventRepository   = eventRepository;
         this.bookingRepository = bookingRepository;
     }
+
     @Override
     @Transactional
     public EventResponse createEvent(EventRequest request, String organizerEmail) {
-        System.out.println("Creating event: " + request.getName() + " by organizer: " + organizerEmail);
+        logger.info("Creating event: {} by organizer: {}",
+                request.getName(), organizerEmail);
 
-        // Parse and validate date
         LocalDate eventDate;
         try {
             eventDate = LocalDate.parse(request.getEventDate());
         } catch (DateTimeParseException e) {
-            throw new InvalidEventDataException("Invalid date format. Use yyyy-MM-dd");
+            throw new InvalidEventDataException(
+                    "Invalid date format. Use yyyy-MM-dd");
         }
 
-        // Parse and validate time
         LocalTime eventTime;
         try {
             eventTime = LocalTime.parse(request.getEventTime());
         } catch (DateTimeParseException e) {
-            throw new InvalidEventDataException("Invalid time format. Use HH:mm");
+            throw new InvalidEventDataException(
+                    "Invalid time format. Use HH:mm");
         }
 
-        // Check if event date is in the future
         LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
         if (eventDateTime.isBefore(LocalDateTime.now())) {
-            throw new PastEventException("Event date and time must be in the future");
+            throw new PastEventException(
+                    "Event date and time must be in the future.");
         }
 
-        // Create event entity
         Event event = new Event();
         event.setName(request.getName());
         event.setDescription(request.getDescription());
@@ -80,44 +85,55 @@ public class EventServiceImpl implements EventService {
         event.setOrganizerEmail(organizerEmail);
         event.setStatus(EventStatus.ACTIVE);
 
-        // Save event
         Event savedEvent = eventRepository.save(event);
-        System.out.println("Event created successfully with ID: " + savedEvent.getId());
+        logger.info("Event created. ID: {}", savedEvent.getId());
 
         return convertToResponse(savedEvent);
     }
 
     @Override
     @Transactional
-    public EventResponse updateEvent(Long eventId, EventRequest request, String organizerEmail) {
-        System.out.println("Updating event ID: " + eventId + " by organizer: " + organizerEmail);
+    public EventResponse updateEvent(Long eventId, EventRequest request,
+                                     String organizerEmail) {
+        logger.info("Updating event ID: {} by organizer: {}", eventId, organizerEmail);
 
-        // Find event
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException("Event not found with ID: " + eventId));
+                .orElseThrow(() -> new EventNotFoundException(
+                        "Event not found with ID: " + eventId));
 
-        // Check if organizer is the owner
         if (!event.getOrganizerEmail().equals(organizerEmail)) {
-            throw new UnauthorizedAccessException("You are not authorized to update this event");
+            throw new UnauthorizedAccessException(
+                    "You are not authorized to update this event.");
         }
 
-        // Check if event has already started (can't update if event started)
-        LocalDateTime eventDateTime = LocalDateTime.of(event.getEventDate(), event.getEventTime());
+        LocalDateTime eventDateTime =
+                LocalDateTime.of(event.getEventDate(), event.getEventTime());
         if (eventDateTime.isBefore(LocalDateTime.now())) {
-            throw new PastEventException("Cannot update an event that has already started");
+            throw new PastEventException(
+                    "Cannot update an event that has already started.");
         }
 
-        // Update fields
-        event.setName(request.getName());
-        event.setDescription(request.getDescription());
+        // Update name and description
+        if (request.getName() != null && !request.getName().isBlank()) {
+            event.setName(request.getName());
+        }
+        if (request.getDescription() != null && !request.getDescription().isBlank()) {
+            event.setDescription(request.getDescription());
+        }
 
-        // Update date if provided and valid
+        // Update venue
+        if (request.getVenue() != null && !request.getVenue().isBlank()) {
+            event.setVenue(request.getVenue());
+        }
+
+        // Update date and time
         if (request.getEventDate() != null) {
             LocalDate newDate;
             try {
                 newDate = LocalDate.parse(request.getEventDate());
             } catch (DateTimeParseException e) {
-                throw new InvalidEventDataException("Invalid date format. Use yyyy-MM-dd");
+                throw new InvalidEventDataException(
+                        "Invalid date format. Use yyyy-MM-dd");
             }
 
             LocalTime newTime = event.getEventTime();
@@ -125,25 +141,27 @@ public class EventServiceImpl implements EventService {
                 try {
                     newTime = LocalTime.parse(request.getEventTime());
                 } catch (DateTimeParseException e) {
-                    throw new InvalidEventDataException("Invalid time format. Use HH:mm");
+                    throw new InvalidEventDataException(
+                            "Invalid time format. Use HH:mm");
                 }
             }
 
             LocalDateTime newDateTime = LocalDateTime.of(newDate, newTime);
             if (newDateTime.isBefore(LocalDateTime.now())) {
-                throw new PastEventException("Event date and time must be in the future");
+                throw new PastEventException(
+                        "Event date and time must be in the future.");
             }
 
             event.setEventDate(newDate);
             event.setEventTime(newTime);
         }
 
-        // Update total seats (must be >= booked seats)
+        // Update total seats
         if (request.getTotalSeats() != null) {
             if (request.getTotalSeats() < event.getBookedSeats()) {
                 throw new InvalidEventDataException(
-                        "Cannot reduce total seats below already booked seats (" + event.getBookedSeats() + ")"
-                );
+                        "Cannot reduce total seats below already booked seats ("
+                                + event.getBookedSeats() + ").");
             }
             event.setTotalSeats(request.getTotalSeats());
         }
@@ -156,9 +174,8 @@ public class EventServiceImpl implements EventService {
             event.setCategory(request.getCategory());
         }
 
-        // Save updated event
         Event updatedEvent = eventRepository.save(event);
-        System.out.println("Event updated successfully: " + updatedEvent.getId());
+        logger.info("Event updated. ID: {}", updatedEvent.getId());
 
         return convertToResponse(updatedEvent);
     }
@@ -166,17 +183,15 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventResponse getEventById(Long eventId) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException("Event not found with ID: " + eventId));
-
+                .orElseThrow(() -> new EventNotFoundException(
+                        "Event not found with ID: " + eventId));
         return convertToResponse(event);
     }
 
     @Override
     public List<EventResponse> getEventsByOrganizer(String organizerEmail) {
-        System.out.println("Fetching events for organizer: " + organizerEmail);
-
+        logger.info("Fetching events for organizer: {}", organizerEmail);
         List<Event> events = eventRepository.findByOrganizerEmail(organizerEmail);
-
         return events.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
@@ -184,11 +199,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventResponse> getAllActiveEvents() {
-        List<Event> events = eventRepository.findByStatusAndEventDateGreaterThanEqual(
-                EventStatus.ACTIVE,
-                LocalDate.now()
-        );
-
+        List<Event> events = eventRepository
+                .findByStatusAndEventDateGreaterThanEqual(
+                        EventStatus.ACTIVE, LocalDate.now());
         return events.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
@@ -197,7 +210,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void cancelEvent(Long eventId, String organizerEmail) {
-        System.out.print("Cancelling event ID: "+ eventId + " by organizer: "+ organizerEmail);
+        logger.info("Cancelling event ID: {} by organizer: {}", eventId, organizerEmail);
 
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(
@@ -208,11 +221,11 @@ public class EventServiceImpl implements EventService {
                     "You are not authorized to cancel this event.");
         }
 
-        // Cancel the event
+        // Cancel event
         event.setStatus(EventStatus.CANCELLED);
         eventRepository.save(event);
 
-        // Cancel all CONFIRMED bookings for this event
+        // Cancel all confirmed bookings
         List<Booking> confirmedBookings =
                 bookingRepository.findByEventIdAndBookingStatus(
                         eventId, BookingStatus.CONFIRMED);
@@ -222,13 +235,10 @@ public class EventServiceImpl implements EventService {
             bookingRepository.save(booking);
         }
 
-        System.out.print("Event cancelled. ID: " + eventId + " | " + confirmedBookings.size() + " bookings also cancelled.");
+        logger.info("Event cancelled. ID: {} | {} bookings cancelled.",
+                eventId, confirmedBookings.size());
     }
 
-
-    /**
-     * Convert Event entity to EventResponse DTO
-     */
     private EventResponse convertToResponse(Event event) {
         EventResponse response = new EventResponse();
         response.setId(event.getId());
