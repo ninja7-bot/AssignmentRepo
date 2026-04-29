@@ -85,6 +85,14 @@ public class JwtUtil {
     }
 
     /**
+     * Extract name from token
+     */
+    public String extractName(String token) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get("name", String.class);
+    }
+
+    /**
      * Extract expiration time from token
      */
     public Date extractExpiration(String token) {
