@@ -5,6 +5,8 @@ import com.training.todo.entity.Tasks;
 import com.training.todo.enums.TodoStatus;
 import com.training.todo.repository.TaskRepository;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class TaskService {
+
+    private static final Logger log = LoggerFactory.getLogger(TaskService.class);
 
     private final TaskRepository taskRepository;
 
@@ -94,6 +98,8 @@ public class TaskService {
 
         // Same status check
         if (currentStatus == newStatus) {
+            log.warn("Invalid transition attempted: {} -> {} (same status)",
+                    currentStatus, newStatus);
             throw new RuntimeException(
                     "Invalid transition: Task is already " + currentStatus
             );
@@ -102,6 +108,7 @@ public class TaskService {
         // UPCOMING can only go to PENDING
         if (currentStatus == TodoStatus.UPCOMING
                 && newStatus == TodoStatus.COMPLETED) {
+            log.warn("Invalid transition attempted: UPCOMING -> COMPLETED");
             throw new RuntimeException(
                     "Invalid transition: UPCOMING -> COMPLETED is not allowed. "
                             + "Task must be PENDING before COMPLETED."
@@ -111,6 +118,7 @@ public class TaskService {
         // PENDING cannot go back to UPCOMING
         if (currentStatus == TodoStatus.PENDING
                 && newStatus == TodoStatus.UPCOMING) {
+            log.warn("Invalid transition attempted: PENDING -> UPCOMING");
             throw new RuntimeException(
                     "Invalid transition: PENDING -> UPCOMING is not allowed. "
                             + "An active task cannot go back to upcoming."
@@ -120,6 +128,7 @@ public class TaskService {
         // COMPLETED cannot go back to UPCOMING
         if (currentStatus == TodoStatus.COMPLETED
                 && newStatus == TodoStatus.UPCOMING) {
+            log.warn("Invalid transition attempted: COMPLETED -> UPCOMING");
             throw new RuntimeException(
                     "Invalid transition: COMPLETED -> UPCOMING is not allowed. "
                             + "Use COMPLETED -> PENDING to reopen a task."
@@ -135,12 +144,12 @@ public class TaskService {
      * Defaults status to PENDING if not provided
      */
     public Map<String, Object> createTask(TaskDTO taskDTO) {
+        log.info("Creating new task with title: '{}'", taskDTO.getTitle());
         Tasks task = convertToEntity(taskDTO);
         Tasks savedTask = taskRepository.save(task);
 
-        System.out.println("✅ Task CREATED -> ID: " + savedTask.getId()
-                + " | " + savedTask.getTitle()
-                + " | " + savedTask.getStatus());
+        log.info("Task created successfully -> ID: {}, Title: '{}', Status: {}",
+                savedTask.getId(), savedTask.getTitle(), savedTask.getStatus());
 
         return convertToResponseMap(savedTask);
     }
@@ -151,9 +160,14 @@ public class TaskService {
      * Get all tasks from database
      */
     public List<Map<String, Object>> getAllTasks() {
+        log.info("Fetching all tasks");
         List<Tasks> allTasks = taskRepository.findAll();
 
-        System.out.println("📋 Fetched " + allTasks.size() + " tasks");
+        if (allTasks.isEmpty()) {
+            log.warn("No tasks found in the database");
+        } else {
+            log.info("Fetched {} task(s) successfully", allTasks.size());
+        }
 
         return allTasks.stream()
                 .map(this::convertToResponseMap)
@@ -167,12 +181,17 @@ public class TaskService {
      * Throws error if not found
      */
     public Map<String, Object> getTaskById(Long id) {
+        log.info("Fetching task with ID: {}", id);
+        
         Tasks task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Task not found with ID: " + id
-                ));
+                .orElseThrow(() -> {
+                    log.error("Task not found with ID: {}", id);
+                    return new RuntimeException(
+                            "Task not found with ID: " + id
+                    );
+                });
 
-        System.out.println("🔍 Fetched Task -> ID: " + id);
+        log.info("Task found -> ID: {}, Title: '{}'", id, task.getTitle());
 
         return convertToResponseMap(task);
     }
@@ -186,12 +205,19 @@ public class TaskService {
      * Cannot update: id, createdAt
      */
     public Map<String, Object> updateTask(Long id, TaskDTO taskDTO) {
+        log.info("Updating task with ID: {}", id);
 
         // Find existing task
         Tasks existingTask = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Task not found with ID: " + id
-                ));
+                .orElseThrow(() -> {
+                    log.error("Task not found with ID: {} (update failed)", id);
+                    return new RuntimeException(
+                            "Task not found with ID: " + id
+                    );
+                });
+
+        log.debug("Current task state -> Title: '{}', Status: {}",
+                existingTask.getTitle(), existingTask.getStatus());
 
         // Update title if provided
         if (taskDTO.getTitle() != null
@@ -216,8 +242,8 @@ public class TaskService {
         // Save updated task
         Tasks updatedTask = taskRepository.save(existingTask);
 
-        System.out.println("✏️ Task UPDATED -> ID: " + id
-                + " | Status: " + updatedTask.getStatus());
+        log.info("Task updated successfully -> ID: {}, Status: {}",
+                updatedTask.getId(), updatedTask.getStatus());
 
         return convertToResponseMap(updatedTask);
     }
@@ -229,15 +255,19 @@ public class TaskService {
      * Throws error if not found
      */
     public String deleteTask(Long id) {
+        log.info("Deleting task with ID: {}", id);
+
         Tasks task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Task not found with ID: " + id
-                ));
+                .orElseThrow(() -> {
+                    log.error("Task not found with ID: {} (delete failed)", id);
+                    return new RuntimeException(
+                            "Task not found with ID: " + id
+                    );
+                });
 
         taskRepository.deleteById(id);
 
-        System.out.println("🗑️ Task DELETED -> ID: " + id
-                + " | " + task.getTitle());
+        log.info("Task deleted -> ID: {}, Title: '{}'", id, task.getTitle());
 
         return "Task '" + task.getTitle()
                 + "' (ID: " + id + ") deleted successfully.";
@@ -252,9 +282,11 @@ public class TaskService {
      * Defaults to false.
      */
     public String deleteAllTasks(boolean confirm) {
+        log.info("Delete all tasks requested. Confirm: {}", confirm);
 
         // Check confirmation first
         if (!confirm) {
+            log.warn("Delete all attempted without confirmation");
             return "Confirmation required. "
                     + "Send ?confirm=true to delete ALL tasks. "
                     + "Warning: This action cannot be undone!";
@@ -264,13 +296,14 @@ public class TaskService {
         long totalTasks = taskRepository.count();
 
         if (totalTasks == 0) {
+            log.warn("Delete all called but no tasks exist");
             return "No tasks found. Nothing to delete.";
         }
 
         // Confirmed - delete everything
         taskRepository.deleteAll();
 
-        System.out.println("🗑️ ALL TASKS DELETED → Total deleted: " + totalTasks);
+        log.info("ALL tasks deleted. Total deleted: {}", totalTasks);
 
         return "All " + totalTasks + " task(s) have been successfully deleted.";
     }
