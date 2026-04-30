@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,17 +25,19 @@ import java.util.Map;
  * TaskController - REST API Layer
  *
  * Endpoints:
- * POST   /tasks       → Create task
- * GET    /tasks       → Get all tasks
- * GET    /tasks/{id}  → Get task by ID
- * PUT    /tasks/{id}  → Update task
- * DELETE /tasks/{id}  → Delete task
+ * POST   /tasks       -> Create task
+ * GET    /tasks       -> Get all tasks
+ * GET    /tasks/{id}  -> Get task by ID
+ * PUT    /tasks/{id}  -> Update task
+ * DELETE /tasks/{id}  -> Delete task
  *
  * Only receives requests and returns responses
  */
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
+
+    private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 
     private final TaskService taskService;
 
@@ -53,8 +57,9 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> createTask(
             @Valid @RequestBody TaskDTO taskDTO) {
-
+        log.info("POST /tasks -> Creating task: '{}'", taskDTO.getTitle());
         Map<String, Object> createdTask = taskService.createTask(taskDTO);
+        log.info("POST /tasks -> Task created successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
@@ -67,8 +72,9 @@ public class TaskController {
      */
     @GetMapping
     public ResponseEntity<List<Map<String, Object>>> getAllTasks() {
-
+        log.info("GET /tasks -> Fetching all tasks");
         List<Map<String, Object>> tasks = taskService.getAllTasks();
+        log.info("GET /tasks -> Returning {} task(s)", tasks.size());
         return ResponseEntity.ok(tasks);
     }
 
@@ -82,8 +88,9 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getTaskById(
             @PathVariable Long id) {
-
+        log.info("GET /tasks/{} -> Fetching task", id);
         Map<String, Object> task = taskService.getTaskById(id);
+        log.info("GET /tasks/{} -> Task found and returned", id);
         return ResponseEntity.ok(task);
     }
 
@@ -99,8 +106,9 @@ public class TaskController {
     public ResponseEntity<Map<String, Object>> updateTask(
             @PathVariable Long id,
             @Valid @RequestBody TaskDTO taskDTO) {
-
+        log.info("PUT /tasks/{} -> Updating task", id);
         Map<String, Object> updatedTask = taskService.updateTask(id, taskDTO);
+        log.info("PUT /tasks/{} -> Task updated successfully", id);
         return ResponseEntity.ok(updatedTask);
     }
 
@@ -114,9 +122,10 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteTask(
             @PathVariable Long id) {
-
+        log.info("DELETE /tasks/{} -> Deleting task", id);
         String message = taskService.deleteTask(id);
 
+        log.info("DELETE /tasks/{} -> Task deleted successfully", id);
         Map<String, String> response = new HashMap<>();
         response.put("message", message);
 
@@ -137,8 +146,10 @@ public class TaskController {
     public ResponseEntity<Map<String, String>> deleteAllTasks(
             @RequestParam(required = false, defaultValue = "false") boolean confirm) {
 
+        log.info("DELETE /tasks -> Delete all requested. Confirm: {}", confirm);
         String message = taskService.deleteAllTasks(confirm);
 
+        log.info("DELETE /tasks -> Result: {}", message);
         Map<String, String> response = new HashMap<>();
         response.put("message", message);
 
