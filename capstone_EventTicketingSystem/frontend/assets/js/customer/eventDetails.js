@@ -219,7 +219,7 @@ function submitDetailsBooking() {
     bookingTickets = count;
 
     // Fill confirm modal
-    document.getElementById('confirmEventName').textContent = currentEvent.eventName;
+    document.getElementById('confirmEventName').textContent = currentEvent.name;
     document.getElementById('confirmEventDate').textContent = Utils.formatDate(currentEvent.eventDate);
     document.getElementById('confirmTickets').textContent = count + ' ticket(s)';
     document.getElementById('confirmTotal').textContent = currentEvent.ticketPrice
