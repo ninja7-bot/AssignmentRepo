@@ -4,6 +4,7 @@ import com.training.todo.dto.TaskDTO;
 import com.training.todo.entity.Tasks;
 import com.training.todo.enums.TodoStatus;
 import com.training.todo.repository.TaskRepository;
+import com.training.todo.client.NotificationClient;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +29,13 @@ public class TaskService {
     private static final Logger log = LoggerFactory.getLogger(TaskService.class);
 
     private final TaskRepository taskRepository;
+    private final NotificationClient notificationClient;
 
     // Constructor Injection
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository,
+                       NotificationClient notificationClient) {
         this.taskRepository = taskRepository;
+        this.notificationClient = notificationClient;
     }
 
 
@@ -151,6 +155,9 @@ public class TaskService {
         log.info("Task created successfully -> ID: {}, Title: '{}', Status: {}",
                 savedTask.getId(), savedTask.getTitle(), savedTask.getStatus());
 
+        // Notify if Task Created
+        notificationClient.notifyTaskCreated(savedTask.getTitle());
+
         return convertToResponseMap(savedTask);
     }
 
@@ -237,6 +244,12 @@ public class TaskService {
                     taskDTO.getStatus()
             );
             existingTask.setStatus(taskDTO.getStatus());
+
+            // Notify if task is completed
+            if (taskDTO.getStatus() == TodoStatus.COMPLETED) {
+                notificationClient
+                        .notifyTaskCompleted(existingTask.getTitle());
+            }
         }
 
         // Save updated task
@@ -268,6 +281,9 @@ public class TaskService {
         taskRepository.deleteById(id);
 
         log.info("Task deleted -> ID: {}, Title: '{}'", id, task.getTitle());
+
+        // Notify if Task Deleted
+        notificationClient.notifyTaskDeleted(task.getTitle());
 
         return "Task '" + task.getTitle()
                 + "' (ID: " + id + ") deleted successfully.";
