@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Event Ticketing System</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/payment.css">
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="topbar-brand">🎫 Event Ticketing System</a>
+            <ul class="topbar-nav">
+                <li><a href="dashboard.html">Browse Events</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li>
+                    <span class="topbar-user" id="userName"></span>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page -->
+    <div class="page-wrap">
+        <div class="payment-container">
+            <div id="paymentScreen">
+                <div class="payment-card">
+
+                    <!-- Header -->
+                    <div class="payment-header">
+                        <h2>Complete Payment</h2>
+                        <p>Scan the QR code to pay</p>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h3>Order Summary</h3>
+                        <div class="order-row">
+                            <span>Event</span>
+                            <span id="payEventName">-</span>
+                        </div>
+                        <div class="order-row">
+                            <span>Date</span>
+                            <span id="payEventDate">-</span>
+                        </div>
+                        <div class="order-row">
+                            <span>Venue</span>
+                            <span id="payEventVenue">-</span>
+                        </div>
+                        <div class="order-row">
+                            <span>Tickets</span>
+                            <span id="payTicketCount">-</span>
+                        </div>
+                        <div class="order-row">
+                            <span>Price per ticket</span>
+                            <span id="payTicketPrice">-</span>
+                        </div>
+                        <div class="order-row order-total">
+                            <span>Total</span>
+                            <span id="payTotal">₹0</span>
+                        </div>
+                    </div>
+
+                    <!-- QR Code -->
+                    <div class="qr-section">
+                        <h3>Scan to Pay</h3>
+                        <p>Use any UPI app to scan this QR code</p>
+
+                        <div class="qr-image-wrap">
+                            <img
+                                id="qrImage"
+                                src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Rickrolling_QR_code.png"
+                                alt="Payment QR Code"
+                            >
+                        </div>
+
+                        <a class="qr-link" id="qrLink"
+                           href="https://upload.wikimedia.org/wikipedia/commons/2/2f/Rickrolling_QR_code.png"
+                           target="_blank">
+                            Payment Link
+                        </a>
+                    </div>
+
+                    <!-- Timer -->
+                    <div class="timer-section">
+                        <div class="timer-ring" id="timerRing">10</div>
+                        <p class="timer-text" id="timerText">
+                            Please wait while you complete the payment...
+                        </p>
+                    </div>
+
+                    <!-- Warning -->
+                    <div style="padding: 0 24px 16px;">
+                        <div class="payment-warning">
+                            ⚠️ Do not close this page until payment is confirmed.
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="payment-actions">
+                        <button
+                            id="paidBtn"
+                            class="btn btn-success btn-block btn-lg"
+                            disabled
+                        >
+                            ⏳ Please wait... (10s)
+                        </button>
+                        <button
+                            id="cancelPayBtn"
+                            class="btn btn-secondary btn-block"
+                            onclick="cancelPayment()"
+                        >
+                            Cancel Payment
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Processing -->
+            <div id="processingScreen" class="hidden">
+                <div class="payment-card">
+                    <div class="processing-state">
+                        <h3>Processing...</h3>
+                        <p>Confirming your booking. Please wait.</p>
+                        <div class="payment-info">
+                            This may take a few seconds.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success -->
+            <div id="successScreen" class="hidden">
+                <div class="payment-card">
+                    <div class="success-state">
+                        <div class="success-icon">✓</div>
+                        <h3>Booking Confirmed!</h3>
+                        <p>Your tickets have been booked successfully.</p>
+
+                        <div class="order-summary" style="text-align: left;">
+                            <div class="order-row">
+                                <span>Booking ID</span>
+                                <span id="successBookingId">-</span>
+                            </div>
+                            <div class="order-row">
+                                <span>Event</span>
+                                <span id="successEventName">-</span>
+                            </div>
+                            <div class="order-row">
+                                <span>Tickets</span>
+                                <span id="successTickets">-</span>
+                            </div>
+                            <div class="order-row order-total">
+                                <span>Amount Paid</span>
+                                <span id="successAmount">-</span>
+                            </div>
+                        </div>
+
+                        <div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 10px;">
+                            <a href="my-bookings.html" class="btn btn-primary btn-block">
+                                View My Bookings
+                            </a>
+                            <a href="dashboard.html" class="btn btn-secondary btn-block">
+                                Browse More Events
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div id="errorScreen" class="hidden">
+                <div class="payment-card">
+                    <div class="error-state-pay">
+                        <div class="error-icon">✗</div>
+                        <h3>Booking Failed</h3>
+                        <p id="errorMessage">Something went wrong. Please try again.</p>
+
+                        <div style="padding: 0 24px 20px; display: flex; flex-direction: column; gap: 10px;">
+                            <button onclick="retryPayment()" class="btn btn-primary btn-block">
+                                Try Again
+                            </button>
+                            <a href="dashboard.html" class="btn btn-secondary btn-block">
+                                Back to Events
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="notification" class="notification hidden"></div>
+
+    <script src="../../assets/js/config.js"></script>
+    <script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/customer/payment.js"></script>
+</body>
+</html>

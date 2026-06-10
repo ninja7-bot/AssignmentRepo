@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Events - Organizer</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/organizer.css">
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <a href="dashboard.html" class="topbar-brand">🎫 Event Ticketing System</a>
+            <ul class="topbar-nav">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="create-event.html">Create Event</a></li>
+                <li><a href="my-events.html" class="active">My Events</a></li>
+                <li>
+                    <span class="topbar-user" id="userName"></span>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page -->
+    <div class="page-wrap">
+
+        <div class="page-heading">
+            <h1>My Events</h1>
+            <p>View and manage all the events you have created.</p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-top">
+                <input type="text" id="searchInput" class="filter-search-input"
+                    placeholder="Search by name, venue or category...">
+                <span class="results-count" id="resultsCount">0 events</span>
+            </div>
+            <div class="filter-tabs">
+                <button class="tab-btn active" data-filter="all">All</button>
+                <button class="tab-btn" data-filter="ACTIVE">Active</button>
+                <button class="tab-btn" data-filter="COMPLETED">Completed</button>
+                <button class="tab-btn" data-filter="CANCELLED">Cancelled</button>
+            </div>
+        </div>
+
+        <!-- Events Container -->
+        <div id="eventsContainer">
+            <div class="state-loading">Loading your events...</div>
+        </div>
+
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal-backdrop hidden" id="editModal">
+        <div class="modal-box wide">
+            <div class="modal-top">
+                <h2>Edit Event</h2>
+                <button class="modal-x" id="closeEditBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label class="form-label">Event Name <span class="required">*</span></label>
+                    <input type="text" id="editName" class="form-input">
+                    <span class="error-text" id="editNameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description <span class="required">*</span></label>
+                    <textarea id="editDesc" class="form-textarea" rows="4"></textarea>
+                    <span class="error-text" id="editDescError"></span>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Date <span class="required">*</span></label>
+                        <input type="date" id="editDate" class="form-input">
+                        <span class="error-text" id="editDateError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time <span class="required">*</span></label>
+                        <input type="time" id="editTime" class="form-input">
+                        <span class="error-text" id="editTimeError"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Venue <span class="required">*</span></label>
+                    <input type="text" id="editVenue" class="form-input">
+                    <span class="error-text" id="editVenueError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ticket Price (₹) <span class="required">*</span></label>
+                    <input type="text" id="editTicketPrice" class="form-input">
+                    <span class="error-text" id="editTicketPriceError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Total Seats <span class="required">*</span></label>
+                    <input type="text" id="editSeats" class="form-input">
+                    <span class="error-text" id="editSeatsError"></span>
+                </div>
+
+            </div>
+            <div class="modal-foot">
+                <button id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+                <button id="saveEditBtn" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Capacity Modal -->
+    <div class="modal-backdrop hidden" id="capModal">
+        <div class="modal-box">
+            <div class="modal-top">
+                <h2>Update Capacity</h2>
+                <button class="modal-x" id="closeCapBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="summary-tiles">
+                    <div class="summary-tile">
+                        <span>Total</span>
+                        <strong id="capTotal">0</strong>
+                    </div>
+                    <div class="summary-tile blue">
+                        <span>Booked</span>
+                        <strong id="capBooked">0</strong>
+                    </div>
+                    <div class="summary-tile green">
+                        <span>Available</span>
+                        <strong id="capAvailable">0</strong>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">New Total Seats</label>
+                    <input type="number" id="newSeats" class="form-input" min="1">
+                    <small class="form-hint">Cannot be less than already booked seats</small>
+                    <span class="error-text" id="newSeatsError"></span>
+                </div>
+
+            </div>
+            <div class="modal-foot">
+                <button id="cancelCapBtn" class="btn btn-secondary">Cancel</button>
+                <button id="saveCapBtn" class="btn btn-primary">Update Capacity</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookings Modal -->
+    <div class="modal-backdrop hidden" id="bookModal">
+        <div class="modal-box wide">
+            <div class="modal-top">
+                <h2>Event Ticketing Systems</h2>
+                <button class="modal-x" id="closeBookBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <div class="summary-tiles">
+                    <div class="summary-tile blue">
+                        <span>Total Bookings</span>
+                        <strong id="bookTotal">0</strong>
+                    </div>
+                    <div class="summary-tile green">
+                        <span>Total Tickets</span>
+                        <strong id="bookTickets">0</strong>
+                    </div>
+                    <div class="summary-tile red">
+                        <span>Cancelled</span>
+                        <strong id="bookCancelled">0</strong>
+                    </div>
+                </div>
+
+                <div id="bookLoading" class="state-loading">Loading bookings...</div>
+
+                <div id="bookTableWrap" class="table-wrap hidden">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Email</th>
+                                <th>Tickets</th>
+                                <th>Booked On</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="bookEmpty" class="state-empty hidden">
+                    <p>No bookings found for this event yet.</p>
+                </div>
+
+            </div>
+            <div class="modal-foot">
+                <button id="downloadEventBookingsBtn" class="btn btn-outline hidden">
+                    📥 Download CSV
+                </button>
+                <button id="closeBookFooterBtn" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Event Modal -->
+    <div class="modal-backdrop hidden" id="cancelModal">
+        <div class="modal-box">
+            <div class="modal-top">
+                <h2>Cancel Event</h2>
+                <button class="modal-x" id="closeCancelBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="confirm-msg">
+                    Are you sure you want to cancel
+                    <strong id="cancelName"></strong>?
+                    This may affect all existing bookings and cannot be undone.
+                </p>
+            </div>
+            <div class="modal-foot">
+                <button id="keepEventBtn" class="btn btn-secondary">Keep Event</button>
+                <button id="confirmCancelBtn" class="btn btn-danger">Yes, Cancel Event</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification hidden"></div>
+
+    <script src="../../assets/js/config.js"></script>
+    <script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/organizer/myEvents.js"></script>
+</body>
+
+</html>
