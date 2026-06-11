@@ -1,3 +1,9 @@
+"""
+1. Write a program to print 'Welcome to Python Training'.
+2. Write a program to check your Python version.
+3. Take user input (name and age) and print a formatted message.
+"""
+
 # Introduction to Python Programs
 
 print("Welcome to Python Training!") # Printing a Statement

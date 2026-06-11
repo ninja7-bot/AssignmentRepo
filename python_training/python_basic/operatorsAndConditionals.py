@@ -1,4 +1,12 @@
 """
+7. Write a program to check whether a number is even or odd.
+8. Check whether a number is positive, negative, or zero.
+9. Find the largest of three numbers.
+10. Calculate grade based on marks (A/B/C/Fail).
+11. Check whether a year is a leap year.
+"""
+
+"""
 Odd or Event
 """
 print("Odd or Even Check")

@@ -1,3 +1,9 @@
+"""
+25. Create a list of 10 numbers and find sum, max, sort it, and remove duplicates.
+26. Count even and odd numbers in a list.
+27. Reverse a list without using reverse().
+"""
+
 lst = [1, 2, 7, 40, 53, 16, 7, 81, 19, 10]
 print(f"Original list: {lst}")
 

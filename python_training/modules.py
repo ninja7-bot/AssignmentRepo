@@ -1,3 +1,9 @@
+"""
+22. Use math module to find square root, power, and factorial.
+23. Generate random numbers using random module.
+24. Create your own module and import it.
+"""
+
 import math
 import random as r
 from python_basic.modules.printModule import printModule

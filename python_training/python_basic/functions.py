@@ -1,5 +1,8 @@
 """
-Functions in Python
+17. Write a function to calculate square of a number.
+18. Write a function to check palindrome(Number and string).
+19. Write a function that returns maximum number from a list.
+20. Write a function using default parameters.
 """
 
 

@@ -1,4 +1,10 @@
 """
+4. Create variables of type int, float, string, and boolean. Print their types using type().
+5. Write a program to swap two numbers.
+6. Take two numbers and print sum, difference, multiplication, and division.
+"""
+
+"""
 Basic Python Concepts: Variables, Data Types, and Arithmetic Operations
 """
 
