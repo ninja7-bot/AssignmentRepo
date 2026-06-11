@@ -1,7 +1,5 @@
 """
 25. Create a list of 10 numbers and find sum, max, sort it, and remove duplicates.
-26. Count even and odd numbers in a list.
-27. Reverse a list without using reverse().
 """
 
 lst = [1, 2, 7, 40, 53, 16, 7, 81, 19, 10]
@@ -37,28 +35,3 @@ for x in lst:
         uniqueLst.append(x)
 print(f"Without duplicates: {uniqueLst}")
 print()
-
-
-"""
-Count even and odd numbers in a list.
-"""
-evenCount = oddCount = 0
-
-for num in lst:
-    if num % 2 == 0:
-        evenCount += 1
-    else:
-        oddCount += 1
-
-print(f"Even numbers: {evenCount}")
-print(f"Odd numbers: {oddCount}")
-print()
-
-
-"""
-Reverse a list without using reverse().
-"""
-reversed_lst = []
-for i in range(len(lst) - 1, -1, -1):
-    reversed_lst.append(lst[i])
-print(f"Reversed list: {reversed_lst}")
