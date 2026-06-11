@@ -1,7 +1,5 @@
 """
 32. Create a student dictionary and access values.
-33. Count frequency of characters in a string using dictionary.
-34. Merge two dictionaries.
 """
 
 # Sample Dictionary of students

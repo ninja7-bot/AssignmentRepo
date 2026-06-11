@@ -85,7 +85,7 @@ java_assignment/        (Root Repository Folder)
     └── Student.java
 ```
 
-## Session 2: Student Management System
+### Session 2: Student Management System
 
 A basic Spring Boot project to manage students using REST APIs and in-memory data.
 
@@ -114,7 +114,7 @@ java_training/session2/
         └── LongMessageFormatter.java
 ```
 
-## Session 3: Employee Management System
+### Session 3: Employee Management System
 
 A Spring Boot REST API project to manage employees with search, add, and delete operations.
 
@@ -133,4 +133,132 @@ java_training/session3/
     └── controller/
         ├── EmployeeController.java
         └── GlobalExceptionHandler.java
+```
+
+### Session 4: Task Manager
+
+A Spring Boot based Task Manager or To Do List Project.
+
+**Repo Structure**
+
+```
+java_training/session4/
+└── TaskManager
+    ├── TaskManagerApplication.java
+    ├── client/
+    │   └── NotificationClient.java
+    ├── repository/
+    │   └── TaskRepository.java
+    ├── dto/
+    │   └── TaskDTO.java
+    ├── entity/
+    │   └── Tasks.java
+    ├── enums/
+    │   └── TodoStatus.java
+    ├── service/
+    │   └── TaskService.java
+    └── controller/
+        ├── TaskController.java
+        └── GlobalExceptionHandler.java
+```
+
+### Session 5: Task Manager Test Cases
+
+A Spring Boot based Task Manager or To Do List Project. Use SLF4J Logger and JUnit, Mockito Testing.
+
+**Repo Structure**
+
+```
+java_training/session4/
+└── TaskManager
+    ├── TaskManagerApplicationTest.java
+    │
+    ├── service/
+    │   └── TaskServiceTest.java
+    └── controller/
+        └── TaskControllerTest.java
+```
+
+## Capstone: Event Ticketing System
+
+Event Ticketing System is a full-stack, Java, Spring Boot, MySQL, HTML, CSS, JS (Vanilla) project built within a 10 day duration as part of a Capstone Project.
+
+
+## Python Training
+
+### Python Basics
+Python Basics covers concepts like Variables, Datatypes, Operators, Conditionals, Loops and such concepts.
+
+**Repo Structure**
+```
+python_training/
+│
+├── .gitignore
+├── README.md
+│
+├── python_basic/
+│   ├── __init__.py
+│   │
+│   ├── intro.py
+│   │
+│   ├── datatypes/
+│   │   ├── datatypesQ4.py
+│   │   ├── datatypesQ5.py
+│   │   └── datatypesQ6.py
+│   │
+│   ├── operators/
+│   │   ├── operatorsQ7.py
+│   │   ├── operatorsQ8.py
+│   │   ├── operatorsQ9.py
+│   │   ├── operatorsQ10.py
+│   │   └── operatorsQ11.py
+│   │
+│   ├── loops/
+│   │   ├── loopsQ12.py
+│   │   ├── loopsQ13.py
+│   │   ├── loopsQ14.py
+│   │   ├── loopsQ15.py
+│   │   └── loopsQ16.py
+│   │
+│   ├── functions/
+│   │   ├── functionQ17.py
+│   │   ├── functionQ18.py
+│   │   ├── functionQ19.py
+│   │   └── functionQ20.py
+│   │
+│   ├── modules/
+│   │   └── printModule.py
+│   ├── modules.py
+|   |
+│   ├── collections/
+│   │   │
+│   │   ├── list/
+│   │   │   ├── listQ25.py
+│   │   │   └── listQ26.py
+│   │   │
+│   │   ├── tupleQ28_Q29.py
+│   │   │
+│   │   ├── setsQ30_Q31.py
+│   │   │
+│   │   └── dict/
+│   │       ├── dictQ32.py
+│   │       ├── dictQ33.py
+│   │       └── dictQ34.py
+│   │
+│   ├── filehandling/
+│   │   ├── filehandlingQ35.py
+│   │   ├── filehandlingQ36.py
+│   │   ├── filehandlingQ37.py
+│   │   ├── filehandlingQ38.py
+│   │   ├── filehandlingQ39.py
+│   │   └── txtfile.txt
+│   │
+│   └── exception/
+│
+└── oop/
+    ├── oopQ40.py
+    ├── oopQ41.py
+    ├── oopQ42.py
+    ├── oopQ43.py
+    └── oopQ44.py
 ```
