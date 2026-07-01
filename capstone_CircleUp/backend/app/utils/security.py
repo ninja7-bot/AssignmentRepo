@@ -1,5 +1,6 @@
 """
-Security utility responsible for functions related to authentication like creating token, verifying password, getting password_hash and stuff.
+Security utility responsible for functions related to authentication like creating token, verifying password, 
+getting password_hash and stuff.
 """
 
 from datetime import datetime, timezone, timedelta

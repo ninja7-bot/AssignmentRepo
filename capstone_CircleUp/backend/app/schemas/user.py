@@ -1,3 +1,10 @@
+"""
+Simple Pydantic models for user-related data validation and serialization. This model defines the structure and validation rules 
+for user creation, updating, and response data. Ensuring that user input adheres to specified formats and constraints, such as
+email format, phone number pattern, and password complexity.
+"""
+
+
 from datetime import datetime
 import re
 

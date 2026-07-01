@@ -1,3 +1,8 @@
+"""
+AuthService class provides methods for user registration, authentication, and access token generation. It interacts with the 
+database to manage user data and handle authentication processes.
+"""
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from datetime import timedelta

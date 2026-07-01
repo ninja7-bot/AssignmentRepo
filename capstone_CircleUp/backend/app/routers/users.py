@@ -1,3 +1,9 @@
+"""
+User router module for FastAPI application. This module defines the API endpoints related to user management, 
+including retrieving and updating user profiles. It utilizes the UserService for business logic and the get_current_user 
+dependency for authentication. The endpoints are secured and require a valid Bearer token for access.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..database import get_db

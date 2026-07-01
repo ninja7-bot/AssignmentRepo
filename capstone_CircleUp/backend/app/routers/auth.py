@@ -1,3 +1,9 @@
+"""
+Auth router module for FastAPI application. This module defines the API endpoints related to user authentication,
+including registration, login, and logout. It utilizes the AuthService for business logic and the get_current_user 
+dependency for authentication. The endpoints are secured and require a valid Bearer token for access.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from ..database import get_db

@@ -1,3 +1,8 @@
+"""
+main.py responsible for initializing the FastAPI application, setting up middleware, and including routers for 
+authentication and user management. It also creates the necessary database tables on startup.
+"""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, users

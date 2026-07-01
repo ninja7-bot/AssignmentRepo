@@ -1,3 +1,9 @@
+"""
+Dependencies module for FastAPI application. This module provides utility functions to handle authentication and 
+user retrieval based on Bearer tokens. It includes a dependency function `get_current_user` that resolves the authenticated user 
+from the provided token, raising an HTTP 401 Unauthorized error if the token is invalid or the user does not exist.
+"""
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session

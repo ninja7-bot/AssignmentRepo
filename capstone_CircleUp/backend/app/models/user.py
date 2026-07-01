@@ -1,3 +1,9 @@
+"""
+User Model for SQLAlchemy ORM. This model defines the structure of the 'users' table in the database, including fields for user
+information such as name, email, hashed password, phone number, city, bio, and timestamps for creation and updates. It also
+includes relationships to other models, which can be implemented as needed for activities and participation.
+"""
+
 from sqlalchemy import Column, Integer, String, Text, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..database import Base

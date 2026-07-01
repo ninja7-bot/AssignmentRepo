@@ -1,3 +1,8 @@
+"""
+UserService class provides methods for user management, including retrieving and updating user information. It interacts with the 
+database to perform CRUD operations on user data.
+"""
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from ..models.user import User
