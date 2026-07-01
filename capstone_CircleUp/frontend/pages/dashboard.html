@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CircleUp</title>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">CircleUp</a>
+            <ul class="nav-links"></ul>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="dashboard-header">
+                <h1>Dashboard</h1>
+                <p id="user-info" class="mb-2">Loading...</p>
+            </section>
+
+            <section class="quick-actions card">
+                <h2 class="mb-2">Quick Actions</h2>
+                <div class="actions-grid">
+                    <a href="#" class="btn btn-primary">Create Activity</a>
+                    <a href="#" class="btn btn-secondary">Discover Activities</a>
+                    <a href="#" class="btn btn-success">My Activities</a>
+                    <a href="#" class="btn btn-secondary">Profile Settings</a>
+                </div>
+            </section>
+
+            <section class="dashboard-stats card">
+                <h2 class="mb-2">Your Activity</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Created Activities</h3>
+                        <p class="stat-number" id="created-count">-</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Joined Activities</h3>
+                        <p class="stat-number" id="joined-count">-</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Requests</h3>
+                        <p class="stat-number" id="pending-count">-</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
