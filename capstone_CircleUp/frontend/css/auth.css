@@ -71,6 +71,31 @@
     text-decoration: underline;
 }
 
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: #666;
+    font-size: 18px;
+}
+
+.password-toggle-btn:hover {
+    color: #333;
+}
+
+.required {
+    color: #dc3545;
+}
+
 @media (max-width: 480px) {
     .auth-card {
         padding: 30px 20px;

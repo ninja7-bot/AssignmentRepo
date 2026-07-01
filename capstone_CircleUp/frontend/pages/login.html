@@ -18,7 +18,7 @@
 
             <form id="login-form">
                 <div class="form-group">
-                    <label for="email">Email Address</label>
+                    <label for="email">Email Address <span class="required">*</span></label>
                     <input 
                         type="email" 
                         id="email" 
@@ -27,10 +27,12 @@
                         placeholder="Enter your email"
                         required
                     >
+                    <span class="error-text" id="emailError"></span>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password">Password <span class="required">*</span></label>
+                    <div class="password-wrapper">
                     <input 
                         type="password" 
                         id="password" 
@@ -39,6 +41,12 @@
                         placeholder="Enter your password"
                         required
                     >
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('password')"
+                        title="Show/Hide Password">
+                        👀
+                    </button>
+                    </div>
+                    <span class="error-text" id="passwordError"></span>
                 </div>
 
                 <button type="submit" class="auth-btn">
@@ -52,5 +60,21 @@
             </div>
         </div>
     </div>
+    
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+    </script>
 </body>
 </html>
