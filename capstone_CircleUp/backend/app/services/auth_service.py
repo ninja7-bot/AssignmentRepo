@@ -3,6 +3,8 @@ AuthService class provides methods for user registration, authentication, and ac
 database to manage user data and handle authentication processes.
 """
 
+from typing import Any
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from datetime import timedelta
@@ -17,17 +19,17 @@ class AuthService:
         self.db = db
         self.user_repo = UserRepository(db)
 
-    def register_user(self, user_data: UserCreate) -> User:
+    def register_user(self, user_data: dict[str, Any]) -> User:
         """Register a new user with validation and password hashing"""
         try:
             # Prepare user data with hashed password
-            hashed_password = get_password_hash(user_data.password)
-            user_dict = user_data.model_dump()
+            hashed_password = get_password_hash(user_data["password"])
+            user_dict = user_data.copy()
             user_dict['hashed_password'] = hashed_password
             del user_dict['password']  # Remove plain password
             
             # Create user using repository
-            return self.user_repo.create_user(user_data)
+            return self.user_repo.create_user(user_dict)
             
         except ValueError as e:
             raise HTTPException(

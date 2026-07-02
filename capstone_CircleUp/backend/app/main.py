@@ -5,7 +5,7 @@ authentication and user management. It also creates the necessary database table
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, users
+from .routers import auth, users, activity
 from .database import engine, Base
 
 # Create database tables
@@ -29,6 +29,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(activity.router)
 
 @app.get("/")
 def read_root():

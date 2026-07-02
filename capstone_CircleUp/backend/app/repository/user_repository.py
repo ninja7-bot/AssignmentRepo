@@ -3,7 +3,7 @@ UserRepository provides database operations for the User model, including CRUD o
 for user-specific queries and validations.
 """
 
-from typing import Optional, List
+from typing import Optional, List, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from ..models.user import User
@@ -37,16 +37,16 @@ class UserRepository(BaseRepository[User]):
 
         return query.first() is not None
 
-    def create_user(self, user_data: UserCreate) -> User:
+    def create_user(self, user_data: dict[str, Any]) -> User:
         """Create a new user with validation"""
         # Check if email already exists
-        if self.email_exists(user_data.email):
+        if self.email_exists(user_data["email"]):
             raise ValueError("Email already registered")
         
-        if self.phone_exists(user_data.phone_number):
+        if self.phone_exists(user_data["phone_number"]):
             raise ValueError("Phone number already registered")
         
-        return self.create(user_data.model_dump(exclude_unset=True))
+        return self.create(user_data)
 
     def update_user(self, user_id: int, update_data: UserUpdate) -> Optional[User]:
         """Update user with email uniqueness validation"""

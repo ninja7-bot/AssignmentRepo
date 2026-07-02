@@ -105,8 +105,8 @@ class ActivityResponse(ActivityBase):
     id: int
     status: ActivityStatus
     creator_id: int
-    creator_name: str
-    current_participants: int
+    #creator_name: str
+    #current_participants: int
     created_at: datetime
     updated_at: Optional[datetime] = None
 
