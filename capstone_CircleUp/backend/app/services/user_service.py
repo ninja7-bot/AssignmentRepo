@@ -37,10 +37,15 @@ class UserService:
                 )
 
         # Update user fields
-        update_data = user_update.dict(exclude_unset=True)
+        update_data = user_update.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(user, field, value)
 
         self.db.commit()
         self.db.refresh(user)
         return user
+    
+    def delete_user(self, user_id: int):
+        user = self.get_user_by_id(user_id)
+        self.db.delete(user)
+        self.db.commit()

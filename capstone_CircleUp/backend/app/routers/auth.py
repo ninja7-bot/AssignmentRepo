@@ -15,6 +15,7 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/register", response_model=dict)
 def register(user_data: UserCreate, db: Session = Depends(get_db)):
+    """Register a new user and return an access token upon successful registration"""
     auth_service = AuthService(db)
     try:
         user = auth_service.register_user(user_data)
@@ -36,6 +37,7 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=dict)
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):
+    """Authenticate user and return an access token upon successful login"""
     auth_service = AuthService(db)
     try:
         user = auth_service.authenticate_user(login_data.email, login_data.password)
@@ -54,4 +56,5 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
 
 @router.post("/logout")
 def logout():
+    """Logout the current user (token invalidation is handled on the client-side)"""
     return {"message": "Logged out successfully"}

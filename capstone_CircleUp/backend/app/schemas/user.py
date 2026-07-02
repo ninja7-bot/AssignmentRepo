@@ -18,6 +18,8 @@ from pydantic import (
 
 
 class UserBase(BaseModel):
+    """Base Pydantic model for user data. This model includes common fields for user information, 
+        such as name, email, phone number,"""
     name: str = Field(
         ...,
         min_length=3,
@@ -80,6 +82,8 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
+    """Pydantic model for user creation. This model extends UserBase and adds a password field with validation rules to ensure
+    that the password meets security requirements. It is used for validating user input during registration."""
     password: str = Field(
         ...,
         min_length=8,
@@ -117,6 +121,8 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(BaseModel):
+    """Pydantic model for updating user information. This model allows partial updates to user fields, with validation rules
+    similar to those in UserCreate. Fields are optional, and only provided fields will be updated"""
     name: str | None = Field(
         default=None,
         min_length=3,
@@ -178,6 +184,8 @@ class UserUpdate(BaseModel):
 
 
 class UserResponse(UserBase):
+    """Response model for user data, including ID and timestamps. This model is used to serialize user data 
+    for API responses, ensuring that sensitive information like passwords is not exposed."""
     id: int
     created_at: datetime
     updated_at: datetime | None = None
@@ -186,8 +194,19 @@ class UserResponse(UserBase):
 
 
 class UserContactInfo(BaseModel):
+    """Limited user contact information when sharing contact info with other users"""
     id: int
     name: str
     phone_number: str
+    email: EmailStr
+
+    model_config = ConfigDict(from_attributes=True)
+
+class UserProfile(BaseModel):
+    """Limited user profile for public viewing"""
+    id: int
+    name: str
+    city: str | None
+    bio: str | None
 
     model_config = ConfigDict(from_attributes=True)
