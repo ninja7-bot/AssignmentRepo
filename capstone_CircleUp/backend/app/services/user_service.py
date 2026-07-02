@@ -5,15 +5,17 @@ database to perform CRUD operations on user data.
 
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from ..models.user import User
+from ..repository.user_repository import UserRepository
 from ..schemas.user import UserUpdate
 
 class UserService:
     def __init__(self, db: Session):
         self.db = db
+        self.user_repo = UserRepository(db)
 
-    def get_user_by_id(self, user_id: int) -> User:
-        user = self.db.query(User).filter(User.id == user_id).first()
+    def get_user_by_id(self, user_id: int):
+        """Get user by ID"""
+        user = self.user_repo.get_by_id(user_id)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -21,31 +23,44 @@ class UserService:
             )
         return user
 
-    def update_user(self, user_id: int, user_update: UserUpdate) -> User:
-        user = self.get_user_by_id(user_id)
-        
-        # Check if email is being changed and if it's already taken
-        if user_update.email and user_update.email != user.email:
-            existing_user = self.db.query(User).filter(
-                User.email == user_update.email,
-                User.id != user_id
-            ).first()
-            if existing_user:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Email already registered"
-                )
-
-        # Update user fields
-        update_data = user_update.model_dump(exclude_unset=True)
-        for field, value in update_data.items():
-            setattr(user, field, value)
-
-        self.db.commit()
-        self.db.refresh(user)
+    def get_user_by_email(self, email: str):
+        """Get user by email"""
+        user = self.user_repo.get_by_email(email)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
         return user
+
+    def update_user(self, user_id: int, user_update: UserUpdate):
+        """Update user profile"""
+        try:
+            updated_user = self.user_repo.update_user(user_id, user_update)
+            
+            if not updated_user:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="User not found"
+                )
+            
+            return updated_user
+            
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e)
+            )
     
     def delete_user(self, user_id: int):
-        user = self.get_user_by_id(user_id)
-        self.db.delete(user)
-        self.db.commit()
+        """Delete user account"""
+        success = self.user_repo.delete_user(user_id)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+    def search_users(self, query: str, limit: int = 10):
+        """Search users by name or email"""
+        return self.user_repo.search_users(query, limit)

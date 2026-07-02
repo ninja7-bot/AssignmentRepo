@@ -4,8 +4,8 @@ information such as name, email, hashed password, phone number, city, bio, and t
 includes relationships to other models, which can be implemented as needed for activities and participation.
 """
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, Text, DateTime, func
+from sqlalchemy.orm import Mapped, mapped_column
 from ..database import Base
 
 class User(Base):
