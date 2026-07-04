@@ -3,6 +3,7 @@ Auth router module for FastAPI application. This module defines the API endpoint
 including registration, login, and logout. It utilizes the AuthService for business logic and the get_current_user 
 dependency for authentication. The endpoints are secured and require a valid Bearer token for access.
 """
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -14,7 +15,7 @@ from ..services.auth_service import AuthService
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/register", response_model=dict)
-def register(user_data: UserCreate, db: Session = Depends(get_db)):
+def register(user_data: dict[str, Any], db: Session = Depends(get_db)):
     """Register a new user and return an access token upon successful registration"""
     auth_service = AuthService(db)
     try:
@@ -52,7 +53,10 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     except HTTPException:
         raise
     except Exception as e:
-        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Login failed"
+        )
 
 @router.post("/logout")
 def logout():
