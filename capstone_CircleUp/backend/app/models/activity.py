@@ -18,6 +18,6 @@ class Activity(Base):
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
 
-    # Relationships
+    """Relationships"""
     creator = relationship("User", back_populates="created_activities")
     participation_requests = relationship("ParticipationRequest", back_populates="activity")

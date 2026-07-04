@@ -21,10 +21,7 @@ class ActivityBase(BaseModel):
         description="Detailed description of the activity",
     )
 
-    category: ActivityCategory = Field(
-        ...,
-        description="Category of the activity",
-    )
+    category: ActivityCategory
 
     location: str = Field(
         ...,
@@ -70,7 +67,7 @@ class ActivityCreate(ActivityBase):
     @field_validator('activity_date')
     @classmethod
     def validate_future_date(cls, date: datetime) -> datetime:
-        if date <= datetime.now(timezone.utc):
+        if date <= datetime.now(date.tzinfo):
             raise ValueError('Activity must be scheduled for a future date')
         return date
 
@@ -95,7 +92,7 @@ class ActivityUpdate(BaseModel):
     @field_validator('activity_date')
     @classmethod
     def validate_future_date(cls, date: datetime) -> datetime:
-        if date is not None and date <= datetime.now(timezone.utc):
+        if date is not None and date <= datetime.now(date.tzinfo):
             raise ValueError('Activity must be scheduled for a future date')
         return date
 
@@ -105,8 +102,8 @@ class ActivityResponse(ActivityBase):
     id: int
     status: ActivityStatus
     creator_id: int
-    #creator_name: str
-    #current_participants: int
+    creator_name: str | None = None
+    current_participants: int = 0
     created_at: datetime
     updated_at: Optional[datetime] = None
 

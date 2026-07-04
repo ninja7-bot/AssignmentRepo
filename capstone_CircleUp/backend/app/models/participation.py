@@ -13,9 +13,8 @@ class ParticipationRequest(Base):
     requested_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
 
-    # Relationships
+    """Relationships & Constraints"""
     user = relationship("User", back_populates="participation_requests")
     activity = relationship("Activity", back_populates="participation_requests")
 
-    # Unique constraint to prevent duplicate requests
     __table_args__ = (UniqueConstraint('user_id', 'activity_id', name='unique_user_activity_request'),)
