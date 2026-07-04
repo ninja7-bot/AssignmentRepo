@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, users
 from .database import engine, Base
 
-# Create database tables
+"""Create database tables"""
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -17,16 +17,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS
+"""
+Configure CORS
+Allows from everywhere; need to restrict in production
+"""
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows from everywhere; need to restrict in production
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
+"""Include routers"""
 app.include_router(auth.router)
 app.include_router(users.router)
 
