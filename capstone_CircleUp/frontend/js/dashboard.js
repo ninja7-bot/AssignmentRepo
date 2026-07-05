@@ -30,7 +30,7 @@ class DashboardManager {
 
     async loadDashboardStats() {
         try {
-            // Placeholder for now - will be implemented in Week 2
+            
             document.getElementById('created-count').textContent = '0';
             document.getElementById('joined-count').textContent = '0';
             document.getElementById('pending-count').textContent = '0';
