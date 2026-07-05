@@ -36,12 +36,6 @@ class ActivitiesManager {
             if (e.target.matches('.join-activity-btn')) {
                 this.handleJoinActivity(e.target.dataset.activityId);
             }
-            if (e.target.matches('.approve-request-btn')) {
-                this.handleApproveRequest(e.target.dataset.requestId);
-            }
-            if (e.target.matches('.reject-request-btn')) {
-                this.handleRejectRequest(e.target.requestId);
-            }
         });
     }
 
@@ -202,50 +196,26 @@ class ActivitiesManager {
     }
 
     async handleJoinActivity(activityId) {
+        const btn = document.querySelector(`.join-activity-btn[data-activity-id="${activityId}"]`);
+
         try {
-            await this.api.request('/participation/request', {
-                method: 'POST',
-                body: JSON.stringify({ activity_id: parseInt(activityId) })
-            });
-            
+            if (btn) showLoading(btn, true);
+
+            await this.api.requestParticipation(activityId);
+
             showAlert('Participation request sent!', 'success');
             this.loadActivities(this.currentFilters);
         } catch (error) {
             console.error('Join request failed:', error);
-            
+
             if (error instanceof ApiError) {
+                // e.g. "You have already requested to join this activity"
                 showAlert(error.message || 'Join request failed', 'error');
             } else {
                 showAlert('Connection error. Please try again.', 'error');
             }
-        }
-    }
-
-    async handleApproveRequest(requestId) {
-        try {
-            await this.api.request(`/participation/${requestId}/approve`, {
-                method: 'PUT'
-            });
-            
-            showAlert('Request approved!', 'success');
-            this.loadActivityRequests();
-        } catch (error) {
-            console.error('Approve request failed:', error);
-            showAlert(error.message || 'Approve request failed', 'error');
-        }
-    }
-
-    async handleRejectRequest(requestId) {
-        try {
-            await this.api.request(`/participation/${requestId}/reject`, {
-                method: 'PUT'
-            });
-            
-            showAlert('Request rejected', 'info');
-            this.loadActivityRequests();
-        } catch (error) {
-            console.error('Reject request failed:', error);
-            showAlert(error.message || 'Reject request failed', 'error');
+        } finally {
+            if (btn) showLoading(btn, false);
         }
     }
 }

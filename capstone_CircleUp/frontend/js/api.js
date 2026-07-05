@@ -105,6 +105,38 @@ class ApiService {
             method: 'DELETE'
         });
     }
+
+    // Participation
+    async requestParticipation(activityId) {
+        return await this.request('/participation/request', {
+            method: 'POST',
+            body: JSON.stringify({ activity_id: parseInt(activityId, 10) })
+        });
+    }
+
+    async approveParticipation(requestId) {
+        return await this.request(`/participation/approve/${requestId}`, {
+            method: 'POST'
+        });
+    }
+
+    async rejectParticipation(requestId) {
+        return await this.request(`/participation/reject/${requestId}`, {
+            method: 'POST'
+        });
+    }
+
+    async getMyParticipationRequests() {
+        return await this.request('/participation/my-requests');
+    }
+
+    async getActivityRequests(activityId) {
+        return await this.request(`/participation/activity/${activityId}/requests`);
+    }
+
+    async getActivityContacts(activityId) {
+        return await this.request(`/participation/activity/${activityId}/contacts`);
+    }
 }
 
 class ApiError extends Error {

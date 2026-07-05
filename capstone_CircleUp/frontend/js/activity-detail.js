@@ -6,6 +6,7 @@ class ActivityDetailManager {
         this.activityId = null;
         this.currentUser = null;
         this.activity = null;
+        this.myRequestStatus = null;
         this.init();
     }
 
@@ -36,9 +37,13 @@ class ActivityDetailManager {
             document.getElementById('loading').classList.remove('hidden');
             
             this.activity = await this.api.getActivity(this.activityId);
+
+            if (!this.isCreator()) {
+                await this.loadMyRequestStatus();
+            }
+
             this.renderActivity();
             
-            // Load additional data based on user role
             if (this.isCreator()) {
                 await this.loadParticipationRequests();
             }
@@ -88,6 +93,12 @@ class ActivityDetailManager {
                 <button class="btn btn-primary" onclick="activityDetailManager.editActivity()">Edit Activity</button>
                 <button class="btn btn-danger" onclick="activityDetailManager.cancelActivity()">Cancel Activity</button>
             `;
+        } else if (this.myRequestStatus === 'pending') {
+            actions += `<span class="btn btn-secondary" disabled>Request Pending</span>`;
+        } else if (this.myRequestStatus === 'approved') {
+            actions += `<span class="btn btn-success" disabled>✓ You're In</span>`;
+        } else if (this.myRequestStatus === 'rejected') {
+            actions += `<span class="btn btn-danger" disabled>Request Rejected</span>`;
         } else if (this.canJoin()) {
             actions += `
                 <button class="btn btn-success" onclick="activityDetailManager.requestToJoin()">Request to Join</button>
@@ -103,6 +114,19 @@ class ActivityDetailManager {
         actions += `<a href="/pages/discover.html" class="btn btn-secondary">Back to Activities</a>`;
         
         actionsContainer.innerHTML = actions;
+    }
+
+    async loadMyRequestStatus() {
+        try {
+            const myRequests = await this.api.getMyParticipationRequests();
+            const mine = myRequests.find(
+                (r) => r.activity_id === Number(this.activityId)
+            );
+            this.myRequestStatus = mine ? mine.status : null;
+        } catch (error) {
+            console.error('Error loading participation status:', error);
+            this.myRequestStatus = null;
+        }
     }
 
     async loadParticipationRequests() {
@@ -188,13 +212,14 @@ class ActivityDetailManager {
 
     canViewContacts() {
         // User can view contacts if they're the creator or an approved participant
-        return this.isCreator(); // Additional logic for participants would go here
+        return this.isCreator() || this.myRequestStatus === 'approved';
     }
 
     async requestToJoin() {
         try {
             await this.api.requestParticipation(this.activityId);
             showAlert('Participation request sent!', 'success');
+            this.myRequestStatus = 'pending';
             this.renderActions(); // Update UI
         } catch (error) {
             showAlert(error.message || 'Failed to request participation', 'error');
