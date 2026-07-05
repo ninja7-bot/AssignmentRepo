@@ -18,7 +18,7 @@ class ActivityRepository(BaseRepository[Activity]):
         activity_data['creator_id'] = creator_id
         return self.create(activity_data)
 
-    def get_by_id(self, activity_id: int) -> Activity | None:
+    def get_by_id(self, activity_id: int) -> Activity:
         return self.db.query(Activity).filter(Activity.id == activity_id).first()
 
     def get_all(self, filters: dict | None):
