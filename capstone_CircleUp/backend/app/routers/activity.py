@@ -41,7 +41,7 @@ def list_activities(
     for act in activities:
         r = ActivityResponse.model_validate(act)
         r.creator_name = act.creator.name if act.creator else None
-        r.current_participants = 0
+        r.current_participants = activity_service.get_current_participants_count(act.id)
         result.append(r)
     return result
 
@@ -51,7 +51,7 @@ def get_activity(activity_id: int, db: Session = Depends(get_db)):
     activity = activity_service.get_activity(activity_id)
     r = ActivityResponse.model_validate(activity)
     r.creator_name = activity.creator.name if activity.creator else None
-    r.current_participants = 0
+    r.current_participants = activity_service.get_current_participants_count(activity_id)
     return r
 
 @router.put("/{activity_id}", response_model=ActivityResponse)
@@ -65,7 +65,7 @@ def update_activity(
     activity = activity_service.update_activity(activity_id, update_data, current_user.id)
     r = ActivityResponse.model_validate(activity)
     r.creator_name = current_user.name
-    r.current_participants = 0
+    r.current_participants = activity_service.get_current_participants_count(activity_id)
     return r
 
 @router.delete("/{activity_id}")

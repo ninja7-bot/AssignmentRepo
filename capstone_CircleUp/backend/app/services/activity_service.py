@@ -78,3 +78,12 @@ class ActivityService:
             activity.status = ActivityStatus.COMPLETED
             self.db.commit()
             return
+
+        approved = self.participation_repo.get_approved_for_activity(activity.id)
+        if len(approved) >= activity.max_participants:
+            activity.status = ActivityStatus.FULL
+            self.db.commit()
+        
+    def get_current_participants_count(self, activity_id: int) -> int:
+        approved = self.participation_repo.get_approved_for_activity(activity_id)
+        return len(approved)     
