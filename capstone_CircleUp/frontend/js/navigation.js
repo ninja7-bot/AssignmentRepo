@@ -10,24 +10,37 @@ class NavigationManager {
         this.updateUserInfo();
     }
 
+    createNavItem(text, href, onClick) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.textContent = text;
+        a.href = href;
+        if (onClick) {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                onClick();
+            });
+        }
+        li.appendChild(a);
+        return li;
+    }
+
     updateNavigation() {
         const isAuthenticated = TokenManager.isAuthenticated();
         const navContainer = document.querySelector('.nav-links');
-        
-        if (navContainer) {
-            if (isAuthenticated) {
-                navContainer.innerHTML = `
-                    <li><a href="/pages/dashboard.html">Dashboard</a></li>
-                    <li><a href="/pages/discover.html">Discover</a></li>
-                    <li><a href="/pages/profile.html">Profile</a></li>
-                    <li><a href="#" onclick="logout()">Logout</a></li>
-                `;
-            } else {
-                navContainer.innerHTML = `
-                    <li><a href="/pages/login.html">Login</a></li>
-                    <li><a href="/pages/register.html">Register</a></li>
-                `;
-            }
+
+        if (!navContainer) return;
+
+        navContainer.textContent = '';
+
+        if (isAuthenticated) {
+            navContainer.appendChild(this.createNavItem('Dashboard', '/pages/dashboard.html'));
+            navContainer.appendChild(this.createNavItem('Discover', '/pages/discover.html'));
+            navContainer.appendChild(this.createNavItem('Profile', '/pages/profile.html'));
+            navContainer.appendChild(this.createNavItem('Logout', '#', logout));
+        } else {
+            navContainer.appendChild(this.createNavItem('Login', '/pages/login.html'));
+            navContainer.appendChild(this.createNavItem('Register', '/pages/register.html'));
         }
     }
 
@@ -35,7 +48,7 @@ class NavigationManager {
         const isAuthenticated = TokenManager.isAuthenticated();
         const user = UserManager.getUser();
         const userInfo = document.getElementById('user-info');
-        
+
         if (userInfo && isAuthenticated && user) {
             userInfo.innerHTML = `Welcome, ${user.name}!`;
         }

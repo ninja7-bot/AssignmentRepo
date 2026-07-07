@@ -55,7 +55,6 @@ class ActivitiesManager {
         }
 
         const filtersForm = document.getElementById('filters-form');
-
         if (filtersForm) {
             filtersForm.addEventListener('submit', (e) => this.handleFilters(e));
             filtersForm.addEventListener('reset', (e) => this.handleClearFilters(e));
@@ -280,49 +279,50 @@ class ActivitiesManager {
 
         if (!container) return;
 
+        container.textContent = '';
+
         if (activities.length === 0) {
-            container.innerHTML = `
-                <div class="text-center">
-                    <p>No activities found. Try adjusting your filters or create a new activity!</p>
-                </div>
-            `;
+            const emptyTemplate = document.getElementById('no-activities-template');
+            container.appendChild(emptyTemplate.content.cloneNode(true));
             return;
         }
 
-        container.innerHTML = activities.map(activity => this.renderActivityCard(activity)).join('');
+        activities.forEach((activity) => {
+            container.appendChild(this.buildActivityCard(activity));
+        });
     }
 
-    renderActivityCard(activity) {
-        const statusClass = `status-${activity.status}`;
+    buildActivityCard(activity) {
+        const template = document.getElementById('activity-card-template');
+        const card = template.content.cloneNode(true);
+
+        card.querySelector('.activity-title').textContent = activity.title;
+        card.querySelector('.activity-date').textContent = `📅 ${formatDate(activity.activity_date)}`;
+        card.querySelector('.activity-location').textContent = `📍 ${activity.location}`;
+        card.querySelector('.activity-creator').textContent = `👤 By ${activity.creator_name}`;
+
+        const statusEl = card.querySelector('.activity-status');
+        statusEl.textContent = activity.status;
+        statusEl.classList.add(`status-${activity.status}`);
+
+        card.querySelector('.activity-description').textContent = activity.description;
+        card.querySelector('.activity-participants').textContent =
+            `👥 ${activity.current_participants}/${activity.max_participants} participants`;
+        card.querySelector('.activity-category').textContent = `#${activity.category}`;
+
+        const detailsLink = card.querySelector('.view-details-link');
+        detailsLink.href = `/pages/activity-detail.html?id=${activity.id}`;
+
+        const joinBtn = card.querySelector('.join-activity-btn');
         const canJoin = activity.status === 'open' && activity.creator_id !== UserManager.getUser().id;
+        if (canJoin) {
+            joinBtn.classList.remove('hidden');
+            joinBtn.dataset.activityId = activity.id;
+        } else {
+            joinBtn.remove();
+        }
 
-        return `
-            <div class="activity-card">
-                <div class="activity-header">
-                    <div>
-                        <h3 class="activity-title">${activity.title}</h3>
-                        <div class="activity-meta">
-                            <span>📅 ${formatDate(activity.activity_date)}</span><br>
-                            <span>📍 ${activity.location}</span><br>
-                            <span>👤 By ${activity.creator_name}</span>
-                        </div>
-                    </div>
-                    <span class="activity-status ${statusClass}">${activity.status}</span>
-                </div>
-
-                <p class="activity-description">${activity.description}</p>
-
-                <div class="participants-info">
-                    <span>👥 ${activity.current_participants}/${activity.max_participants} participants</span>
-                    <span class="activity-category">#${activity.category}</span>
-                </div>
-
-                <div class="activity-actions mt-1">
-                    <a href="/pages/activity-detail.html?id=${activity.id}" class="btn btn-secondary">View Details</a>
-                    ${canJoin ? `<button class="btn btn-primary join-activity-btn" data-activity-id="${activity.id}">Request to Join</button>` : ''}
-                </div>
-            </div>
-        `;
+        return card;
     }
 
     async handleCreateActivity(event) {
@@ -376,14 +376,14 @@ class ActivitiesManager {
 
     async handleFilters(event) {
         event.preventDefault();
-
+        
         const formData = new FormData(event.target);
         const filters = {};
-
+        
         for (let [key, value] of formData.entries()) {
             if (value) filters[key] = value;
         }
-
+        
         this.currentFilters = filters;
         this.loadActivities(filters);
     }
@@ -394,11 +394,12 @@ class ActivitiesManager {
     }
 
     async handleJoinActivity(activityId) {
+        const btn = document.querySelector(`.join-activity-btn[data-activity-id="${activityId}"]`);
+
         try {
-            await this.api.request('/participation/request', {
-                method: 'POST',
-                body: JSON.stringify({ activity_id: parseInt(activityId) })
-            });
+            if (btn) showLoading(btn, true);
+
+            await this.api.requestParticipation(activityId);
 
             showAlert('Participation request sent!', 'success');
             this.loadActivities(this.currentFilters);
@@ -410,34 +411,8 @@ class ActivitiesManager {
             } else {
                 showAlert('Connection error. Please try again.', 'error');
             }
-        }
-    }
-
-    async handleApproveRequest(requestId) {
-        try {
-            await this.api.request(`/participation/${requestId}/approve`, {
-                    method: 'PUT'
-            });
-
-            showAlert('Request approved!', 'success');
-            this.loadActivityRequests();
-        } catch (error) {
-            console.error('Approve request failed:', error);
-            showAlert(error.message || 'Approve request failed', 'error');
-        }
-    }
-
-    async handleRejectRequest(requestId) {
-        try {
-            await this.api.request(`/participation/${requestId}/reject`, {
-                    method: 'PUT'
-            });
-
-            showAlert('Request rejected', 'info');
-            this.loadActivityRequests();
-        } catch (error) {
-            console.error('Reject request failed:', error);
-            showAlert(error.message || 'Reject request failed', 'error');
+        } finally {
+            if (btn) showLoading(btn, false);
         }
     }
 }
