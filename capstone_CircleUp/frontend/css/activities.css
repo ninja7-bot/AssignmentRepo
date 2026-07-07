@@ -326,6 +326,10 @@
     color: #6c757d;
 }
 
+.required {
+    color: red
+}
+
 @media (max-width: 768px) {
     .activities-container {
         padding-top: 20px;

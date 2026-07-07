@@ -6,7 +6,7 @@ class ActivityDetailManager {
         this.activityId = null;
         this.currentUser = null;
         this.activity = null;
-        this.myRequestStatus = null;
+        this.myRequestStatus = null; // null | 'pending' | 'approved' | 'rejected'
         this.init();
     }
 
@@ -44,6 +44,7 @@ class ActivityDetailManager {
 
             this.renderActivity();
             
+            // Load additional data based on user role
             if (this.isCreator()) {
                 await this.loadParticipationRequests();
             }
@@ -86,34 +87,45 @@ class ActivityDetailManager {
 
     renderActions() {
         const actionsContainer = document.getElementById('activity-actions');
-        let actions = '';
+        actionsContainer.textContent = '';
+
+        const addButton = (text, className, onClick, disabled = false) => {
+            const btn = document.createElement(disabled ? 'span' : 'button');
+            if (!disabled) btn.type = 'button';
+            btn.className = className;
+            btn.textContent = text;
+            if (disabled) {
+                btn.setAttribute('disabled', '');
+            } else {
+                btn.addEventListener('click', onClick);
+            }
+            actionsContainer.appendChild(btn);
+        };
 
         if (this.isCreator()) {
-            actions += `
-                <button class="btn btn-primary" onclick="activityDetailManager.editActivity()">Edit Activity</button>
-                <button class="btn btn-danger" onclick="activityDetailManager.cancelActivity()">Cancel Activity</button>
-            `;
+            addButton('Edit Activity', 'btn btn-primary', () => this.editActivity());
+            addButton('Cancel Activity', 'btn btn-danger', () => this.cancelActivity());
         } else if (this.myRequestStatus === 'pending') {
-            actions += `<span class="btn btn-secondary" disabled>Request Pending</span>`;
+            addButton('Request Pending', 'btn btn-secondary', null, true);
         } else if (this.myRequestStatus === 'approved') {
-            actions += `<span class="btn btn-success" disabled>✓ You're In</span>`;
+            addButton("✓ You're In", 'btn btn-success', null, true);
         } else if (this.myRequestStatus === 'rejected') {
-            actions += `<span class="btn btn-danger" disabled>Request Rejected</span>`;
+            addButton('Request Rejected', 'btn btn-danger', null, true);
         } else if (this.canJoin()) {
-            actions += `
-                <button class="btn btn-success" onclick="activityDetailManager.requestToJoin()">Request to Join</button>
-            `;
+            addButton('Request to Join', 'btn btn-success', () => this.requestToJoin());
         } else if (this.activity.status === 'full') {
-            actions += `<span class="btn btn-secondary" disabled>Activity Full</span>`;
+            addButton('Activity Full', 'btn btn-secondary', null, true);
         } else if (this.activity.status === 'cancelled') {
-            actions += `<span class="btn btn-danger" disabled>Activity Cancelled</span>`;
+            addButton('Activity Cancelled', 'btn btn-danger', null, true);
         } else if (this.activity.status === 'completed') {
-            actions += `<span class="btn btn-secondary" disabled>Activity Completed</span>`;
+            addButton('Activity Completed', 'btn btn-secondary', null, true);
         }
 
-        actions += `<a href="/pages/discover.html" class="btn btn-secondary">Back to Activities</a>`;
-        
-        actionsContainer.innerHTML = actions;
+        const backLink = document.createElement('a');
+        backLink.href = '/pages/discover.html';
+        backLink.className = 'btn btn-secondary';
+        backLink.textContent = 'Back to Activities';
+        actionsContainer.appendChild(backLink);
     }
 
     async loadMyRequestStatus() {
@@ -141,28 +153,32 @@ class ActivityDetailManager {
     renderParticipationRequests(requests) {
         const section = document.getElementById('participation-requests-section');
         const container = document.getElementById('participation-requests');
+        container.textContent = '';
 
-        if (requests.length === 0) {
-            container.innerHTML = '<p>No pending participation requests.</p>';
+        const pending = requests.filter((request) => request.status === 'pending');
+
+        if (pending.length === 0) {
+            const emptyTemplate = document.getElementById('no-requests-template');
+            container.appendChild(emptyTemplate.content.cloneNode(true));
         } else {
-            container.innerHTML = requests
-                .filter(request => request.status === 'pending')
-                .map(request => `
-                    <div class="request-item">
-                        <div class="request-info">
-                            <div class="request-user">${request.user_name}</div>
-                            <div class="request-date">Requested on ${formatDate(request.requested_at)}</div>
-                        </div>
-                        <div class="request-actions">
-                            <button class="btn btn-success" onclick="activityDetailManager.approveRequest(${request.id})">
-                                Approve
-                            </button>
-                            <button class="btn btn-danger" onclick="activityDetailManager.rejectRequest(${request.id})">
-                                Reject
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+            const template = document.getElementById('request-item-template');
+
+            pending.forEach((request) => {
+                const item = template.content.cloneNode(true);
+
+                item.querySelector('.request-user').textContent = request.user_name;
+                item.querySelector('.request-date').textContent =
+                    `Requested on ${formatDate(request.requested_at)}`;
+
+                item.querySelector('.approve-btn').addEventListener('click', () => {
+                    this.approveRequest(request.id);
+                });
+                item.querySelector('.reject-btn').addEventListener('click', () => {
+                    this.rejectRequest(request.id);
+                });
+
+                container.appendChild(item);
+            });
         }
 
         section.classList.remove('hidden');
@@ -181,16 +197,27 @@ class ActivityDetailManager {
     renderContacts(contacts) {
         const section = document.getElementById('contacts-section');
         const container = document.getElementById('contacts-list');
+        container.textContent = '';
 
-        container.innerHTML = contacts.map(contact => `
-            <div class="contact-item">
-                <div class="contact-name">${contact.name}</div>
-                <div class="contact-details">
-                    ${contact.phone_number ? `📱 ${contact.phone_number}` : ''}
-                    ${contact.email ? `📧 ${contact.email}` : ''}
-                </div>
-            </div>
-        `).join('');
+        const template = document.getElementById('contact-item-template');
+
+        contacts.forEach((contact) => {
+            const item = template.content.cloneNode(true);
+            item.querySelector('.contact-name').textContent = contact.name;
+
+            const detailsEl = item.querySelector('.contact-details');
+            if (contact.phone_number) {
+                detailsEl.appendChild(document.createTextNode(`📱 ${contact.phone_number}`));
+            }
+            if (contact.phone_number && contact.email) {
+                detailsEl.appendChild(document.createElement('br'));
+            }
+            if (contact.email) {
+                detailsEl.appendChild(document.createTextNode(`📧 ${contact.email}`));
+            }
+
+            container.appendChild(item);
+        });
 
         section.classList.remove('hidden');
     }

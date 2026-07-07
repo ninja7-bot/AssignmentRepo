@@ -91,6 +91,40 @@
         </div>
     </main>
 
+    <template id="activity-card-template">
+        <div class="activity-card">
+            <div class="activity-header">
+                <div>
+                    <h3 class="activity-title"></h3>
+                    <div class="activity-meta">
+                        <span class="activity-date"></span><br>
+                        <span class="activity-location"></span><br>
+                        <span class="activity-creator"></span>
+                    </div>
+                </div>
+                <span class="activity-status"></span>
+            </div>
+
+            <p class="activity-description"></p>
+
+            <div class="participants-info">
+                <span class="activity-participants"></span>
+                <span class="activity-category"></span>
+            </div>
+
+            <div class="activity-actions mt-1">
+                <a class="btn btn-secondary view-details-link">View Details</a>
+                <button type="button" class="btn btn-primary join-activity-btn hidden">Request to Join</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="no-activities-template">
+        <div class="text-center">
+            <p>No activities found. Try adjusting your filters or create a new activity!</p>
+        </div>
+    </template>
+
     <script src="../js/utils.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/navigation.js"></script>
