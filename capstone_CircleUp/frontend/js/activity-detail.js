@@ -83,7 +83,7 @@ class ActivityDetailManager {
         const actionsContainer = document.getElementById('activity-actions');
         let actions = '';
 
-        if (this.isCreator()) {
+        if (this.isCreator() && this.activity.status !== 'completed' && this.activity.status !== 'cancelled') {
             actions += `
                 <button class="btn btn-primary" onclick="activityDetailManager.editActivity()">Edit Activity</button>
                 <button class="btn btn-danger" onclick="activityDetailManager.cancelActivity()">Cancel Activity</button>

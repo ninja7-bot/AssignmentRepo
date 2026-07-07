@@ -163,6 +163,10 @@ body {
     animation: spin 1s ease-in-out infinite;
 }
 
+.required {
+    color: #dc3545;
+}
+
 @keyframes spin {
     to { transform: rotate(360deg); }
 }

@@ -40,6 +40,13 @@ class EditActivityManager {
                 return;
             }
 
+            if (this.activity.status === "completed" || this.activity.status === "cancelled") {
+                this.showError(
+                    `This activity is ${this.activity.status} and can no longer be edited.`
+                );
+                return;
+            }
+
             this.populateForm(this.activity);
             this.showForm();
 
@@ -63,16 +70,7 @@ class EditActivityManager {
         form.location.value = activity.location;
         form.max_participants.value = activity.max_participants;
 
-        const activityDate = new Date(activity.activity_date);
-
-        const year = activityDate.getFullYear();
-        const month = String(activityDate.getMonth() + 1).padStart(2, '0');
-        const day = String(activityDate.getDate()).padStart(2, '0');
-        const hours = String(activityDate.getHours()).padStart(2, '0');
-        const minutes = String(activityDate.getMinutes()).padStart(2, '0');
-
-        form.activity_date.value =
-            `${year}-${month}-${day}T${hours}:${minutes}`;
+        form.activity_date.value = activity.activity_date.slice(0, 16);
     }
 
     initializeEventListeners() {
@@ -210,6 +208,20 @@ class EditActivityManager {
         return true;
     }
 
+    getCurrentISTDateTime() {
+        const now = new Date();
+
+        const istOffsetMilliseconds = 5.5 * 60 * 60 * 1000;
+        const ist = new Date(now.getTime() + istOffsetMilliseconds);
+        const year = ist.getUTCFullYear();
+        const month = String(ist.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(ist.getUTCDate()).padStart(2, '0');
+        const hours = String(ist.getUTCHours()).padStart(2, '0');
+        const minutes = String(ist.getUTCMinutes()).padStart(2, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
     validateActivityDate(field) {
         if (!field.value) {
             this.showFieldError(
@@ -219,9 +231,10 @@ class EditActivityManager {
             return false;
         }
 
-        const selectedDate = new Date(field.value);
+        const selectedDateTime = field.value;
+        const currentDateTime = this.getCurrentISTDateTime();
 
-        if (selectedDate <= new Date()) {
+        if (selectedDateTime <= currentDateTime) {
             this.showFieldError(
                 field,
                 'Activity must be scheduled for a future date'
@@ -292,14 +305,14 @@ class EditActivityManager {
             return;
         }
 
-        const activityDate = new Date(form.activity_date.value);
+        const activityDate = `${form.activity_date.value}:00+05:30`;
 
         const updateData = {
             title: form.title.value.trim(),
             description: form.description.value.trim(),
             category: form.category.value,
             location: form.location.value.trim(),
-            activity_date: activityDate.toISOString(),
+            activity_date: activityDate,
             max_participants: Number(form.max_participants.value)
         };
 

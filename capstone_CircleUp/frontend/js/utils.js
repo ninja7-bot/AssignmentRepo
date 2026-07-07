@@ -93,6 +93,7 @@ function createAlertContainer() {
 // Format date
 function formatDate(dateString) {
     const options = { 
+        timeZone: 'Asia/Kolkata',
         year: 'numeric', 
         month: 'long', 
         day: 'numeric',
