@@ -16,6 +16,7 @@ def create_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """Create a new Activity."""
     activity_service = ActivityService(db)
     activity = activity_service.create_activity(activity_data, current_user.id)
     response = ActivityResponse.model_validate(activity)
@@ -31,6 +32,7 @@ def list_activities(
     date_to: datetime | None = None,
     db: Session = Depends(get_db)
 ):
+    """List all activities."""
     activity_service = ActivityService(db)
     filters = {"category": category, "location": location, "date_from": date_from, "date_to": date_to}
     filters = {k: v for k, v in filters.items() if v is not None}
@@ -47,6 +49,7 @@ def list_activities(
 
 @router.get("/{activity_id}", response_model=ActivityResponse)
 def get_activity(activity_id: int, db: Session = Depends(get_db)):
+    """Get activity respective to activity_id."""
     activity_service = ActivityService(db)
     activity = activity_service.get_activity(activity_id)
     r = ActivityResponse.model_validate(activity)
@@ -61,6 +64,7 @@ def update_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """Update a prexisting activity."""
     activity_service = ActivityService(db)
     activity = activity_service.update_activity(activity_id, update_data, current_user.id)
     r = ActivityResponse.model_validate(activity)
@@ -74,6 +78,7 @@ def cancel_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """Cancel a prexisting activity."""
     activity_service = ActivityService(db)
     activity_service.cancel_activity(activity_id, current_user.id)
     return {"message": "Activity cancelled successfully"}

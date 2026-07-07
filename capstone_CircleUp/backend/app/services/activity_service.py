@@ -34,18 +34,22 @@ class ActivityService:
                 detail="Failed to create activity"
             )
     def get_activity(self, activity_id: int):
+        """Fetch Activity for activity_id."""
         activity = self.activity_repo.get_by_id(activity_id)
+        self._update_status_if_needed(activity)
         if not activity:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
         return activity
 
     def list_activities(self, filters: dict | None):
+        """List all activities."""
         activities = self.activity_repo.get_all(filters)
         for act in activities:
             self._update_status_if_needed(act)
         return activities
 
     def update_activity(self, activity_id: int, update_data: ActivityUpdate, user_id: int):
+        """Update a prexisting activity."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
@@ -56,6 +60,7 @@ class ActivityService:
         return self.activity_repo.update_activity(activity_id, update_data.model_dump(exclude_unset=True))
 
     def cancel_activity(self, activity_id: int, user_id: int):
+        """Cancel a prexisting activity."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
@@ -66,12 +71,14 @@ class ActivityService:
         return self.activity_repo.update_status(activity_id, ActivityStatus.CANCELLED)
 
     def can_accept_new_requests(self, activity_id: int) -> bool:
+        """Is Activity OPEN?"""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             return False
         return activity.status == ActivityStatus.OPEN
     
     def _update_status_if_needed(self, activity):
+        """Laze Status Update for all activities."""
         if activity.status in [ActivityStatus.CANCELLED, ActivityStatus.COMPLETED]:
             return
         if activity.activity_date < datetime.now(activity.activity_date.tzinfo):
