@@ -1,14 +1,15 @@
-"""
-main.py responsible for initializing the FastAPI application, setting up middleware, and including routers for 
-authentication and user management. It also creates the necessary database tables on startup.
-"""
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, users
+from .routers import auth, users, activity, participation
 from .database import engine, Base
+import logging
 
-"""Create database tables"""
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("circleup")
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -17,21 +18,20 @@ app = FastAPI(
     version="1.0.0"
 )
 
-"""
-Configure CORS
-Allows from everywhere; need to restrict in production
-"""
+logger.info("CircleUp Started.")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-"""Include routers"""
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(activity.router)
+app.include_router(participation.router)
 
 @app.get("/")
 def read_root():

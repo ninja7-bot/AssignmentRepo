@@ -11,30 +11,35 @@ from ..database import get_db
 from ..schemas.auth import LoginRequest
 from ..schemas.user import UserResponse, UserCreate
 from ..services.auth_service import AuthService
+import logging
+
+logger = logging.getLogger("circleup")
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/register", response_model=dict)
-def register(user_data: dict[str, Any], db: Session = Depends(get_db)):
+def register(user_data: UserCreate, db: Session = Depends(get_db)):
     """Register a new user and return an access token upon successful registration"""
     auth_service = AuthService(db)
-    try:
+    try: 
         user = auth_service.register_user(user_data)
         access_token = auth_service.create_access_token_for_user(user)
-        
+
+        logger.info(f"New User Registered by {user_data.email}.")
+
         return {
             "message": "User registered successfully",
             "access_token": access_token,
             "token_type": "bearer",
-            "user": UserResponse.model_validate(user)
+            "user": UserResponse.model_validate(user),
         }
-    except HTTPException:
-        raise
-    except Exception as e:
+    
+    except ValueError as exc:
+        logger.warning(f"Registration Failed for {user_data.email}: {str(exc)}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Registration failed"
-        )
+            status_code=400,
+            detail=str(exc),
+        ) from exc
 
 @router.post("/login", response_model=dict)
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):
@@ -43,6 +48,8 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     try:
         user = auth_service.authenticate_user(login_data.email, login_data.password)
         access_token = auth_service.create_access_token_for_user(user)
+
+        logger.info(f"{login_data.email} logged in.")
         
         return {
             "message": "Login successful",
@@ -51,8 +58,10 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
             "user": UserResponse.model_validate(user)
         }
     except HTTPException:
+        logger.warning(f"Login Failed for {login_data.email}: {HTTPException}")
         raise
     except Exception as e:
+        logger.warning(f"Login Failed for {login_data.email}: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Login failed"

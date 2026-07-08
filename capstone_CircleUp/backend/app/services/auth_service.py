@@ -13,43 +13,42 @@ from ..schemas.user import UserCreate
 from ..repository.user_repository import UserRepository
 from ..utils.security import verify_password, get_password_hash, create_access_token
 from ..config import settings
+import logging
 
+logger = logging.getLogger("circleup")
 class AuthService:
     def __init__(self, db: Session):
         self.db = db
         self.user_repo = UserRepository(db)
 
-    def register_user(self, user_data: dict[str, Any]) -> User:
+    def register_user(self, user_data: UserCreate) -> User:
         """Register a new user with validation and password hashing"""
-        try:
-            # Prepare user data with hashed password
-            hashed_password = get_password_hash(user_data["password"])
-            user_dict = user_data.copy()
-            user_dict['hashed_password'] = hashed_password
-            del user_dict['password']  # Remove plain password
-            
-            # Create user using repository
-            return self.user_repo.create_user(user_dict)
-            
-        except ValueError as e:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=str(e)
-            )
+        user_dict = user_data.model_dump()
+        
+        password = user_dict.pop("password")
+        user_dict["hashed_password"] = get_password_hash(password)
+
+        logger.info(f"Registration Service: User Registered w/ email {user_data.email} .")
+
+        return self.user_repo.create_user(user_dict)
 
     def authenticate_user(self, email: str, password: str) -> User:
         """Authenticate user by email and password"""
         try:
             user = self.user_repo.get_by_email(email)
             if not user or not verify_password(password, user.hashed_password):
+                logger.warning(f"Failed login by {email}.")
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Incorrect email or password"
                 )
+            logger.info(f"Login Service: {email} logged in.")
             return user
-        except HTTPException:
+        except HTTPException as E:
+            logger.warning(f"Login Service Exception Login: Attempt by {email}: {str(E)}")
             raise
-        except Exception:
+        except Exception as E:
+            logger.warning(f"Login Service Unauthorized Login: Attempt by {email}: {str(E)}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect email or password"
@@ -58,6 +57,7 @@ class AuthService:
     def create_access_token_for_user(self, user: User) -> str:
         """Create an access token for the authenticated user"""
         access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+        logger.info(f"Token Generated: {user.id} generated token.")
         return create_access_token(
             subject=str(user.id), expires_delta=access_token_expires
         )

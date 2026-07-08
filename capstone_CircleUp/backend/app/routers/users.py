@@ -5,6 +5,10 @@ from ..schemas.user import UserResponse, UserUpdate, UserProfile
 from ..services.user_service import UserService
 from ..utils.dependencies import get_current_user
 from ..models.user import User
+import logging
+
+logger = logging.getLogger("CircleUp")
+
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -22,6 +26,7 @@ def update_current_user_profile(
     """Update current user's profile"""
     user_service = UserService(db)
     updated_user = user_service.update_user(current_user.id, user_update)
+    logger.info(f"{current_user.id} triggered an update for their profile.")
     return UserResponse.model_validate(updated_user)
 
 @router.get("/{user_id}", response_model=UserProfile)
@@ -43,4 +48,5 @@ def delete_current_user_account(
     """Delete current user's account"""
     user_service = UserService(db)
     user_service.delete_user(current_user.id)
+    logger.info(f"{current_user.id} triggered a delete for their account.")
     return {"message": "Account deleted successfully"}

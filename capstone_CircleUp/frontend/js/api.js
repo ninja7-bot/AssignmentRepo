@@ -1,4 +1,4 @@
-// API service for CircleUp application
+// API Service
 
 class ApiService {
     constructor() {
@@ -15,48 +15,34 @@ class ApiService {
 
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
-        
-        const defaultOptions = {
-            headers: this.getAuthHeaders()
-        };
-
         const mergedOptions = {
-            ...defaultOptions,
+            headers: this.getAuthHeaders(),
             ...options,
-            headers: {
-                ...defaultOptions.headers,
-                ...options.headers
-            }
+            headers: { ...this.getAuthHeaders(), ...options.headers }
         };
 
         try {
             const response = await fetch(url, mergedOptions);
-            
             let data;
-            const contentType = response.headers.get('content-type');
             
-            if (contentType && contentType.includes('application/json')) {
+            if (response.headers.get('content-type')?.includes('application/json')) {
                 data = await response.json();
             } else {
                 data = await response.text();
             }
 
             if (!response.ok) {
-                throw new ApiError(data.detail || data || 'Request failed', response.status, data);
+                throw new ApiError(data.detail || data.message || data || 'Request failed', response.status, data);
             }
 
             return data;
         } catch (error) {
-            if (error instanceof ApiError) {
-                throw error;
-            }
-            
-            console.error('API request failed:', error);
-            throw new ApiError('Network error occurred', 0, error);
+            if (error instanceof ApiError) throw error;
+            throw new ApiError('Network error', 0, error);
         }
     }
 
-    // Authentication endpoints
+    // Auth
     async register(userData) {
         return await this.request('/auth/register', {
             method: 'POST',
@@ -71,13 +57,7 @@ class ApiService {
         });
     }
 
-    async logout() {
-        return await this.request('/auth/logout', {
-            method: 'POST'
-        });
-    }
-
-    // User endpoints
+    // Users
     async getCurrentUser() {
         return await this.request('/users/me');
     }
@@ -89,12 +69,80 @@ class ApiService {
         });
     }
 
-    async getUser(userId) {
-        return await this.request(`/users/${userId}`);
+    async deleteCurrentUser() {
+        return await this.request('/users/me', { method: 'DELETE' });
+    }
+
+    // Activities
+    async searchActivities(filters = {}) {
+        const params = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value) params.append(key, value);
+        });
+        return await this.request(`/activities/search?${params.toString()}`);
+    }
+
+    async getActivity(activityId) {
+        return await this.request(`/activities/${activityId}`);
+    }
+
+    async getMyActivities() {
+        return await this.request('/activities/mine');
+    }
+
+    async createActivity(activityData) {
+        return await this.request('/activities', {
+            method: 'POST',
+            body: JSON.stringify(activityData)
+        });
+    }
+
+    async updateActivity(activityId, activityData) {
+        return await this.request(`/activities/${activityId}`, {
+            method: 'PUT',
+            body: JSON.stringify(activityData)
+        });
+    }
+
+    async deleteActivity(activityId) {
+        return await this.request(`/activities/${activityId}`, {
+            method: 'DELETE'
+        });
+    }
+
+    // Participation
+    async requestParticipation(activityId) {
+        return await this.request('/participation/request', {
+            method: 'POST',
+            body: JSON.stringify({ activity_id: parseInt(activityId, 10) })
+        });
+    }
+
+    async approveParticipation(requestId) {
+        return await this.request(`/participation/approve/${requestId}`, {
+            method: 'POST'
+        });
+    }
+
+    async rejectParticipation(requestId) {
+        return await this.request(`/participation/reject/${requestId}`, {
+            method: 'POST'
+        });
+    }
+
+    async getMyParticipationRequests() {
+        return await this.request('/participation/my-requests');
+    }
+
+    async getActivityRequests(activityId) {
+        return await this.request(`/participation/activity/${activityId}/requests`);
+    }
+
+    async getActivityContacts(activityId) {
+        return await this.request(`/participation/activity/${activityId}/contacts`);
     }
 }
 
-// Custom error class for API errors
 class ApiError extends Error {
     constructor(message, status, data) {
         super(message);
@@ -103,38 +151,21 @@ class ApiError extends Error {
         this.data = data;
     }
 
-    isAuthError() {
-        return this.status === 401;
-    }
-
-    isValidationError() {
-        return this.status === 422;
-    }
-
-    isNotFoundError() {
-        return this.status === 404;
-    }
+    isAuthError() { return this.status === 401; }
+    isValidationError() { return this.status === 422 || this.status === 400; }
+    isNotFoundError() { return this.status === 404; }
 }
 
-// Create global API instance
 const api = new ApiService();
 
-// Global error handler for API errors
 window.addEventListener('unhandledrejection', function(event) {
-    if (event.reason instanceof ApiError) {
-        console.error('Unhandled API error:', event.reason);
-        
-        if (event.reason.isAuthError()) {
-            showAlert('Session expired. Please log in again.', 'warning');
-            TokenManager.removeToken();
-            UserManager.removeUser();
-            setTimeout(() => {
-                window.location.href = '/pages/login.html';
-            }, 2000);
-        } else {
-            showAlert(event.reason.message || 'An error occurred', 'error');
-        }
-        
+    if (event.reason instanceof ApiError && event.reason.isAuthError()) {
+        showAlert('Session expired. Please log in again.', 'warning');
+        TokenManager.removeToken();
+        UserManager.removeUser();
+        setTimeout(() => {
+            window.location.href = '/pages/login.html';
+        }, 2000);
         event.preventDefault();
     }
 });

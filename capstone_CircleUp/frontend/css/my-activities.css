@@ -1,0 +1,57 @@
+/* My Activities styling */
+
+.tab-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    background-color: #dc3545;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.card-actions {
+    margin-top: auto;
+}
+
+.sent-request-title {
+    font-size: 15px;
+}
+
+.request-activity-title {
+    margin: 2px 0;
+    color: #444;
+    font-size: 13px;
+}
+
+.sent-status-badge {
+    padding: 5px 9px;
+    font-size: 11px;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background-color: #e8f7ed;
+    color: #218838;
+}
+
+.status-rejected {
+    background-color: #fdebec;
+    color: #c82333;
+}
+
+@media (max-width: 768px) {
+    .activity-tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        flex: 1 1 45%;
+    }
+}

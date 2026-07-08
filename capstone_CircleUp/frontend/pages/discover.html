@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Activities - CircleUp</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/activities.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">CircleUp</a>
+            <ul class="nav-links"></ul>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container activities-container">
+            <section class="page-header">
+                <h1>Discover Activities</h1>
+                <p>Find and join activities that interest you</p>
+            </section>
+
+            <section class="filters-section">
+                <h2 class="mb-1">Filter Activities</h2>
+                <form id="filters-form">
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category" class="form-control">
+                                <option value="">All Categories</option>
+                                <option value="sports">Sports</option>
+                                <option value="social">Social</option>
+                                <option value="education">Education</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="travel">Travel</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input 
+                                type="text" 
+                                id="location" 
+                                name="location" 
+                                class="form-control" 
+                                placeholder="Enter city or location"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="date_from">From Date</label>
+                            <input 
+                                type="datetime-local" 
+                                id="date_from" 
+                                name="date_from" 
+                                class="form-control"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sort_by">Sort By</label>
+                            <select id="sort_by" name="sort_by" class="form-control">
+                                <option value="activity_date">Date</option>
+                                <option value="created_at">Created</option>
+                                <option value="title">Title</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sort_order">Order</label>
+                            <select id="sort_order" name="sort_order" class="form-control">
+                                <option value="asc">Ascending</option>
+                                <option value="desc">Descending</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-actions mt-1">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <button type="reset" class="btn btn-secondary">Clear Filters</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="activities-section">
+                <div class="section-header">
+                    <h2>Available Activities</h2>
+                    <a href="create-activity.html" class="btn btn-success">Create Activity</a>
+                </div>
+                
+                <div id="activities-container" class="activities-grid">
+                    <div class="loading">Loading activities...</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <template id="activity-card-template">
+        <div class="activity-card">
+            <div class="activity-header">
+                <div>
+                    <h3 class="activity-title"></h3>
+                    <div class="activity-meta">
+                        <span class="activity-date"></span><br>
+                        <span class="activity-location"></span><br>
+                        <span class="activity-creator"></span>
+                    </div>
+                </div>
+                <span class="activity-status"></span>
+            </div>
+
+            <p class="activity-description"></p>
+
+            <div class="participants-info">
+                <span class="activity-participants"></span>
+                <span class="activity-category"></span>
+            </div>
+
+            <div class="activity-actions mt-1">
+                <a class="btn btn-secondary view-details-link">View Details</a>
+                <button type="button" class="btn btn-primary join-activity-btn hidden">Request to Join</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="no-activities-template">
+        <div class="text-center">
+            <p>No activities found. Try adjusting your filters or create a new activity!</p>
+        </div>
+    </template>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/activities.js"></script>
+</body>
+</html>
