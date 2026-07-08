@@ -19,23 +19,14 @@ class AuthService:
         self.db = db
         self.user_repo = UserRepository(db)
 
-    def register_user(self, user_data: dict[str, Any]) -> User:
+    def register_user(self, user_data: UserCreate) -> User:
         """Register a new user with validation and password hashing"""
-        try:
-            # Prepare user data with hashed password
-            hashed_password = get_password_hash(user_data["password"])
-            user_dict = user_data.copy()
-            user_dict['hashed_password'] = hashed_password
-            del user_dict['password']  # Remove plain password
-            
-            # Create user using repository
-            return self.user_repo.create_user(user_dict)
-            
-        except ValueError as e:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=str(e)
-            )
+        user_dict = user_data.model_dump()
+        
+        password = user_dict.pop("password")
+        user_dict["hashed_password"] = get_password_hash(password)
+
+        return self.user_repo.create_user(user_dict)
 
     def authenticate_user(self, email: str, password: str) -> User:
         """Authenticate user by email and password"""
