@@ -21,6 +21,12 @@ class ActivityRepository(BaseRepository[Activity]):
     def get_by_id(self, activity_id: int) -> Activity:
         return self.db.query(Activity).filter(Activity.id == activity_id).first()
 
+    SORTABLE_COLUMNS = {
+        "activity_date": Activity.activity_date,
+        "created_at": Activity.created_at,
+        "title": Activity.title,
+    }
+
     def get_all(self, filters: dict | None):
         query = self.db.query(Activity)
         if filters is None:
@@ -40,7 +46,16 @@ class ActivityRepository(BaseRepository[Activity]):
         if filters.get("status"):
             query = query.filter(Activity.status == filters["status"])
 
-        return query.order_by(Activity.activity_date).all()
+        sort_by = filters.get("sort_by")
+        if isinstance(sort_by, str):
+            sort_column = self.SORTABLE_COLUMNS.get(sort_by, Activity.activity_date)
+        else:
+            sort_column = Activity.activity_date
+
+        if filters.get("sort_order") == "desc":
+            sort_column = sort_column.desc()
+
+        return query.order_by(sort_column).all()
 
     def update_activity(self, activity_id: int, update_data: dict) -> Activity | None:
         activity = self.get_by_id(activity_id)

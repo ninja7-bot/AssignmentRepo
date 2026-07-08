@@ -29,10 +29,19 @@ def list_activities(
     location: str | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
+    sort_by: str | None = Query(default=None, pattern="^(activity_date|created_at|title)$"),
+    sort_order: str | None = Query(default=None, pattern="^(asc|desc)$"),
     db: Session = Depends(get_db)
 ):
     activity_service = ActivityService(db)
-    filters = {"category": category, "location": location, "date_from": date_from, "date_to": date_to}
+    filters = {
+        "category": category,
+        "location": location,
+        "date_from": date_from,
+        "date_to": date_to,
+        "sort_by": sort_by,
+        "sort_order": sort_order
+    }
     filters = {k: v for k, v in filters.items() if v is not None}
     
     activities = activity_service.list_activities(filters)
@@ -41,6 +50,23 @@ def list_activities(
     for act in activities:
         r = ActivityResponse.model_validate(act)
         r.creator_name = act.creator.name if act.creator else None
+        r.current_participants = activity_service.get_current_participants_count(act.id)
+        result.append(r)
+    return result
+
+@router.get("/mine", response_model=list[ActivityResponse])
+def list_my_activities(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Activities created (hosted) by the current user."""
+    activity_service = ActivityService(db)
+    activities = activity_service.get_user_activities(current_user.id)
+
+    result = []
+    for act in activities:
+        r = ActivityResponse.model_validate(act)
+        r.creator_name = current_user.name
         r.current_participants = activity_service.get_current_participants_count(act.id)
         result.append(r)
     return result

@@ -35,6 +35,7 @@ class ActivityService:
             )
     def get_activity(self, activity_id: int):
         activity = self.activity_repo.get_by_id(activity_id)
+        self._update_status_if_needed(activity)
         if not activity:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
         return activity
