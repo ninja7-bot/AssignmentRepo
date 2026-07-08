@@ -86,6 +86,10 @@ class ApiService {
         return await this.request(`/activities/${activityId}`);
     }
 
+    async getMyActivities() {
+        return await this.request('/activities/mine');
+    }
+
     async createActivity(activityData) {
         return await this.request('/activities', {
             method: 'POST',

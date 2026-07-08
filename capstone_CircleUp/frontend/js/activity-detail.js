@@ -102,7 +102,7 @@ class ActivityDetailManager {
             actionsContainer.appendChild(btn);
         };
 
-        if (this.isCreator()) {
+        if (this.isCreator() && this.activity.status !== "completed" &&  this.activity.status !== "cancelled" ) {
             addButton('Edit Activity', 'btn btn-primary', () => this.editActivity());
             addButton('Cancel Activity', 'btn btn-danger', () => this.cancelActivity());
         } else if (this.myRequestStatus === 'pending') {

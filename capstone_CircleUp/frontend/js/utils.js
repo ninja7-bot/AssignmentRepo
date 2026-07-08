@@ -3,6 +3,8 @@
 // Get API base URL
 const API_BASE_URL = 'http://localhost:8000';
 
+const HOME_PAGE = '/pages/discover.html';
+
 // Token management
 const TokenManager = {
     getToken() {
@@ -157,7 +159,7 @@ function requireAuth() {
 // Redirect if already authenticated
 function requireGuest() {
     if (TokenManager.isAuthenticated()) {
-        window.location.href = '/pages/dashboard.html';
+        window.location.href = HOME_PAGE;
         return false;
     }
     return true;

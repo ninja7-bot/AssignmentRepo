@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Activities - CircleUp</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/activities.css">
+    <link rel="stylesheet" href="../css/activity-detail.css">
+    <link rel="stylesheet" href="../css/my-activities.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">CircleUp</a>
+            <ul class="nav-links"></ul>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container activities-container">
+            <section class="page-header">
+                <h1>My Activities</h1>
+                <p>Everything you're hosting, joining, and waiting on</p>
+            </section>
+
+            <div class="activity-tabs">
+                <button type="button" class="tab-btn active" data-tab="hosting">Hosting</button>
+                <button type="button" class="tab-btn" data-tab="joined">Joined</button>
+                <button type="button" class="tab-btn" data-tab="pending">Pending Requests</button>
+                <button type="button" class="tab-btn" data-tab="incoming">
+                    Requests to Approve
+                    <span id="incoming-badge" class="tab-badge hidden">0</span>
+                </button>
+            </div>
+
+            <div id="tab-hosting" class="tab-content">
+                <div class="section-header">
+                    <h2>Activities You're Hosting</h2>
+                    <a href="create-activity.html" class="btn btn-success">Create Activity</a>
+                </div>
+                <div id="hosting-container" class="activities-grid">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <div id="tab-joined" class="tab-content hidden">
+                <div class="section-header">
+                    <h2>Activities You've Joined</h2>
+                </div>
+                <div id="joined-container" class="activities-grid">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <div id="tab-pending" class="tab-content hidden">
+                <div class="section-header">
+                    <h2>Requests You've Sent</h2>
+                </div>
+                <div id="pending-requests-container" class="requests-list">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <div id="tab-incoming" class="tab-content hidden">
+                <div class="section-header">
+                    <h2>Requests Waiting on Your Approval</h2>
+                </div>
+                <div id="incoming-requests-container" class="requests-list">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Activity card, reused for Hosting + Joined tabs -->
+    <template id="activity-card-template">
+        <div class="activity-card">
+            <div class="activity-header">
+                <div>
+                    <h3 class="activity-title"></h3>
+                    <div class="activity-meta">
+                        <span class="activity-date"></span><br>
+                        <span class="activity-location"></span>
+                    </div>
+                </div>
+                <span class="activity-status"></span>
+            </div>
+
+            <p class="activity-description"></p>
+
+            <div class="participants-info">
+                <span class="activity-participants"></span>
+                <span class="activity-category"></span>
+            </div>
+
+            <div class="activity-actions mt-1 card-actions"></div>
+        </div>
+    </template>
+
+    <!-- Generic empty-state message for any tab -->
+    <template id="empty-state-template">
+        <div class="text-center">
+            <p class="empty-state-text"></p>
+        </div>
+    </template>
+
+    <!-- A request the current user sent to join someone else's activity -->
+    <template id="sent-request-item-template">
+        <div class="request-item">
+            <div class="request-info">
+                <div class="request-user sent-request-title"></div>
+                <div class="request-date"></div>
+            </div>
+            <div class="request-actions">
+                <span class="activity-status sent-status-badge"></span>
+                <a class="btn btn-secondary view-link">View</a>
+            </div>
+        </div>
+    </template>
+
+    <!-- An incoming request from someone wanting to join an activity the user hosts -->
+    <template id="incoming-request-item-template">
+        <div class="request-item">
+            <div class="request-info">
+                <div class="request-user"></div>
+                <div class="request-activity-title"></div>
+                <div class="request-date"></div>
+            </div>
+            <div class="request-actions">
+                <button type="button" class="btn btn-success approve-btn">Approve</button>
+                <button type="button" class="btn btn-danger reject-btn">Reject</button>
+            </div>
+        </div>
+    </template>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/my-activities.js"></script>
+</body>
+</html>
