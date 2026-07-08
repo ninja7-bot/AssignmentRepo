@@ -7,6 +7,9 @@ from ..services.activity_service import ActivityService
 from ..utils.dependencies import get_current_user
 from ..models.user import User
 from ..enums.activity import ActivityCategory
+import logging
+
+logger = logging.getLogger("circleup")
 
 router = APIRouter(prefix="/activities", tags=["activities"])
 
@@ -21,6 +24,9 @@ def create_activity(
     response = ActivityResponse.model_validate(activity)
     response.creator_name = current_user.name
     response.current_participants = 0
+
+    logger.info(f"Activity Created with ID: {response.id} by {response.creator_id}.")
+
     return response
 
 @router.get("/", response_model=list[ActivityResponse])
@@ -92,6 +98,9 @@ def update_activity(
     r = ActivityResponse.model_validate(activity)
     r.creator_name = current_user.name
     r.current_participants = activity_service.get_current_participants_count(activity_id)
+
+    logger.info(f"Activity {activity_id} updated by {current_user.id}.")
+
     return r
 
 @router.delete("/{activity_id}")
@@ -102,4 +111,7 @@ def cancel_activity(
 ):
     activity_service = ActivityService(db)
     activity_service.cancel_activity(activity_id, current_user.id)
+
+    logger.info(f"Activity {activity_id} Cancelled by {current_user.id}.")
+
     return {"message": "Activity cancelled successfully"}

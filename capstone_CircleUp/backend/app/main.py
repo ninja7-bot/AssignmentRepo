@@ -2,6 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, users, activity, participation
 from .database import engine, Base
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("circleup")
 
 Base.metadata.create_all(bind=engine)
 
@@ -10,6 +17,8 @@ app = FastAPI(
     description="A platform for discovering and organizing social activities",
     version="1.0.0"
 )
+
+logger.info("CircleUp Started.")
 
 app.add_middleware(
     CORSMiddleware,

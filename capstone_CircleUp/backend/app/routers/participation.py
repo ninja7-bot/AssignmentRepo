@@ -8,6 +8,10 @@ from ..utils.dependencies import get_current_user
 from ..models.user import User
 from ..repository.participation_repository import ParticipationRepository
 from ..enums.participation import ParticipationStatus
+import logging
+
+logger = logging.getLogger("circleup")
+
 
 router = APIRouter(prefix="/participation", tags=["participation"])
 
@@ -19,6 +23,7 @@ def request_participation(
 ):
     service = ParticipationService(db)
     req = service.request_participation(current_user.id, data.activity_id)
+    logger.info(f"{current_user.id} triggered a request for {data.activity_id}.")
     return ParticipationRequestResponse.model_validate(req)
 
 @router.post("/approve/{request_id}", response_model=ParticipationRequestResponse)
@@ -29,6 +34,7 @@ def approve_request(
 ):
     service = ParticipationService(db)
     req = service.approve_request(request_id, current_user.id)
+    logger.info(f"{current_user.id} triggered an approve for {request_id}.")
     return ParticipationRequestResponse.model_validate(req)
 
 @router.post("/reject/{request_id}", response_model=ParticipationRequestResponse)
@@ -39,6 +45,7 @@ def reject_request(
 ):
     service = ParticipationService(db)
     req = service.reject_request(request_id, current_user.id)
+    logger.info(f"{current_user.id} triggered a reject for the request {request_id}.")
     return ParticipationRequestResponse.model_validate(req)
 
 @router.get("/my-requests", response_model=list[ParticipationRequestResponse])
@@ -48,6 +55,7 @@ def my_requests(
 ):
     service = ParticipationService(db)
     requests = service.get_user_requests(current_user.id)
+    logger.info(f"{current_user.id} fetched their requests.")
     return [ParticipationRequestResponse.model_validate(r) for r in requests]
 
 @router.get("/activity/{activity_id}/requests", response_model=list[ParticipationRequestDetail])
@@ -64,6 +72,7 @@ def activity_requests(
         detail.user_name = r.user.name if r.user else None
         detail.activity_title = r.activity.title if r.activity else None
         result.append(detail)
+    logger.info(f"Requests fetched for Activity {activity_id}.")
     return result
 
 @router.get("/activity/{activity_id}/contacts", response_model=list[UserContactInfo])
@@ -82,6 +91,7 @@ def get_approved_contacts(
 
     activity = db.query(Activity).filter(Activity.id == activity_id).first()
     if not activity:
+        logger.warning(f"Activity ID: {activity_id} not found.")
         raise HTTPException(status_code=404, detail="Activity not found")
 
     participation_repo = ParticipationRepository(db)
@@ -91,6 +101,7 @@ def get_approved_contacts(
     is_approved_participant = any(req.user_id == current_user.id for req in approved_requests)
 
     if not is_creator and not is_approved_participant:
+        logger.warning(f"{current_user.id} triggered forbidden request for contact visibility for Activity {activity_id}.")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Contact information is only visible after approval"
@@ -117,5 +128,5 @@ def get_approved_contacts(
                 phone_number=creator.phone_number,
                 email=creator.email
             ))
-
+    logger.info(f"{current_user.id} triggered contacts fetch for Activity {activity_id}.")
     return contacts

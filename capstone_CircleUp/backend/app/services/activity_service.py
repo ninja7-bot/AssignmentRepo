@@ -5,7 +5,9 @@ from ..repository.activity_repository import ActivityRepository
 from ..repository.participation_repository import ParticipationRepository
 from ..schemas.activity import ActivityCreate, ActivityUpdate
 from ..enums import ActivityStatus
+import logging
 
+logger = logging.getLogger("circleup")
 class ActivityService:
     def __init__(self, db: Session):
         self.db = db
@@ -16,11 +18,13 @@ class ActivityService:
         """Create a new activity"""
         try:
             if activity_data.max_participants <= 0:
+                logger.warning(f"Create Activity: Max Participants less than equal to 0.")
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="max_participants must be greater than 0"
                 )
             if activity_data.activity_date <= datetime.now(activity_data.activity_date.tzinfo):
+                logger.warning(f"Create Activity: Past Event Datetime.")
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Activity must be scheduled for a future date and time"
@@ -28,7 +32,8 @@ class ActivityService:
             activity_dict = activity_data.model_dump()
             return self.activity_repo.create_activity(activity_dict, creator_id)
         
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Unexpected Exception raised when creating activity by user {creator_id}: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to create activity"
@@ -51,21 +56,26 @@ class ActivityService:
         activities = self.activity_repo.get_user_activities(user_id)
         for act in activities:
             self._update_status_if_needed(act)
+        logger.info(f"Activites Fetched for UID {user_id}.")
         return activities
 
     def update_activity(self, activity_id: int, update_data: ActivityUpdate, user_id: int):
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
+            logger.warning(f"Update Activity Service: {activity_id} not found.")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
         if activity.creator_id != user_id:
+            logger.warning(f"Update Activity Service: {user_id} is not the creator of this activity.")
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
         if activity.status in [ActivityStatus.CANCELLED, ActivityStatus.COMPLETED]:
+            logger.warning(f"Update Activity Service: Cannot update {activity_id} with status {activity.status}.")
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot edit cancelled or completed activity")
 
         update_dict = update_data.model_dump(exclude_unset=True)
         current_count = self.get_current_participants_count(activity_id)
 
         if "max_participants" in update_dict and update_dict["max_participants"] < current_count:
+            logger.warning(f"Update Activity Service: {activity_id} cannot have Max Participants {update_data.max_participants} below Current Participants {current_count}.")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=(
@@ -80,8 +90,10 @@ class ActivityService:
 
         # Capacity may have just changed enough to flip FULL <-> OPEN.
         if updated_activity.status == ActivityStatus.FULL and current_count < updated_activity.max_participants:
+            logger.info(f"Status Update: Activity ID: {activity_id} has been OPENED again.")
             updated_activity = self.activity_repo.update_status(activity_id, ActivityStatus.OPEN)
         elif updated_activity.status == ActivityStatus.OPEN and current_count >= updated_activity.max_participants:
+            logger.info(f"Status Update: Activity ID: {activity_id} has reached its capacity.")
             updated_activity = self.activity_repo.update_status(activity_id, ActivityStatus.FULL)
 
         return updated_activity
@@ -113,6 +125,7 @@ class ActivityService:
         approved = self.participation_repo.get_approved_for_activity(activity.id)
         if len(approved) >= activity.max_participants:
             activity.status = ActivityStatus.FULL
+
             self.db.commit()
         
     def get_current_participants_count(self, activity_id: int) -> int:
