@@ -237,7 +237,7 @@ class AuthManager {
             UserManager.setUser(response.user);
 
             showAlert('Login successful! Redirecting...', 'success');
-            setTimeout(() => window.location.href = '/pages/dashboard.html', 1000);
+            setTimeout(() => window.location.href = HOME_PAGE, 1000);
 
         } catch (error) {
             console.error('Login failed:', error);
@@ -294,7 +294,7 @@ class AuthManager {
             UserManager.setUser(response.user);
 
             showAlert('Registration successful! Redirecting...', 'success');
-            setTimeout(() => window.location.href = '/pages/dashboard.html', 1000);
+            setTimeout(() => window.location.href = HOME_PAGE, 1000);
 
         } catch (error) {
             console.error('Registration failed:', error);

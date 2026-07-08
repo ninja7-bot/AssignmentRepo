@@ -30,10 +30,17 @@ class DashboardManager {
 
     async loadDashboardStats() {
         try {
-            // Placeholder for now - will be implemented in Week 2
-            document.getElementById('created-count').textContent = '0';
-            document.getElementById('joined-count').textContent = '0';
-            document.getElementById('pending-count').textContent = '0';
+            const [hosting, requests] = await Promise.all([
+                api.getMyActivities(),
+                api.getMyParticipationRequests()
+            ]);
+
+            const joinedCount = requests.filter((r) => r.status === 'approved').length;
+            const pendingCount = requests.filter((r) => r.status === 'pending').length;
+
+            document.getElementById('created-count').textContent = hosting.length;
+            document.getElementById('joined-count').textContent = joinedCount;
+            document.getElementById('pending-count').textContent = pendingCount;
         } catch (error) {
             console.error('Error loading dashboard stats:', error);
             showAlert('Error loading dashboard data', 'error');
