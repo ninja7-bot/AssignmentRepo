@@ -5,10 +5,10 @@ authentication and user management. It also creates the necessary database table
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, users
+from .routers import auth, users, activity
 from .database import engine, Base
 
-"""Create database tables"""
+# Create database tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -17,21 +17,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
-"""
-Configure CORS
-Allows from everywhere; need to restrict in production
-"""
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],  # Allows from everywhere; need to restrict in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-"""Include routers"""
+# Include routers
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(activity.router)
 
 @app.get("/")
 def read_root():

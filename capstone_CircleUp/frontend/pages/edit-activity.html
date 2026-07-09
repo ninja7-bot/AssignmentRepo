@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Activity - CircleUp</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/activities.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">CircleUp</a>
+            <ul class="nav-links"></ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="loading" class="loading">Loading activity...</div>
+            
+            <div id="edit-form-container" class="hidden">
+                <div class="page-header">
+                    <h1>Edit Activity</h1>
+                    <p>Update your activity details</p>
+                </div>
+
+                <section class="edit-activity-section card">
+                    <form id="edit-activity-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="title">Activity Title</label>
+                                <input type="text" id="title" name="title" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select id="category" name="category" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    <option value="sports">Sports</option>
+                                    <option value="social">Social</option>
+                                    <option value="education">Education</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="travel">Travel</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="location">Location <span class="required">*</span></label>
+                                <select
+                                    id="location"
+                                    name="location"
+                                    class="form-control"
+                                    required
+                                >
+                                    <option value="">Select your city</option>
+                                    <option value="Bilaspur">Bilaspur</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Mumbai">Mumbai</option>
+                                    <option value="Bengaluru">Bengaluru</option>
+                                    <option value="Chennai">Chennai</option>
+                                    <option value="Hyderabad">Hyderabad</option>
+                                    <option value="Kolkata">Kolkata</option>
+                                    <option value="Pune">Pune</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="max_participants">Maximum Participants</label>
+                                <input type="number" id="max_participants" name="max_participants" 
+                                       class="form-control" min="1" max="100" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="activity_date">Date & Time</label>
+                            <input type="datetime-local" id="activity_date" name="activity_date" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Update Activity</button>
+                            <button type="button" onclick="editActivityManager.goBack()" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+
+            <div id="error-container" class="card hidden">
+                <h2>Error</h2>
+                <p id="error-message"></p>
+                <a href="my-activities.html" class="btn btn-primary">Back to My Activities</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/edit-activity.js"></script>
+</body>
+</html>

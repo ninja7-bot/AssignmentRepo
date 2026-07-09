@@ -53,16 +53,20 @@ const UserManager = {
 // Show alerts
 function showAlert(message, type = 'info', duration = 5000) {
     const alertContainer = document.getElementById('alert-container') || createAlertContainer();
-    
+
     const alertDiv = document.createElement('div');
     alertDiv.className = `notification notification-${type}`;
-    alertDiv.innerHTML = `
-        <span>${message}</span>
-        <button type="button" onclick="this.parentElement.remove()">
-            &times;
-        </button>
-    `;
 
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.textContent = '\u00D7';
+    closeBtn.addEventListener('click', () => alertDiv.remove());
+
+    alertDiv.appendChild(messageSpan);
+    alertDiv.appendChild(closeBtn);
     alertContainer.appendChild(alertDiv);
 
     // Auto remove after duration
@@ -93,6 +97,7 @@ function createAlertContainer() {
 // Format date
 function formatDate(dateString) {
     const options = { 
+        timeZone: 'Asia/Kolkata',
         year: 'numeric', 
         month: 'long', 
         day: 'numeric',
@@ -116,12 +121,27 @@ function validatePassword(password) {
 function showLoading(element, show = true) {
     if (show) {
         element.disabled = true;
-        const originalText = element.innerHTML;
-        element.dataset.originalText = originalText;
-        element.innerHTML = '<span class="loading-spinner"></span> Loading...';
+
+        if (!element._originalChildren) {
+            element._originalChildren = Array.from(element.childNodes);
+        }
+
+        element.textContent = '';
+
+        const spinner = document.createElement('span');
+        spinner.className = 'loading-spinner';
+        element.appendChild(spinner);
+        element.appendChild(document.createTextNode(' Loading...'));
     } else {
         element.disabled = false;
-        element.innerHTML = element.dataset.originalText || 'Submit';
+        element.textContent = '';
+
+        if (element._originalChildren) {
+            element._originalChildren.forEach((node) => element.appendChild(node));
+            delete element._originalChildren;
+        } else {
+            element.textContent = 'Submit';
+        }
     }
 }
 

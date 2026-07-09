@@ -4,8 +4,8 @@ information such as name, email, hashed password, phone number, city, bio, and t
 includes relationships to other models, which can be implemented as needed for activities and participation.
 """
 
-from sqlalchemy import Integer, String, Text, DateTime, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Column, Integer, String, Text, DateTime, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..database import Base
 
 class User(Base):
@@ -21,4 +21,6 @@ class User(Base):
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    """Relationships activites <--> users <--> participation to be implemented"""
+    # Relationships activites <--> users <--> participation 
+    created_activities = relationship("Activity", back_populates="creator")
+    participation_requests = relationship("ParticipationRequest", back_populates="user")
