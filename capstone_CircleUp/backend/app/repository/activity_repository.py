@@ -18,12 +18,16 @@ class ActivityRepository(BaseRepository[Activity]):
         activity_data['creator_id'] = creator_id
         return self.create(activity_data)
 
-    def get_by_id(self, activity_id: int) -> Activity | None:
-        """Fetch Activity by ID."""
+    def get_by_id(self, activity_id: int) -> Activity:
         return self.db.query(Activity).filter(Activity.id == activity_id).first()
 
+    SORTABLE_COLUMNS = {
+        "activity_date": Activity.activity_date,
+        "created_at": Activity.created_at,
+        "title": Activity.title,
+    }
+
     def get_all(self, filters: dict | None):
-        """Fetch all activities; based on filters if not None"""
         query = self.db.query(Activity)
         if filters is None:
             filters = {}
@@ -42,10 +46,18 @@ class ActivityRepository(BaseRepository[Activity]):
         if filters.get("status"):
             query = query.filter(Activity.status == filters["status"])
 
-        return query.order_by(Activity.activity_date).all()
+        sort_by = filters.get("sort_by")
+        if isinstance(sort_by, str):
+            sort_column = self.SORTABLE_COLUMNS.get(sort_by, Activity.activity_date)
+        else:
+            sort_column = Activity.activity_date
+
+        if filters.get("sort_order") == "desc":
+            sort_column = sort_column.desc()
+
+        return query.order_by(sort_column).all()
 
     def update_activity(self, activity_id: int, update_data: dict) -> Activity | None:
-        """Update activity against update_data."""
         activity = self.get_by_id(activity_id)
         if not activity:
             return None
@@ -57,7 +69,6 @@ class ActivityRepository(BaseRepository[Activity]):
         return activity
 
     def update_status(self, activity_id: int, status: ActivityStatus):
-        """Update Status of an activity."""
         activity = self.get_by_id(activity_id)
         if activity:
             activity.status = status
@@ -66,7 +77,6 @@ class ActivityRepository(BaseRepository[Activity]):
         return activity
 
     def delete_activity(self, activity_id: int) -> bool:
-        """Delete activity by ID."""
         activity = self.get_by_id(activity_id)
         if not activity:
             return False
@@ -75,5 +85,4 @@ class ActivityRepository(BaseRepository[Activity]):
         return True
 
     def get_user_activities(self, user_id: int):
-        """Get User specific activities."""
         return self.db.query(Activity).filter(Activity.creator_id == user_id).all()        

@@ -69,7 +69,7 @@ class EditActivityManager {
         form.category.value = activity.category;
         form.location.value = activity.location;
         form.max_participants.value = activity.max_participants;
-
+        form.max_participants.min = activity.current_participants || 1;
         form.activity_date.value = activity.activity_date.slice(0, 16);
     }
 
@@ -261,6 +261,18 @@ class EditActivityManager {
             this.showFieldError(
                 field,
                 'Maximum participants must be greater than zero'
+            );
+            return false;
+        }
+
+        const currentParticipants = this.activity
+            ? this.activity.current_participants
+            : 0;
+
+        if (value < currentParticipants) {
+            this.showFieldError(
+                field,
+                `Cannot be less than the current number of participants (${currentParticipants})`
             );
             return false;
         }

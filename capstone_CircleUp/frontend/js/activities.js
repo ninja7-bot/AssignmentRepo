@@ -407,6 +407,7 @@ class ActivitiesManager {
             console.error('Join request failed:', error);
 
             if (error instanceof ApiError) {
+                // e.g. "You have already requested to join this activity"
                 showAlert(error.message || 'Join request failed', 'error');
             } else {
                 showAlert('Connection error. Please try again.', 'error');

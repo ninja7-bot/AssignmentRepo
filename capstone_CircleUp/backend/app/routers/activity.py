@@ -16,7 +16,6 @@ def create_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Create a new Activity."""
     activity_service = ActivityService(db)
     activity = activity_service.create_activity(activity_data, current_user.id)
     response = ActivityResponse.model_validate(activity)
@@ -30,11 +29,19 @@ def list_activities(
     location: str | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
+    sort_by: str | None = Query(default=None, pattern="^(activity_date|created_at|title)$"),
+    sort_order: str | None = Query(default=None, pattern="^(asc|desc)$"),
     db: Session = Depends(get_db)
 ):
-    """List all activities."""
     activity_service = ActivityService(db)
-    filters = {"category": category, "location": location, "date_from": date_from, "date_to": date_to}
+    filters = {
+        "category": category,
+        "location": location,
+        "date_from": date_from,
+        "date_to": date_to,
+        "sort_by": sort_by,
+        "sort_order": sort_order
+    }
     filters = {k: v for k, v in filters.items() if v is not None}
     
     activities = activity_service.list_activities(filters)
@@ -43,18 +50,34 @@ def list_activities(
     for act in activities:
         r = ActivityResponse.model_validate(act)
         r.creator_name = act.creator.name if act.creator else None
-        r.current_participants = 0
+        r.current_participants = activity_service.get_current_participants_count(act.id)
+        result.append(r)
+    return result
+
+@router.get("/mine", response_model=list[ActivityResponse])
+def list_my_activities(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Activities created (hosted) by the current user."""
+    activity_service = ActivityService(db)
+    activities = activity_service.get_user_activities(current_user.id)
+
+    result = []
+    for act in activities:
+        r = ActivityResponse.model_validate(act)
+        r.creator_name = current_user.name
+        r.current_participants = activity_service.get_current_participants_count(act.id)
         result.append(r)
     return result
 
 @router.get("/{activity_id}", response_model=ActivityResponse)
 def get_activity(activity_id: int, db: Session = Depends(get_db)):
-    """Get activity respective to activity_id."""
     activity_service = ActivityService(db)
     activity = activity_service.get_activity(activity_id)
     r = ActivityResponse.model_validate(activity)
     r.creator_name = activity.creator.name if activity.creator else None
-    r.current_participants = 0
+    r.current_participants = activity_service.get_current_participants_count(activity_id)
     return r
 
 @router.put("/{activity_id}", response_model=ActivityResponse)
@@ -64,12 +87,11 @@ def update_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Update a prexisting activity."""
     activity_service = ActivityService(db)
     activity = activity_service.update_activity(activity_id, update_data, current_user.id)
     r = ActivityResponse.model_validate(activity)
     r.creator_name = current_user.name
-    r.current_participants = 0
+    r.current_participants = activity_service.get_current_participants_count(activity_id)
     return r
 
 @router.delete("/{activity_id}")
@@ -78,7 +100,6 @@ def cancel_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Cancel a prexisting activity."""
     activity_service = ActivityService(db)
     activity_service.cancel_activity(activity_id, current_user.id)
     return {"message": "Activity cancelled successfully"}

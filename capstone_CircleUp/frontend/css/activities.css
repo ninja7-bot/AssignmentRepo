@@ -42,7 +42,7 @@
 
 .filters-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 18px;
     margin-bottom: 20px;
 }
@@ -324,6 +324,10 @@
     grid-column: 1 / -1;
     padding: 60px 20px;
     color: #6c757d;
+}
+
+.required {
+    color: red
 }
 
 @media (max-width: 768px) {

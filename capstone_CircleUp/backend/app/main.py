@@ -17,19 +17,18 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows from everywhere; need to restrict in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(activity.router)
+app.include_router(participation.router)
 
 @app.get("/")
 def read_root():

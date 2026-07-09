@@ -90,6 +90,30 @@
         </div>
     </main>
 
+    <template id="request-item-template">
+        <div class="request-item">
+            <div class="request-info">
+                <div class="request-user"></div>
+                <div class="request-date"></div>
+            </div>
+            <div class="request-actions">
+                <button type="button" class="btn btn-success approve-btn">Approve</button>
+                <button type="button" class="btn btn-danger reject-btn">Reject</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="no-requests-template">
+        <p>No pending participation requests.</p>
+    </template>
+
+    <template id="contact-item-template">
+        <div class="contact-item">
+            <div class="contact-name"></div>
+            <div class="contact-details"></div>
+        </div>
+    </template>
+
     <script src="../js/utils.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/navigation.js"></script>

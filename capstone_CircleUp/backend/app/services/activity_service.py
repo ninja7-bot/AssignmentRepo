@@ -34,7 +34,6 @@ class ActivityService:
                 detail="Failed to create activity"
             )
     def get_activity(self, activity_id: int):
-        """Fetch Activity for activity_id."""
         activity = self.activity_repo.get_by_id(activity_id)
         self._update_status_if_needed(activity)
         if not activity:
@@ -42,14 +41,19 @@ class ActivityService:
         return activity
 
     def list_activities(self, filters: dict | None):
-        """List all activities."""
         activities = self.activity_repo.get_all(filters)
         for act in activities:
             self._update_status_if_needed(act)
         return activities
 
+    def get_user_activities(self, user_id: int):
+        """Activities created (hosted) by this user, regardless of status."""
+        activities = self.activity_repo.get_user_activities(user_id)
+        for act in activities:
+            self._update_status_if_needed(act)
+        return activities
+
     def update_activity(self, activity_id: int, update_data: ActivityUpdate, user_id: int):
-        """Update a prexisting activity."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
@@ -57,10 +61,32 @@ class ActivityService:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
         if activity.status in [ActivityStatus.CANCELLED, ActivityStatus.COMPLETED]:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot edit cancelled or completed activity")
-        return self.activity_repo.update_activity(activity_id, update_data.model_dump(exclude_unset=True))
+
+        update_dict = update_data.model_dump(exclude_unset=True)
+        current_count = self.get_current_participants_count(activity_id)
+
+        if "max_participants" in update_dict and update_dict["max_participants"] < current_count:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    f"max_participants cannot be less than the current number of "
+                    f"approved participants ({current_count})"
+                )
+            )
+
+        updated_activity = self.activity_repo.update_activity(activity_id, update_dict)
+        if updated_activity is None:
+            return
+
+        # Capacity may have just changed enough to flip FULL <-> OPEN.
+        if updated_activity.status == ActivityStatus.FULL and current_count < updated_activity.max_participants:
+            updated_activity = self.activity_repo.update_status(activity_id, ActivityStatus.OPEN)
+        elif updated_activity.status == ActivityStatus.OPEN and current_count >= updated_activity.max_participants:
+            updated_activity = self.activity_repo.update_status(activity_id, ActivityStatus.FULL)
+
+        return updated_activity
 
     def cancel_activity(self, activity_id: int, user_id: int):
-        """Cancel a prexisting activity."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
@@ -71,17 +97,24 @@ class ActivityService:
         return self.activity_repo.update_status(activity_id, ActivityStatus.CANCELLED)
 
     def can_accept_new_requests(self, activity_id: int) -> bool:
-        """Is Activity OPEN?"""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             return False
         return activity.status == ActivityStatus.OPEN
     
     def _update_status_if_needed(self, activity):
-        """Laze Status Update for all activities."""
         if activity.status in [ActivityStatus.CANCELLED, ActivityStatus.COMPLETED]:
             return
         if activity.activity_date < datetime.now(activity.activity_date.tzinfo):
             activity.status = ActivityStatus.COMPLETED
             self.db.commit()
             return
+
+        approved = self.participation_repo.get_approved_for_activity(activity.id)
+        if len(approved) >= activity.max_participants:
+            activity.status = ActivityStatus.FULL
+            self.db.commit()
+        
+    def get_current_participants_count(self, activity_id: int) -> int:
+        approved = self.participation_repo.get_approved_for_activity(activity_id)
+        return len(approved)     

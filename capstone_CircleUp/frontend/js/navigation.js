@@ -6,8 +6,25 @@ class NavigationManager {
     }
 
     init() {
+        this.redirectIfLandingAndAuthenticated();
+        this.updateLogoLink();
         this.updateNavigation();
         this.updateUserInfo();
+    }
+
+    redirectIfLandingAndAuthenticated() {
+        const path = window.location.pathname;
+        const isLandingPage = path === '/' || path === '' || path.endsWith('/index.html');
+
+        if (isLandingPage && TokenManager.isAuthenticated()) {
+            window.location.href = HOME_PAGE;
+        }
+    }
+
+    updateLogoLink() {
+        const logo = document.querySelector('.logo');
+        if (!logo) return;
+        logo.href = TokenManager.isAuthenticated() ? HOME_PAGE : '/';
     }
 
     createNavItem(text, href, onClick) {
@@ -34,8 +51,9 @@ class NavigationManager {
         navContainer.textContent = '';
 
         if (isAuthenticated) {
-            navContainer.appendChild(this.createNavItem('Dashboard', '/pages/dashboard.html'));
             navContainer.appendChild(this.createNavItem('Discover', '/pages/discover.html'));
+            navContainer.appendChild(this.createNavItem('My Activities', '/pages/my-activities.html'));
+            navContainer.appendChild(this.createNavItem('Dashboard', '/pages/dashboard.html'));
             navContainer.appendChild(this.createNavItem('Profile', '/pages/profile.html'));
             navContainer.appendChild(this.createNavItem('Logout', '#', logout));
         } else {
@@ -50,7 +68,7 @@ class NavigationManager {
         const userInfo = document.getElementById('user-info');
 
         if (userInfo && isAuthenticated && user) {
-            userInfo.innerHTML = `Welcome, ${user.name}!`;
+            userInfo.textContent = `Welcome, ${user.name}!`;
         }
     }
 }
