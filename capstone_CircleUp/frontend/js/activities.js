@@ -5,6 +5,7 @@ class ActivitiesManager {
         this.api = api;
         this.currentFilters = {};
         this.activities = [];
+        this.myRequestsMap = new Map();
         this.init();
     }
 
@@ -14,7 +15,17 @@ class ActivitiesManager {
         }
 
         this.initializeEventListeners();
+        await this.loadMyRequests();
         this.loadActivities();
+    }
+
+    async loadMyRequests() {
+        try {
+            const requests = await this.api.getMyParticipationRequests();
+            this.myRequestsMap = new Map(requests.map((r) => [r.activity_id, r.status]));
+        } catch (error) {
+            console.error('Error loading your participation requests:', error);
+        }
     }
 
     initializeEventListeners() {
@@ -260,7 +271,6 @@ class ActivitiesManager {
     async loadActivities(filters = {}) {
         try {
             const queryParams = new URLSearchParams();
-
             Object.entries(filters).forEach(([key, value]) => {
                 if (value) queryParams.append(key, value);
             });
@@ -276,7 +286,6 @@ class ActivitiesManager {
 
     renderActivities(activities) {
         const container = document.getElementById('activities-container');
-
         if (!container) return;
 
         container.textContent = '';
@@ -312,10 +321,33 @@ class ActivitiesManager {
 
         const detailsLink = card.querySelector('.view-details-link');
         detailsLink.href = `/pages/activity-detail.html?id=${activity.id}`;
+        
+        const editLink = card.querySelector('.edit-activity-link');
+        editLink.href = `/pages/edit-activity.html?id=${activity.id}`;
 
         const joinBtn = card.querySelector('.join-activity-btn');
-        const canJoin = activity.status === 'open' && activity.creator_id !== UserManager.getUser().id;
-        if (canJoin) {
+        const isCreator = activity.creator_id === UserManager.getUser().id;
+        const myStatus = this.myRequestsMap.get(activity.id);
+
+        if (isCreator) {
+            editLink.classList.remove('hidden');
+            joinBtn.remove();
+        } else if (myStatus === 'pending') {
+            joinBtn.textContent = 'Request Pending';
+            joinBtn.classList.remove('hidden', 'btn-primary');
+            joinBtn.classList.add('status-pending');
+            joinBtn.disabled = true;
+        } else if (myStatus === 'approved') {
+            joinBtn.textContent = "✓ You're In";
+            joinBtn.classList.remove('hidden', 'btn-primary');
+            joinBtn.classList.add('status-approved');
+            joinBtn.disabled = true;
+        } else if (myStatus === 'rejected') {
+            joinBtn.textContent = 'Request Rejected';
+            joinBtn.classList.remove('hidden', 'btn-primary');
+            joinBtn.classList.add('status-rejected');
+            joinBtn.disabled = true;
+        } else if (activity.status === 'open') {
             joinBtn.classList.remove('hidden');
             joinBtn.dataset.activityId = activity.id;
         } else {
@@ -355,6 +387,7 @@ class ActivitiesManager {
             showAlert('Activity created successfully!', 'success');
             form.reset();
             this.loadActivities(this.currentFilters);
+
         } catch (error) {
             console.error('Activity creation failed:', error);
 
@@ -376,14 +409,30 @@ class ActivitiesManager {
 
     async handleFilters(event) {
         event.preventDefault();
-        
+
         const formData = new FormData(event.target);
         const filters = {};
-        
+
         for (let [key, value] of formData.entries()) {
-            if (value) filters[key] = value;
+            if (!value) continue;
+
+            if (key === 'date_from' || key === 'date_to') {
+                const parsed = new Date(value);
+                if (isNaN(parsed.getTime())) {
+                    showAlert('Please enter a valid date.', 'error');
+                    return;
+                }
+                filters[key] = parsed.toISOString();
+            } else {
+                filters[key] = value;
+            }
         }
-        
+
+        if (filters.date_from && filters.date_to && filters.date_from > filters.date_to) {
+            showAlert('"From Date" must be before "To Date".', 'error');
+            return;
+        }
+
         this.currentFilters = filters;
         this.loadActivities(filters);
     }
@@ -402,13 +451,18 @@ class ActivitiesManager {
             await this.api.requestParticipation(activityId);
 
             showAlert('Participation request sent!', 'success');
-            this.loadActivities(this.currentFilters);
+
+            this.myRequestsMap.set(Number(activityId), 'pending');
+            this.renderActivities(this.activities);
         } catch (error) {
             console.error('Join request failed:', error);
 
             if (error instanceof ApiError) {
                 // e.g. "You have already requested to join this activity"
                 showAlert(error.message || 'Join request failed', 'error');
+
+                await this.loadMyRequests();
+                this.renderActivities(this.activities);
             } else {
                 showAlert('Connection error. Please try again.', 'error');
             }
