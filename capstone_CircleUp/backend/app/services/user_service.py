@@ -27,16 +27,6 @@ class UserService:
             )
         return user
 
-    def get_user_by_email(self, email: str):
-        """Get user by email"""
-        user = self.user_repo.get_by_email(email)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
-            )
-        return user
-
     def update_user(self, user_id: int, user_update: UserUpdate):
         """Update user profile"""
         try:
@@ -67,7 +57,3 @@ class UserService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found"
             )
-
-    def search_users(self, query: str, limit: int = 10):
-        """Search users by name or email"""
-        return self.user_repo.search_users(query, limit)

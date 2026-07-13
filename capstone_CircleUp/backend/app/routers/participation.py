@@ -23,7 +23,9 @@ def request_participation(
 ):
     service = ParticipationService(db)
     req = service.request_participation(current_user.id, data.activity_id)
+
     logger.info(f"{current_user.id} triggered a request for {data.activity_id}.")
+
     return ParticipationRequestResponse.model_validate(req)
 
 @router.post("/approve/{request_id}", response_model=ParticipationRequestResponse)
@@ -34,7 +36,9 @@ def approve_request(
 ):
     service = ParticipationService(db)
     req = service.approve_request(request_id, current_user.id)
+
     logger.info(f"{current_user.id} triggered an approve for {request_id}.")
+
     return ParticipationRequestResponse.model_validate(req)
 
 @router.post("/reject/{request_id}", response_model=ParticipationRequestResponse)
@@ -45,7 +49,9 @@ def reject_request(
 ):
     service = ParticipationService(db)
     req = service.reject_request(request_id, current_user.id)
+
     logger.info(f"{current_user.id} triggered a reject for the request {request_id}.")
+
     return ParticipationRequestResponse.model_validate(req)
 
 @router.get("/my-requests", response_model=list[ParticipationRequestResponse])
@@ -55,7 +61,9 @@ def my_requests(
 ):
     service = ParticipationService(db)
     requests = service.get_user_requests(current_user.id)
+    
     logger.info(f"{current_user.id} fetched their requests.")
+
     return [ParticipationRequestResponse.model_validate(r) for r in requests]
 
 @router.get("/activity/{activity_id}/requests", response_model=list[ParticipationRequestDetail])
@@ -72,7 +80,9 @@ def activity_requests(
         detail.user_name = r.user.name if r.user else None
         detail.activity_title = r.activity.title if r.activity else None
         result.append(detail)
+    
     logger.info(f"Requests fetched for Activity {activity_id}.")
+    
     return result
 
 @router.get("/activity/{activity_id}/contacts", response_model=list[UserContactInfo])

@@ -69,13 +69,16 @@ class ParticipationService:
     def reject_request(self, request_id: int, owner_id: int):
         req = self.participation_repo.get_by_id(request_id)
         if not req:
+            logger.warning(f"Reject Request: Request by ID {request_id} not found.")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Request not found")
 
         activity = self.activity_repo.get_by_id(req.activity_id)
         if activity.creator_id != owner_id:
+            logger.warning(f"Reject Request: {owner_id} is not Activity Creator.")
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
         if req.status != ParticipationStatus.PENDING:
+            logger.warning(f"Reject Request: Request Status by ID {request_id} for Activity {activity.id} is {req.status}.")
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Request is not pending")
 
         return self.participation_repo.update_status(request_id, ParticipationStatus.REJECTED)

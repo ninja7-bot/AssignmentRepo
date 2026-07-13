@@ -61,29 +61,6 @@ class UserRepository(BaseRepository[User]):
 
         return self.update(user_id, update_data.model_dump(exclude_unset=True))
 
-    def search_users(self, query: str, limit: int = 10) -> List[User]:
-        """Search users by name or email"""
-        search_pattern = f"%{query}%"
-        return (
-            self.db.query(User)
-            .filter(
-                or_(
-                    User.name.ilike(search_pattern),
-                    User.email.ilike(search_pattern)
-                )
-            )
-            .limit(limit)
-            .all()
-        )
-
-    def get_users_by_city(self, city: str) -> List[User]:
-        """Get users from a specific city"""
-        return self.db.query(User).filter(User.city.ilike(f"%{city}%")).all()
-
-    def get_users_by_ids(self, user_ids: List[int]) -> List[User]:
-        """Get multiple users by their IDs"""
-        return self.db.query(User).filter(User.id.in_(user_ids)).all()
-
     def delete_user(self, user_id: int) -> bool:
         """Delete user and handle related data"""
         user = self.get_by_id(user_id)

@@ -95,17 +95,21 @@ class ActivityService:
         elif updated_activity.status == ActivityStatus.OPEN and current_count >= updated_activity.max_participants:
             logger.info(f"Status Update: Activity ID: {activity_id} has reached its capacity.")
             updated_activity = self.activity_repo.update_status(activity_id, ActivityStatus.FULL)
-
+        logger.info(f"Update Activity: {activity_id} has been updated by {user_id}.")
         return updated_activity
 
     def cancel_activity(self, activity_id: int, user_id: int):
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
+            logger.info(f"Cancel Activity: {activity_id} does not exist.")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
         if activity.creator_id != user_id:
+            logger.info(f"Cancel Activity: {user_id} hasn't created this activity.")
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
         if activity.status == ActivityStatus.COMPLETED:
+            logger.info(f"Cancel Activity: {activity_id} has been already been completed.")
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot cancel completed activity")
+        logger.info(f"Cancel Activity: {activity_id} has been cancelled by {user_id}.")
         return self.activity_repo.update_status(activity_id, ActivityStatus.CANCELLED)
 
     def can_accept_new_requests(self, activity_id: int) -> bool:
@@ -125,7 +129,6 @@ class ActivityService:
         approved = self.participation_repo.get_approved_for_activity(activity.id)
         if len(approved) >= activity.max_participants:
             activity.status = ActivityStatus.FULL
-
             self.db.commit()
         
     def get_current_participants_count(self, activity_id: int) -> int:
