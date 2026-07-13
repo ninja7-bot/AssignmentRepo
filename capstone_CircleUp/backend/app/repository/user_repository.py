@@ -28,6 +28,7 @@ class UserRepository(BaseRepository[User]):
         return query.first() is not None
     
     def phone_exists(self, phone_number: str, exclude_user_id: int | None = None) -> bool:
+        """Check if a phone number exists."""
         query = self.db.query(User).filter(
             User.phone_number == phone_number
         )
@@ -39,7 +40,6 @@ class UserRepository(BaseRepository[User]):
 
     def create_user(self, user_data: dict[str, Any]) -> User:
         """Create a new user with validation"""
-        # Check if email already exists
         if self.email_exists(user_data["email"]):
             raise ValueError("Email already registered")
         
@@ -54,7 +54,6 @@ class UserRepository(BaseRepository[User]):
         if not user:
             return None
 
-        # Check email uniqueness if email is being updated
         if update_data.email and update_data.email != user.email:
             if self.email_exists(update_data.email, exclude_user_id=user_id):
                 raise ValueError("Email already registered")

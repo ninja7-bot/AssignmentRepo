@@ -1,3 +1,7 @@
+"""
+Test Cases for ParticipationService.
+"""
+
 def request_join(client, activity_id, headers):
     return client.post("/participation/request", json={"activity_id": activity_id}, headers=headers)
 

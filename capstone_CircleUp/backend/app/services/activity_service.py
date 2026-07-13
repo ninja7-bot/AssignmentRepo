@@ -39,6 +39,7 @@ class ActivityService:
                 detail="Failed to create activity"
             )
     def get_activity(self, activity_id: int):
+        """Fetch Activity by ID."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Activity not found")
@@ -46,6 +47,7 @@ class ActivityService:
         return activity
 
     def list_activities(self, filters: dict | None):
+        """Fetch all Activities; optionally by filters."""
         activities = self.activity_repo.get_all(filters)
         for act in activities:
             self._update_status_if_needed(act)
@@ -60,6 +62,7 @@ class ActivityService:
         return activities
 
     def update_activity(self, activity_id: int, update_data: ActivityUpdate, user_id: int):
+        """Update an Existing Activity."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             logger.warning(f"Update Activity Service: {activity_id} not found.")
@@ -88,7 +91,6 @@ class ActivityService:
         if updated_activity is None:
             return
 
-        # Capacity may have just changed enough to flip FULL <-> OPEN.
         if updated_activity.status == ActivityStatus.FULL and current_count < updated_activity.max_participants:
             logger.info(f"Status Update: Activity ID: {activity_id} has been OPENED again.")
             updated_activity = self.activity_repo.update_status(activity_id, ActivityStatus.OPEN)
@@ -99,6 +101,7 @@ class ActivityService:
         return updated_activity
 
     def cancel_activity(self, activity_id: int, user_id: int):
+        """Cancel Activity by ID."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             logger.info(f"Cancel Activity: {activity_id} does not exist.")
@@ -113,12 +116,14 @@ class ActivityService:
         return self.activity_repo.update_status(activity_id, ActivityStatus.CANCELLED)
 
     def can_accept_new_requests(self, activity_id: int) -> bool:
+        """Update Status of Activity based on Capacity."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             return False
         return activity.status == ActivityStatus.OPEN
     
     def _update_status_if_needed(self, activity):
+        """Update the status of activity."""
         if activity.status in [ActivityStatus.CANCELLED, ActivityStatus.COMPLETED]:
             return
         if activity.activity_date < datetime.now(activity.activity_date.tzinfo):
@@ -132,5 +137,6 @@ class ActivityService:
             self.db.commit()
         
     def get_current_participants_count(self, activity_id: int) -> int:
+        """Get Participant Count for an Activity."""
         approved = self.participation_repo.get_approved_for_activity(activity_id)
         return len(approved)     

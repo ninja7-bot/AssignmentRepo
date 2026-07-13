@@ -23,27 +23,32 @@ class ParticipationRepository(BaseRepository[ParticipationRequest]):
         return self.create(request_data)
     
     def get_by_id(self, request_id: int):
+        """Get Participation Request by ID."""
         return self.db.query(ParticipationRequest).filter(ParticipationRequest.id == request_id).first()
 
     def get_by_user_and_activity(self, user_id: int, activity_id: int):
+        """Get the Participation Requests by the User ID and Activity ID."""
         return self.db.query(ParticipationRequest).filter(
             ParticipationRequest.user_id == user_id,
             ParticipationRequest.activity_id == activity_id
         ).first()
 
     def get_pending_for_activity(self, activity_id: int):
+        """Get Pending Requests for an Activity."""
         return self.db.query(ParticipationRequest).filter(
             ParticipationRequest.activity_id == activity_id,
             ParticipationRequest.status == ParticipationStatus.PENDING
         ).all()
 
     def get_approved_for_activity(self, activity_id: int):
+        """Get Approved Requests for an Activity."""
         return self.db.query(ParticipationRequest).filter(
             ParticipationRequest.activity_id == activity_id,
             ParticipationRequest.status == ParticipationStatus.APPROVED
         ).all()
 
     def update_status(self, request_id: int, status: ParticipationStatus):
+        """Update Status of a Participation Request."""
         req = self.get_by_id(request_id)
         if req:
             req.status = status
@@ -52,6 +57,7 @@ class ParticipationRepository(BaseRepository[ParticipationRequest]):
         return req
 
     def get_user_requests(self, user_id: int):
+        """Get Requests created by a User."""
         return self.db.query(ParticipationRequest).filter(
             ParticipationRequest.user_id == user_id
         ).all()

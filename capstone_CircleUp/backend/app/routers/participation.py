@@ -1,4 +1,11 @@
-from fastapi import APIRouter, Depends
+"""
+Participation Router FastAPI Module.
+Handles creating Participation Requests, managing requests, fetching user specific requests, activity specific requests, and contacts
+for the activity.
+ROUTE: /participation/
+"""
+
+from fastapi import APIRouter, Depends,  HTTPException, status
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..schemas.participation import ParticipationRequestCreate, ParticipationRequestResponse, ParticipationRequestDetail
@@ -6,8 +13,8 @@ from ..schemas.user import UserContactInfo
 from ..services.participation_service import ParticipationService
 from ..utils.dependencies import get_current_user
 from ..models.user import User
+from ..models.activity import Activity
 from ..repository.participation_repository import ParticipationRepository
-from ..enums.participation import ParticipationStatus
 import logging
 
 logger = logging.getLogger("circleup")
@@ -21,6 +28,10 @@ def request_participation(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    POST: /participation/request/
+    Create Request for an Activity.
+    """
     service = ParticipationService(db)
     req = service.request_participation(current_user.id, data.activity_id)
 
@@ -34,6 +45,10 @@ def approve_request(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    POST: /participation/approve/{request_id}
+    Approve Request by a User.
+    """
     service = ParticipationService(db)
     req = service.approve_request(request_id, current_user.id)
 
@@ -47,6 +62,10 @@ def reject_request(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    POST: /participation/reject/{request_id}
+    Reject Request by a User.
+    """
     service = ParticipationService(db)
     req = service.reject_request(request_id, current_user.id)
 
@@ -59,6 +78,10 @@ def my_requests(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    GET: /participation/my-requests/
+    Get all requests sent by a user.
+    """
     service = ParticipationService(db)
     requests = service.get_user_requests(current_user.id)
     
@@ -72,6 +95,10 @@ def activity_requests(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    GET: /participation/activity/{activity_id}/requests
+    Get Pending requests for an Activity.
+    """
     service = ParticipationService(db)
     requests = service.get_activity_requests(activity_id, current_user.id)
     result = []
@@ -96,9 +123,6 @@ def get_approved_contacts(
         if creator shows list of approved users
         if participant, shows contact details of the creator.
     """
-    from ..models.activity import Activity
-    from fastapi import HTTPException, status
-
     activity = db.query(Activity).filter(Activity.id == activity_id).first()
     if not activity:
         logger.warning(f"Activity ID: {activity_id} not found.")

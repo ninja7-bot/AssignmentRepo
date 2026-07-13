@@ -19,6 +19,7 @@ class ActivityRepository(BaseRepository[Activity]):
         return self.create(activity_data)
 
     def get_by_id(self, activity_id: int) -> Activity:
+        """Fetch an Activity by ID."""
         return self.db.query(Activity).filter(Activity.id == activity_id).first()
 
     SORTABLE_COLUMNS = {
@@ -28,6 +29,10 @@ class ActivityRepository(BaseRepository[Activity]):
     }
 
     def get_all(self, filters: dict | None):
+        """
+        Fetch all Activities.
+            optional: filters.
+        """
         query = self.db.query(Activity)
         if filters is None:
             filters = {}
@@ -58,6 +63,7 @@ class ActivityRepository(BaseRepository[Activity]):
         return query.order_by(sort_column).all()
 
     def update_activity(self, activity_id: int, update_data: dict) -> Activity | None:
+        """Update an Activity against update_data."""
         activity = self.get_by_id(activity_id)
         if not activity:
             return None
@@ -69,6 +75,7 @@ class ActivityRepository(BaseRepository[Activity]):
         return activity
 
     def update_status(self, activity_id: int, status: ActivityStatus):
+        """Update Status of an Activity."""
         activity = self.get_by_id(activity_id)
         if activity:
             activity.status = status
@@ -77,6 +84,7 @@ class ActivityRepository(BaseRepository[Activity]):
         return activity
 
     def delete_activity(self, activity_id: int) -> bool:
+        """Delete an Activity."""
         activity = self.get_by_id(activity_id)
         if not activity:
             return False
@@ -85,4 +93,5 @@ class ActivityRepository(BaseRepository[Activity]):
         return True
 
     def get_user_activities(self, user_id: int):
+        """Get Activities created by the User."""
         return self.db.query(Activity).filter(Activity.creator_id == user_id).all()        

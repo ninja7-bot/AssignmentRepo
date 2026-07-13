@@ -1,3 +1,8 @@
+"""
+ParticipationService class provides functions to create participation request, approve request, reject requests, get requests for
+a user and get requests for an activity.
+"""
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from ..repository.participation_repository import ParticipationRepository
@@ -17,6 +22,7 @@ class ParticipationService:
         self.db = db
 
     def request_participation(self, user_id: int, activity_id: int):
+        """Create request for an activity ID by a user ID."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity:
             logger.warning(f"Request Service: {activity_id} not found.")
@@ -40,6 +46,7 @@ class ParticipationService:
         return self.participation_repo.create_request(user_id, activity_id)
 
     def approve_request(self, request_id: int, owner_id: int):
+        """Approve request for an activity ID by a user ID."""
         req = self.participation_repo.get_by_id(request_id)
         if not req:
             logger.warning(f"Approve Service: {request_id} not found.")
@@ -67,6 +74,7 @@ class ParticipationService:
         return self.participation_repo.update_status(request_id, ParticipationStatus.APPROVED)
 
     def reject_request(self, request_id: int, owner_id: int):
+        """Reject request for an activity ID by a user ID via owner."""
         req = self.participation_repo.get_by_id(request_id)
         if not req:
             logger.warning(f"Reject Request: Request by ID {request_id} not found.")
@@ -84,10 +92,12 @@ class ParticipationService:
         return self.participation_repo.update_status(request_id, ParticipationStatus.REJECTED)
 
     def get_activity_requests(self, activity_id: int, owner_id: int):
+        """Fetch requests for an activity ID by the owner ID."""
         activity = self.activity_repo.get_by_id(activity_id)
         if not activity or activity.creator_id != owner_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
         return self.participation_repo.get_pending_for_activity(activity_id)
 
     def get_user_requests(self, user_id: int):
+        """Fetch requests sent by a user ID."""
         return self.participation_repo.get_user_requests(user_id)

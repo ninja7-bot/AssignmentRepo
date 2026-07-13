@@ -1,6 +1,10 @@
+"""
+Pydantic Activity Model defining ActivityRequest, Response, Update, Detail, Filter Models.
+"""
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing import Optional, List
-from datetime import datetime, timezone
+from datetime import datetime
 from ..enums import ActivityStatus, ActivityCategory
 import re
 

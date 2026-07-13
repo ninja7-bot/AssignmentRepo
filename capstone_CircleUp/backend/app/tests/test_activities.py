@@ -1,3 +1,7 @@
+"""
+Test Cases for Activity CRUD.
+"""
+
 from datetime import datetime, timedelta, timezone
 
 

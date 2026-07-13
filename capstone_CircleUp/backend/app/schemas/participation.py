@@ -1,3 +1,7 @@
+"""
+Pydantic Participation Model for Participation Request Response and Detail.
+"""
+
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from ..enums.participation import ParticipationStatus

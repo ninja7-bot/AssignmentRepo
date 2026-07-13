@@ -41,6 +41,7 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 def verify_token(token: str) -> str | None:
+    """Verify Token from the sessionStorage."""
     try:
         payload = jwt.decode(
             token, KEY, algorithms=[ALGO]

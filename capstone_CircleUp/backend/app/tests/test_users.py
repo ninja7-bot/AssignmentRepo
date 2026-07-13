@@ -1,3 +1,7 @@
+"""
+Test Cases for UserService.
+"""
+
 def test_get_current_profile(client, auth_user):
     response = client.get("/users/me", headers=auth_user["headers"])
     assert response.status_code == 200

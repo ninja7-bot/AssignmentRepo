@@ -1,3 +1,7 @@
+"""
+Main Driver App File for CircleUp.
+"""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, users, activity, participation

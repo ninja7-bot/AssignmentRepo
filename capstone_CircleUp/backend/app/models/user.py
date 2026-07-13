@@ -21,6 +21,6 @@ class User(Base):
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    # Relationships activites <--> users <--> participation 
+    """Relationships"""
     created_activities = relationship("Activity", back_populates="creator")
     participation_requests = relationship("ParticipationRequest", back_populates="user")

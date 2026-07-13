@@ -1,3 +1,8 @@
+"""
+Participation Model files.
+Creates the "participation_requests" table in the postgresql database.
+"""
+
 from sqlalchemy import Integer, ForeignKey, Enum, DateTime, func, UniqueConstraint
 from sqlalchemy.orm import mapped_column, relationship
 from ..database import Base
@@ -13,7 +18,11 @@ class ParticipationRequest(Base):
     requested_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
 
-    """Relationships & Constraints"""
+    """
+    Relationships & Constraints
+    Ensures that each user can only create a single request for an Activity.
+    Preventing Duplication of requests.
+    """
     user = relationship("User", back_populates="participation_requests")
     activity = relationship("Activity", back_populates="participation_requests")
 

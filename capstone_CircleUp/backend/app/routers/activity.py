@@ -1,3 +1,8 @@
+""" Activity Router
+Activity Related Routes, namely, create, update, delete, list all, list user specific.
+Route: /activities/
+"""
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -19,6 +24,10 @@ def create_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    POST: /activities/
+    Create Activity Route.
+    """
     activity_service = ActivityService(db)
     activity = activity_service.create_activity(activity_data, current_user.id)
     response = ActivityResponse.model_validate(activity)
@@ -39,6 +48,10 @@ def list_activities(
     sort_order: str | None = Query(default=None, pattern="^(asc|desc)$"),
     db: Session = Depends(get_db)
 ):
+    """
+    GET: /activities/
+    Fetch All Activities or based on Filters.
+    """
     activity_service = ActivityService(db)
     filters = {
         "category": category,
@@ -65,7 +78,10 @@ def list_my_activities(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Activities created (hosted) by the current user."""
+    """
+    GET: /activities/mine/
+    Activities created (hosted) by the current user.
+    """
     activity_service = ActivityService(db)
     activities = activity_service.get_user_activities(current_user.id)
 
@@ -79,6 +95,10 @@ def list_my_activities(
 
 @router.get("/{activity_id}", response_model=ActivityResponse)
 def get_activity(activity_id: int, db: Session = Depends(get_db)):
+    """
+    GET: /activities/{activity_id}
+    Fetch an Activity by ID.
+    """
     activity_service = ActivityService(db)
     activity = activity_service.get_activity(activity_id)
     r = ActivityResponse.model_validate(activity)
@@ -93,6 +113,10 @@ def update_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    PUT: /activities/{activity_id}
+    Update an Activity by ID.
+    """
     activity_service = ActivityService(db)
     activity = activity_service.update_activity(activity_id, update_data, current_user.id)
     r = ActivityResponse.model_validate(activity)
@@ -109,6 +133,10 @@ def cancel_activity(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    DELETE: /activities/{activity_id}
+    Delete an Activity by ID.
+    """
     activity_service = ActivityService(db)
     activity_service.cancel_activity(activity_id, current_user.id)
 

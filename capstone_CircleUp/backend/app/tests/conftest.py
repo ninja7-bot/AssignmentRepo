@@ -1,3 +1,8 @@
+"""
+Testing Configuration file through a test database.
+Used fixture for the test cases.
+"""
+
 from datetime import datetime, timedelta, timezone
 import os
 

@@ -1,4 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+"""
+User Router FastAPI Module.
+Hanldles User Profile, and Delete User Account.
+ROUTE: /users/
+"""
+
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..schemas.user import UserResponse, UserUpdate, UserProfile
@@ -14,7 +20,10 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/me", response_model=UserResponse)
 def get_current_user_profile(current_user: User = Depends(get_current_user)):
-    """Get current user's profile"""
+    """
+    GET: /users/me
+    Get current user's profile
+    """
     return UserResponse.model_validate(current_user)
 
 @router.put("/me", response_model=UserResponse)
@@ -23,7 +32,10 @@ def update_current_user_profile(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Update current user's profile"""
+    """
+    PUT: /users/me
+    Update current user's profile
+    """
     user_service = UserService(db)
     updated_user = user_service.update_user(current_user.id, user_update)
     logger.info(f"{current_user.id} triggered an update for their profile.")
@@ -35,7 +47,10 @@ def get_user_profile(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get user profile by ID (limited info for privacy)"""
+    """
+    GET: /users/{user_id}
+    Get user profile by ID (limited info for privacy)
+    """
     user_service = UserService(db)
     user = user_service.get_user_by_id(user_id)
     return UserProfile.model_validate(user)
@@ -45,7 +60,10 @@ def delete_current_user_account(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Delete current user's account"""
+    """
+    DELETE: /users/me
+    Delete current user's account
+    """
     user_service = UserService(db)
     user_service.delete_user(current_user.id)
     logger.info(f"{current_user.id} triggered a delete for their account.")

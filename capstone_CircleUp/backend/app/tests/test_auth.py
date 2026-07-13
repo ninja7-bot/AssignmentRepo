@@ -1,3 +1,7 @@
+"""
+Test Cases for Auth Service.
+"""
+
 def test_register_user_returns_token_and_safe_user(client, valid_user_payload):
     response = client.post("/auth/register", json=valid_user_payload)
 

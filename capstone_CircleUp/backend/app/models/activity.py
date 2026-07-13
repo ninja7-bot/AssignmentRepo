@@ -1,3 +1,9 @@
+"""
+Activity Model file.
+Creates the "activities" table in the postgresql database.
+Handles table and relationship between tables.
+"""
+
 from sqlalchemy import Integer, String, Text, DateTime, Enum, ForeignKey, func
 from sqlalchemy.orm import relationship, mapped_column
 from ..database import Base
@@ -18,6 +24,9 @@ class Activity(Base):
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
 
-    """Relationships"""
+    """
+    Relationships: Defines the relationship across tables.
+    Herein, the creator and participation_requests are automatically populated for the activity.
+    """
     creator = relationship("User", back_populates="created_activities")
     participation_requests = relationship("ParticipationRequest", back_populates="activity")
