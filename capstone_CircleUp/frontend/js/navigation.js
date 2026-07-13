@@ -12,6 +12,7 @@ class NavigationManager {
         this.updateUserInfo();
     }
 
+    /**Redirect to HOME_PAGE if Authenticated. */
     redirectIfLandingAndAuthenticated() {
         const path = window.location.pathname;
         const isLandingPage = path === '/' || path === '' || path.endsWith('/index.html');
@@ -27,6 +28,7 @@ class NavigationManager {
         logo.href = TokenManager.isAuthenticated() ? HOME_PAGE : '/';
     }
 
+    /**Create Nav Bar Items. */
     createNavItem(text, href, onClick) {
         const li = document.createElement('li');
         const a = document.createElement('a');
@@ -42,6 +44,7 @@ class NavigationManager {
         return li;
     }
 
+    /**Navigation Tabs and Links */
     updateNavigation() {
         const isAuthenticated = TokenManager.isAuthenticated();
         const navContainer = document.querySelector('.nav-links');
@@ -62,6 +65,7 @@ class NavigationManager {
         }
     }
 
+    /**User Info */
     updateUserInfo() {
         const isAuthenticated = TokenManager.isAuthenticated();
         const user = UserManager.getUser();

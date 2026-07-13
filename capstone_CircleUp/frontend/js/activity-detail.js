@@ -10,6 +10,7 @@ class ActivityDetailManager {
         this.init();
     }
 
+    /**Initialize Activity Details Manager */
     async init() {
         if (!requireAuth()) {
             return;
@@ -27,11 +28,13 @@ class ActivityDetailManager {
         this.setupEventListeners();
     }
 
+    /**Function to extract activity id from URL. */
     getActivityIdFromURL() {
         const params = new URLSearchParams(window.location.search);
         return params.get('id');
     }
 
+    /**Load Activity details from backend. */
     async loadActivity() {
         try {
             document.getElementById('loading').classList.remove('hidden');
@@ -63,6 +66,7 @@ class ActivityDetailManager {
         }
     }
 
+    /**Render Activity Details to the frontend. */
     renderActivity() {
         // Basic info
         document.getElementById('activity-title').textContent = this.activity.title;
@@ -85,6 +89,7 @@ class ActivityDetailManager {
         this.renderActions();
     }
 
+    /**Render Actions performed based on button clicked and user type. */
     renderActions() {
         const actionsContainer = document.getElementById('activity-actions');
         actionsContainer.textContent = '';
@@ -128,6 +133,7 @@ class ActivityDetailManager {
         actionsContainer.appendChild(backLink);
     }
 
+    /**Load Request Status for the User. (User Side)*/
     async loadMyRequestStatus() {
         try {
             const myRequests = await this.api.getMyParticipationRequests();
@@ -141,6 +147,7 @@ class ActivityDetailManager {
         }
     }
 
+    /**Load All Participation Requests for the Activity. (Creator Side) */
     async loadParticipationRequests() {
         try {
             const requests = await this.api.getActivityRequests(this.activityId);
@@ -150,6 +157,7 @@ class ActivityDetailManager {
         }
     }
 
+    /**Render all the participation requests to the frontend. (Creator Side) */
     renderParticipationRequests(requests) {
         const section = document.getElementById('participation-requests-section');
         const container = document.getElementById('participation-requests');
@@ -184,6 +192,7 @@ class ActivityDetailManager {
         section.classList.remove('hidden');
     }
 
+    /**Load Contacts for the activity. Owner Details for the User, User Details for the Creator. */
     async loadContacts() {
         try {
             const contacts = await this.api.getActivityContacts(this.activityId);
@@ -194,6 +203,7 @@ class ActivityDetailManager {
         }
     }
 
+    /**Render Contacts Section for the User/Creator. */
     renderContacts(contacts) {
         const section = document.getElementById('contacts-section');
         const container = document.getElementById('contacts-list');
@@ -226,10 +236,12 @@ class ActivityDetailManager {
         // Event listeners are handled via onclick attributes in the HTML
     }
 
+    /**Util Function to check if Creator. */
     isCreator() {
         return this.activity && this.currentUser && this.activity.creator_id === this.currentUser.id;
     }
 
+    /**Util Function to check if user can join. */
     canJoin() {
         return this.activity && 
                this.activity.status === 'open' && 
@@ -237,11 +249,13 @@ class ActivityDetailManager {
                this.activity.current_participants < this.activity.max_participants;
     }
 
+    /**Util Function to check if User/Creator can view contact details. */
     canViewContacts() {
         // User can view contacts if they're the creator or an approved participant
         return this.isCreator() || this.myRequestStatus === 'approved';
     }
 
+    /**Send request to join to the backend. */
     async requestToJoin() {
         try {
             await this.api.requestParticipation(this.activityId);
@@ -253,6 +267,7 @@ class ActivityDetailManager {
         }
     }
 
+    /**Send Approve Request to the backend.*/
     async approveRequest(requestId) {
         try {
             await this.api.approveParticipation(requestId);
@@ -264,6 +279,7 @@ class ActivityDetailManager {
         }
     }
 
+    /**Send Reject Request to the backend. */
     async rejectRequest(requestId) {
         try {
             await this.api.rejectParticipation(requestId);
@@ -274,10 +290,12 @@ class ActivityDetailManager {
         }
     }
 
+    /**Util Function to Redirect to Edit Activity Page. */
     editActivity() {
         window.location.href = `/pages/edit-activity.html?id=${this.activityId}`;
     }
 
+    /**Send Delete Activity Request to the backend. */
     async cancelActivity() {
         if (!confirm('Are you sure you want to cancel this activity? This cannot be undone.')) {
             return;
@@ -294,6 +312,7 @@ class ActivityDetailManager {
         }
     }
 
+    /**Show Errors. */
     showError(message) {
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('activity-detail').classList.add('hidden');

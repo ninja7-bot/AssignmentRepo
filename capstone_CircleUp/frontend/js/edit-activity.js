@@ -22,11 +22,13 @@ class EditActivityManager {
         this.initializeEventListeners();
     }
 
+    /**Util Function to get Activity ID from URL. */
     getActivityIdFromURL() {
         const params = new URLSearchParams(window.location.search);
         return params.get('id');
     }
 
+    /**Load Activity from Backend. */
     async loadActivity() {
         try {
             this.activity = await this.api.getActivity(this.activityId);
@@ -59,6 +61,7 @@ class EditActivityManager {
         }
     }
 
+    /**Populate the Activity Details to the Page. */
     populateForm(activity) {
         const form = document.getElementById('edit-activity-form');
 
@@ -73,6 +76,7 @@ class EditActivityManager {
         form.activity_date.value = activity.activity_date.slice(0, 16);
     }
 
+    // --- INITIALIZE EVENT LISTENERS -------------------------
     initializeEventListeners() {
         const form = document.getElementById('edit-activity-form');
 
@@ -108,6 +112,7 @@ class EditActivityManager {
         });
     }
 
+    /**Show Errors */
     showFieldError(field, message) {
         field.classList.add('error');
 
@@ -122,6 +127,7 @@ class EditActivityManager {
         errorElement.textContent = message;
     }
 
+    /**Clear Errors */
     clearFieldError(field) {
         field.classList.remove('error');
 
@@ -133,6 +139,7 @@ class EditActivityManager {
         }
     }
 
+    // --- VALIDATIONS -------------------------
     validateTitle(field) {
         const value = field.value.trim();
         const titleRegex = /^[A-Za-z0-9\s.,!?'-]+$/;
@@ -306,6 +313,7 @@ class EditActivityManager {
         return validations.every(Boolean);
     }
 
+    /**Handle Update Activity Request directed to backend. */
     async handleUpdateActivity(event) {
         event.preventDefault();
 
@@ -362,6 +370,7 @@ class EditActivityManager {
         }
     }
 
+    // --- UTIL FUNCTIONS -------------------------
     showForm() {
         document
             .getElementById('loading')

@@ -15,6 +15,7 @@ class ProfileManager {
         this.initializeEventListeners();
     }
 
+    /**Load User Profile from backend. */
     async loadUserProfile() {
         try {
             const user = await this.api.getCurrentUser();
@@ -25,6 +26,7 @@ class ProfileManager {
         }
     }
 
+    /**Populate the Profile Page. */
     populateForm(user) {
         const form = document.getElementById('profile-form');
         if (form) {
@@ -36,6 +38,7 @@ class ProfileManager {
         }
     }
 
+    // --- INITIALIZATION -------------------------
     initializeEventListeners() {
         const form = document.getElementById('profile-form');
         if (form) {
@@ -48,6 +51,7 @@ class ProfileManager {
         }
     }
 
+    /**Update User Profile Request directed to backend. */
     async handleUpdateProfile(event) {
         event.preventDefault();
         
@@ -87,6 +91,7 @@ class ProfileManager {
         }
     }
 
+    /**Delete the User's Account directed to backend. */
     async handleDeleteAccount(event) {
         event.preventDefault();
         

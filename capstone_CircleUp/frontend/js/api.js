@@ -5,6 +5,7 @@ class ApiService {
         this.baseURL = API_BASE_URL;
     }
 
+    /**Authentication Headers. */
     getAuthHeaders() {
         const token = TokenManager.getToken();
         return {
@@ -13,6 +14,7 @@ class ApiService {
         };
     }
 
+    /**Request Utility Function. (Fetch) */
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
         const mergedOptions = {
@@ -42,7 +44,8 @@ class ApiService {
         }
     }
 
-    // Auth
+    // --- AUTHENTICATION -------------------------
+    /**Send Register request.*/
     async register(userData) {
         return await this.request('/auth/register', {
             method: 'POST',
@@ -50,6 +53,7 @@ class ApiService {
         });
     }
 
+    /**Send Login Request.*/
     async login(credentials) {
         return await this.request('/auth/login', {
             method: 'POST',
@@ -57,11 +61,13 @@ class ApiService {
         });
     }
 
-    // Users
+    // --- USER -------------------------
+    /**Get Current User. */
     async getCurrentUser() {
         return await this.request('/users/me');
     }
 
+    /**Update Current User. */
     async updateCurrentUser(userData) {
         return await this.request('/users/me', {
             method: 'PUT',
@@ -69,11 +75,13 @@ class ApiService {
         });
     }
 
+    /**Delete Current User. */
     async deleteCurrentUser() {
         return await this.request('/users/me', { method: 'DELETE' });
     }
 
-    // Activities
+    // --- ACTIVITIES -------------------------
+    /**Search Activities. */
     async searchActivities(filters = {}) {
         const params = new URLSearchParams();
         Object.entries(filters).forEach(([key, value]) => {
@@ -82,14 +90,17 @@ class ApiService {
         return await this.request(`/activities/search?${params.toString()}`);
     }
 
+    /**Get Activity by ID. */
     async getActivity(activityId) {
         return await this.request(`/activities/${activityId}`);
     }
 
+    /**Get Activities created by User. */
     async getMyActivities() {
         return await this.request('/activities/mine');
     }
 
+    /**Create a New Activity. */
     async createActivity(activityData) {
         return await this.request('/activities', {
             method: 'POST',
@@ -97,6 +108,7 @@ class ApiService {
         });
     }
 
+    /**Update existing activity. */
     async updateActivity(activityId, activityData) {
         return await this.request(`/activities/${activityId}`, {
             method: 'PUT',
@@ -104,13 +116,15 @@ class ApiService {
         });
     }
 
+    /**Delete existing activity. */
     async deleteActivity(activityId) {
         return await this.request(`/activities/${activityId}`, {
             method: 'DELETE'
         });
     }
 
-    // Participation
+    // --- PARTICIPATION -------------------------
+    /**Create Participation Request. */
     async requestParticipation(activityId) {
         return await this.request('/participation/request', {
             method: 'POST',
@@ -118,31 +132,37 @@ class ApiService {
         });
     }
 
+    /**Approve Existing Request. */
     async approveParticipation(requestId) {
         return await this.request(`/participation/approve/${requestId}`, {
             method: 'POST'
         });
     }
 
+    /**Reject Existing Request. */
     async rejectParticipation(requestId) {
         return await this.request(`/participation/reject/${requestId}`, {
             method: 'POST'
         });
     }
 
+    /**Get Participation Requests sent by the User. */
     async getMyParticipationRequests() {
         return await this.request('/participation/my-requests');
     }
 
+    /**Get Participation Requests for the Activity. */
     async getActivityRequests(activityId) {
         return await this.request(`/participation/activity/${activityId}/requests`);
     }
 
+    /**Get Activity Contact Details. */
     async getActivityContacts(activityId) {
         return await this.request(`/participation/activity/${activityId}/contacts`);
     }
 }
 
+// --- API ERROR -------------------------
 class ApiError extends Error {
     constructor(message, status, data) {
         super(message);

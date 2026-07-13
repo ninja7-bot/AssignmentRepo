@@ -13,6 +13,7 @@ class MyActivitiesManager {
         this.init();
     }
 
+    // --- INITIALIZATION -------------------------
     async init() {
         if (!requireAuth()) {
             return;
@@ -25,12 +26,14 @@ class MyActivitiesManager {
         this.refreshIncomingBadge();
     }
 
+    /**Setup My Activities Tabs */
     setupTabs() {
         document.querySelectorAll('.tab-btn').forEach((btn) => {
             btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
         });
     }
 
+    /**Switch between tabs. */
     switchTab(tabName) {
         document.querySelectorAll('.tab-btn').forEach((btn) => {
             btn.classList.toggle('active', btn.dataset.tab === tabName);
@@ -43,6 +46,7 @@ class MyActivitiesManager {
         this.loadTab(tabName);
     }
 
+    /**Load data for tab. */
     async loadTab(tabName) {
         if (this.loadedTabs.has(tabName)) return;
 
@@ -64,7 +68,7 @@ class MyActivitiesManager {
         this.loadedTabs.add(tabName);
     }
 
-
+    /**Render Empty Tab. */
     renderEmptyState(container, message) {
         container.textContent = '';
         const template = document.getElementById('empty-state-template');
@@ -73,6 +77,7 @@ class MyActivitiesManager {
         container.appendChild(node);
     }
 
+    /**Build Activity Cards. */
     buildActivityCard(activity, { showEdit }) {
         const template = document.getElementById('activity-card-template');
         const card = template.content.cloneNode(true);
@@ -110,7 +115,7 @@ class MyActivitiesManager {
         return card;
     }
 
-
+    /**Load Events created by the user. */
     async loadHosting() {
         const container = document.getElementById('hosting-container');
 
@@ -135,7 +140,7 @@ class MyActivitiesManager {
         }
     }
 
-    
+    /**Load Events joined by the user. */
     async loadJoined() {
         const container = document.getElementById('joined-container');
 
@@ -162,7 +167,7 @@ class MyActivitiesManager {
         }
     }
 
-
+    /**Load Requests REJECTED or PENDING for the user. */
     async loadPending() {
         const container = document.getElementById('pending-requests-container');
 
@@ -204,7 +209,7 @@ class MyActivitiesManager {
         }
     }
 
-
+    /**Load Requests Sent for the User's Events */
     async loadIncoming() {
         const container = document.getElementById('incoming-requests-container');
 
@@ -246,6 +251,7 @@ class MyActivitiesManager {
         }
     }
 
+    /**Responses to the Incoming Requests. */
     async respondToRequest(requestId, action) {
         try {
             if (action === 'approve') {
@@ -272,6 +278,7 @@ class MyActivitiesManager {
         }
     }
 
+    /**Get Activity Details for the Participation Requests. */
     async getEnrichedRequests() {
         if (this.enrichedRequests) return this.enrichedRequests;
 
@@ -291,6 +298,7 @@ class MyActivitiesManager {
         return this.enrichedRequests;
     }
 
+    /**Get Incoming Requests from backend. */
     async getIncomingRequests() {
         if (this.incomingRequests) return this.incomingRequests;
 
@@ -311,6 +319,7 @@ class MyActivitiesManager {
         return this.incomingRequests;
     }
 
+    /**Update Incoming Badge Visibility. */
     updateIncomingBadge(count) {
         const badge = document.getElementById('incoming-badge');
         if (!badge) return;
@@ -323,6 +332,7 @@ class MyActivitiesManager {
         }
     }
 
+    /**Refresh Count for Incoming Requests. */
     async refreshIncomingBadge() {
         try {
             const requests = await this.getIncomingRequests();

@@ -4,6 +4,7 @@ class AuthManager {
         this.initializeEventListeners();
     }
 
+    // --- INTIALIZE EVENTS -------------------------
     initializeEventListeners() {
         if (window.location.pathname.includes('login.html')) {
             this.initializeLogin();
@@ -52,6 +53,7 @@ class AuthManager {
         });
     }
 
+    // --- VALIDATIONS -------------------------
     validateLoginEmail() {
         const emailField = document.getElementById("email");
         const error = document.getElementById("emailError");
@@ -214,6 +216,7 @@ class AuthManager {
         return true;
     }
 
+    /**Handle Login by the User. */
     async handleLogin(event) {
         event.preventDefault();
 
@@ -258,6 +261,7 @@ class AuthManager {
         }
     }
 
+    /**Handle New User Registration. */
     async handleRegister(event) {
         event.preventDefault();
 
@@ -315,6 +319,7 @@ class AuthManager {
         }
     }
 
+    /**Validate Login Form */
     validateLoginForm() {
         return (
             this.validateLoginEmail() &&
@@ -322,6 +327,7 @@ class AuthManager {
         );
     }
 
+    // --- ERRORS -------------------------
     showFieldError(fieldName, message) {
         const field = document.getElementById(fieldName);
         if (!field) return;

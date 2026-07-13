@@ -13,7 +13,8 @@ class DashboardManager {
         this.loadUserInfo();
         this.loadDashboardStats();
     }
-
+    
+    /**Load User Info to the Dashboard Page. */
     loadUserInfo() {
         try {
             const user = UserManager.getUser();
@@ -28,6 +29,7 @@ class DashboardManager {
         }
     }
 
+    /**Load Dashboard Stats. */
     async loadDashboardStats() {
         try {
             const [hosting, requests] = await Promise.all([

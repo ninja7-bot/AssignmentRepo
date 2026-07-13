@@ -9,6 +9,7 @@ class ActivitiesManager {
         this.init();
     }
 
+    // Intialize Activities Manager.
     async init() {
         if (!requireAuth()) {
             return;
@@ -19,6 +20,7 @@ class ActivitiesManager {
         this.loadActivities();
     }
 
+    // Load Requests sent by the user.
     async loadMyRequests() {
         try {
             const requests = await this.api.getMyParticipationRequests();
@@ -87,6 +89,7 @@ class ActivitiesManager {
         });
     }
 
+    // Show Validation Errors in Create Activity Form.
     showFieldError(field, message) {
         field.classList.add('error');
 
@@ -102,6 +105,7 @@ class ActivitiesManager {
         errorElement.textContent = message;
     }
 
+    // Clear Field Errors.
     clearFieldError(field) {
         field.classList.remove('error');
 
@@ -113,6 +117,14 @@ class ActivitiesManager {
         }
     }
 
+    /**Field Validations 
+        * Title
+        * Description
+        * Location
+        * Activity Datetime
+        * Category
+        * Max Participants
+    */
     validateTitle(field) {
         const value = field.value.trim();
         const titleRegex = /^[A-Za-z0-9\s.,!?'-]+$/;
@@ -249,6 +261,9 @@ class ActivitiesManager {
         return true;
     }
 
+    /**Validate Create Activity Form
+        * Validations for the fields.
+     */
     validateCreateForm(form) {
         const validations = [
             this.validateTitle(form.title),
@@ -267,7 +282,7 @@ class ActivitiesManager {
 
         return validations.every(Boolean);
     }
-
+    /**Load All Activities*/
     async loadActivities(filters = {}) {
         try {
             const queryParams = new URLSearchParams();
@@ -284,6 +299,7 @@ class ActivitiesManager {
         }
     }
 
+    /**Render Activity Cards for each activity. */
     renderActivities(activities) {
         const container = document.getElementById('activities-container');
         if (!container) return;
@@ -301,6 +317,7 @@ class ActivitiesManager {
         });
     }
 
+    /**Append values to the Activity Card Template. */
     buildActivityCard(activity) {
         const template = document.getElementById('activity-card-template');
         const card = template.content.cloneNode(true);
@@ -357,6 +374,7 @@ class ActivitiesManager {
         return card;
     }
 
+    /**Handle Create Activity. */
     async handleCreateActivity(event) {
         event.preventDefault();
 
@@ -407,6 +425,7 @@ class ActivitiesManager {
         }
     }
 
+    /**Handle Discover Page filters. */
     async handleFilters(event) {
         event.preventDefault();
 
@@ -437,11 +456,13 @@ class ActivitiesManager {
         this.loadActivities(filters);
     }
 
+    /**Clear All Filters. */
     handleClearFilters(event) {
         this.currentFilters = {};
         this.loadActivities();
     }
 
+    /**Handle Join Activity */
     async handleJoinActivity(activityId) {
         const btn = document.querySelector(`.join-activity-btn[data-activity-id="${activityId}"]`);
 

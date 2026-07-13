@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/activities.css">
 </head>
 <body>
+    <!--Nav Bar-->
     <header class="header">
         <nav class="nav">
             <a href="/" class="logo">CircleUp</a>
@@ -17,16 +18,19 @@
         </nav>
     </header>
 
+    <!--Edit Activity Form-->
     <main>
         <div class="container">
             <div id="loading" class="loading">Loading activity...</div>
             
+            <!--Edit Activity Header-->
             <div id="edit-form-container" class="hidden">
                 <div class="page-header">
                     <h1>Edit Activity</h1>
                     <p>Update your activity details</p>
                 </div>
 
+                <!--Edit Activity Form-->
                 <section class="edit-activity-section card">
                     <form id="edit-activity-form">
                         <div class="form-row">
@@ -93,6 +97,7 @@
                 </section>
             </div>
 
+            <!--Direct to My Activities Page.-->
             <div id="error-container" class="card hidden">
                 <h2>Error</h2>
                 <p id="error-message"></p>

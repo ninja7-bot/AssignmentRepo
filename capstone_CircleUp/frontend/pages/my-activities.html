@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/my-activities.css">
 </head>
 <body>
+    <!--Nav Bar.-->
     <header class="header">
         <nav class="nav">
             <a href="/" class="logo">CircleUp</a>
@@ -18,13 +19,16 @@
         </nav>
     </header>
 
+    <!--My Activities Container-->
     <main class="main">
         <div class="container activities-container">
+            <!--My Activities Header-->
             <section class="page-header">
                 <h1>My Activities</h1>
                 <p>Everything you're hosting, joining, and waiting on</p>
             </section>
 
+            <!--Activity Tabs-->
             <div class="activity-tabs">
                 <button type="button" class="tab-btn active" data-tab="hosting">Hosting</button>
                 <button type="button" class="tab-btn" data-tab="joined">Joined</button>
@@ -35,6 +39,7 @@
                 </button>
             </div>
 
+            <!--Create Activity Button-->
             <div id="tab-hosting" class="tab-content">
                 <div class="section-header">
                     <h2>Activities You're Hosting</h2>
@@ -45,6 +50,7 @@
                 </div>
             </div>
 
+            <!--Joined Activites Tab-->
             <div id="tab-joined" class="tab-content hidden">
                 <div class="section-header">
                     <h2>Activities You've Joined</h2>
@@ -54,6 +60,7 @@
                 </div>
             </div>
 
+            <!--Outgoing Requests Container-->
             <div id="tab-pending" class="tab-content hidden">
                 <div class="section-header">
                     <h2>Requests You've Sent</h2>
@@ -63,6 +70,7 @@
                 </div>
             </div>
 
+            <!--Incoming Requests Container-->
             <div id="tab-incoming" class="tab-content hidden">
                 <div class="section-header">
                     <h2>Requests Waiting on Your Approval</h2>
