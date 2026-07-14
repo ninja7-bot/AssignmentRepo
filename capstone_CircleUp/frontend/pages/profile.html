@@ -39,9 +39,10 @@
                                 class="form-control" 
                                 required
                             >
+                            <span class="error-text" id="nameError"></span>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email Address</label>
+                            <label for="email">Email Address <span class="required">*</span></label>
                             <input 
                                 type="email" 
                                 id="email" 
@@ -49,18 +50,20 @@
                                 class="form-control" 
                                 required
                             >
+                            <span class="error-text" id="emailError"></span>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="phone_number">Phone Number</label>
+                            <label for="phone_number">Phone Number <span class="required">*</span></label>
                             <input 
                                 type="tel" 
                                 id="phone_number" 
                                 name="phone_number" 
                                 class="form-control"
                             >
+                            <span class="error-text" id="phoneError"></span>
                         </div>
                         <div class="form-group">
                             <label for="city">City</label>
@@ -71,15 +74,8 @@
                                 class="form-control"
                             >
                                 <option value="">Select your city</option>
-                                <option value="Bilaspur">Bilaspur</option>
-                                <option value="Delhi">Delhi</option>
-                                <option value="Mumbai">Mumbai</option>
-                                <option value="Bengaluru">Bengaluru</option>
-                                <option value="Chennai">Chennai</option>
-                                <option value="Hyderabad">Hyderabad</option>
-                                <option value="Kolkata">Kolkata</option>
-                                <option value="Pune">Pune</option>
                             </select>
+                            <span class="error-text" id="cityError"></span>
                         </div>
                     </div>
 
@@ -93,6 +89,7 @@
                                 rows="4"
                                 placeholder="Tell others about yourself..."
                             ></textarea>
+                            <span class="error-text" id="bioError"></span>
                         </div>
                     </div>
 

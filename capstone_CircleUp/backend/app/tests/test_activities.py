@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 
 def test_create_activity(client, auth_user, activity_payload):
     response = client.post("/activities/", json=activity_payload, headers=auth_user["headers"])
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["title"] == activity_payload["title"]
     assert data["creator_id"] == auth_user["user"]["id"]
@@ -77,7 +77,7 @@ def test_non_owner_cannot_update_or_cancel(client, second_auth_user, create_acti
 def test_cancel_activity_by_owner(client, auth_user, create_activity):
     activity = create_activity()
     response = client.delete(f"/activities/{activity['id']}", headers=auth_user["headers"])
-    assert response.status_code == 200
+    assert response.status_code == 204
     detail = client.get(f"/activities/{activity['id']}")
     assert detail.json()["status"] == "cancelled"
 

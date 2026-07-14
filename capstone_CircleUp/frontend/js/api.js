@@ -27,6 +27,9 @@ class ApiService {
             const response = await fetch(url, mergedOptions);
             let data;
             
+            if (response.status === 204){
+                return null;
+            }
             if (response.headers.get('content-type')?.includes('application/json')) {
                 data = await response.json();
             } else {
@@ -159,6 +162,12 @@ class ApiService {
     /**Get Activity Contact Details. */
     async getActivityContacts(activityId) {
         return await this.request(`/participation/activity/${activityId}/contacts`);
+    }
+
+    // --- METADATA -------------------------
+    /**Get list of supported cities for location dropdowns. */
+    async getCities() {
+        return await this.request('/metadata/cities');
     }
 }
 

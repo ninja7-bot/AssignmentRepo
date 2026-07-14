@@ -4,7 +4,7 @@ Main Driver App File for CircleUp.
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, users, activity, participation
+from .routers import auth, users, activity, participation, metadata
 from .database import engine, Base
 import logging
 
@@ -26,7 +26,7 @@ logger.info("CircleUp Started.")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500",],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,10 +36,11 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(activity.router)
 app.include_router(participation.router)
+app.include_router(metadata.router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to CircleUp API"}
+    return {"message": "Welcome to Root API"}
 
 @app.get("/health")
 def health_check():

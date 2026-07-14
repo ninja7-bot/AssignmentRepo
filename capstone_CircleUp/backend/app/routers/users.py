@@ -4,7 +4,7 @@ Hanldles User Profile, and Delete User Account.
 ROUTE: /users/
 """
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..schemas.user import UserResponse, UserUpdate, UserProfile
@@ -55,7 +55,7 @@ def get_user_profile(
     user = user_service.get_user_by_id(user_id)
     return UserProfile.model_validate(user)
 
-@router.delete("/me")
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
 def delete_current_user_account(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)

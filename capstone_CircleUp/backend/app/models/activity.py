@@ -20,7 +20,7 @@ class Activity(Base):
     activity_date = mapped_column(DateTime(timezone=True), nullable=False)
     max_participants = mapped_column(Integer, nullable=False)
     status = mapped_column(Enum(ActivityStatus), default=ActivityStatus.OPEN, nullable=False)
-    creator_id = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    creator_id = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
 
@@ -29,4 +29,4 @@ class Activity(Base):
     Herein, the creator and participation_requests are automatically populated for the activity.
     """
     creator = relationship("User", back_populates="created_activities")
-    participation_requests = relationship("ParticipationRequest", back_populates="activity")
+    participation_requests = relationship("ParticipationRequest", back_populates="activity", cascade="all, delete-orphan", passive_deletes=True)

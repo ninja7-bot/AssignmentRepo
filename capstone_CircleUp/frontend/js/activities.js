@@ -36,6 +36,8 @@ class ActivitiesManager {
         if (createForm) {
             createForm.addEventListener('submit', (e) => this.handleCreateActivity(e));
 
+            populateCityDropdown(document.getElementById('location'));
+
             createForm.title.addEventListener('input', () => {
                 this.validateTitle(createForm.title);
             });
@@ -71,6 +73,8 @@ class ActivitiesManager {
         if (filtersForm) {
             filtersForm.addEventListener('submit', (e) => this.handleFilters(e));
             filtersForm.addEventListener('reset', (e) => this.handleClearFilters(e));
+
+            populateCityDropdown(document.getElementById('location'));
         }
 
         // Activity actions
@@ -89,34 +93,6 @@ class ActivitiesManager {
         });
     }
 
-    // Show Validation Errors in Create Activity Form.
-    showFieldError(field, message) {
-        field.classList.add('error');
-
-        let errorElement =
-            field.parentElement.querySelector('.error-message');
-
-        if (!errorElement) {
-            errorElement = document.createElement('span');
-            errorElement.className = 'error-message';
-            field.parentElement.appendChild(errorElement);
-        }
-
-        errorElement.textContent = message;
-    }
-
-    // Clear Field Errors.
-    clearFieldError(field) {
-        field.classList.remove('error');
-
-        const errorElement =
-            field.parentElement.querySelector('.error-message');
-
-        if (errorElement) {
-            errorElement.textContent = '';
-        }
-    }
-
     /**Field Validations 
         * Title
         * Description
@@ -126,138 +102,52 @@ class ActivitiesManager {
         * Max Participants
     */
     validateTitle(field) {
-        const value = field.value.trim();
-        const titleRegex = /^[A-Za-z0-9\s.,!?'-]+$/;
-
-        if (!value) {
-            this.showFieldError(field, 'Title is required');
+        const result = ValidationRules.title(field.value);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        if (value.length < 3) {
-            this.showFieldError(
-                field,
-                'Title must be at least 3 characters'
-            );
-            return false;
-        }
-
-        if (value.length > 200) {
-            this.showFieldError(
-                field,
-                'Title cannot exceed 200 characters'
-            );
-            return false;
-        }
-
-        if (!titleRegex.test(value)) {
-            this.showFieldError(
-                field,
-                'Title contains invalid characters'
-            );
-            return false;
-        }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
     validateDescription(field) {
-        const value = field.value.trim();
-
-        if (!value) {
-            this.showFieldError(field, 'Description is required');
+        const result = ValidationRules.description(field.value);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        if (value.length < 10) {
-            this.showFieldError(
-                field,
-                'Description must be at least 10 characters'
-            );
-            return false;
-        }
-
-        if (value.length > 500) {
-            this.showFieldError(
-                field,
-                'Description cannot exceed 500 characters'
-            );
-            return false;
-        }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
     validateRequired(field, message) {
-        if (!field.value.trim()) {
-            this.showFieldError(field, message);
+        const result = ValidationRules.required(field.value, message);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
-    getCurrentISTDateTime() {
-        const now = new Date();
-        const istOffsetMilliseconds = 5.5 * 60 * 60 * 1000;
-        const ist = new Date(now.getTime() + istOffsetMilliseconds);
-
-        const year = ist.getUTCFullYear();
-        const month = String(ist.getUTCMonth() + 1).padStart(2, '0');
-        const day = String(ist.getUTCDate()).padStart(2, '0');
-        const hours = String(ist.getUTCHours()).padStart(2, '0');
-        const minutes = String(ist.getUTCMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
-    }
-
     validateActivityDate(field) {
-        if (!field.value) {
-            this.showFieldError(
-                field,
-                'Activity date and time are required'
-            );
+        const result = ValidationRules.activityDate(field.value);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        const selectedDateTime = field.value;
-        const currentDateTime = this.getCurrentISTDateTime();
-
-        if (selectedDateTime <= currentDateTime) {
-            this.showFieldError(
-                field,
-                'Activity must be scheduled for a future date'
-            );
-            return false;
-        }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
     validateMaxParticipants(field) {
-        const value = Number(field.value);
-
-        if (!field.value) {
-            this.showFieldError(
-                field,
-                'Maximum participants is required'
-            );
+        const result = ValidationRules.maxParticipants(field.value);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        if (!Number.isInteger(value) || value <= 0) {
-            this.showFieldError(
-                field,
-                'Maximum participants must be greater than zero'
-            );
-            return false;
-        }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
@@ -403,8 +293,8 @@ class ActivitiesManager {
             });
 
             showAlert('Activity created successfully!', 'success');
-            form.reset();
-            this.loadActivities(this.currentFilters);
+            setTimeout(() => {
+                window.location.href = HOME_PAGE;}, 1500);
 
         } catch (error) {
             console.error('Activity creation failed:', error);

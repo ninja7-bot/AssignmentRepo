@@ -49,7 +49,7 @@ class EditActivityManager {
                 return;
             }
 
-            this.populateForm(this.activity);
+            await this.populateForm(this.activity);
             this.showForm();
 
         } catch (error) {
@@ -62,15 +62,15 @@ class EditActivityManager {
     }
 
     /**Populate the Activity Details to the Page. */
-    populateForm(activity) {
+    async populateForm(activity) {
         const form = document.getElementById('edit-activity-form');
 
         if (!form) return;
-
+        
         form.title.value = activity.title;
         form.description.value = activity.description;
         form.category.value = activity.category;
-        form.location.value = activity.location;
+        await populateCityDropdown(form.location, activity.location);
         form.max_participants.value = activity.max_participants;
         form.max_participants.min = activity.current_participants || 1;
         form.activity_date.value = activity.activity_date.slice(0, 16);
@@ -112,179 +112,55 @@ class EditActivityManager {
         });
     }
 
-    /**Show Errors */
-    showFieldError(field, message) {
-        field.classList.add('error');
-
-        let errorElement = field.parentElement.querySelector('.error-message');
-
-        if (!errorElement) {
-            errorElement = document.createElement('span');
-            errorElement.className = 'error-message';
-            field.parentElement.appendChild(errorElement);
-        }
-
-        errorElement.textContent = message;
-    }
-
-    /**Clear Errors */
-    clearFieldError(field) {
-        field.classList.remove('error');
-
-        const errorElement =
-            field.parentElement.querySelector('.error-message');
-
-        if (errorElement) {
-            errorElement.textContent = '';
-        }
-    }
-
     // --- VALIDATIONS -------------------------
     validateTitle(field) {
-        const value = field.value.trim();
-        const titleRegex = /^[A-Za-z0-9\s.,!?'-]+$/;
-
-        if (!value) {
-            this.showFieldError(field, 'Title is required');
+        const result = ValidationRules.title(field.value);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        if (value.length < 3) {
-            this.showFieldError(
-                field,
-                'Title must be at least 3 characters'
-            );
-            return false;
-        }
-
-        if (value.length > 200) {
-            this.showFieldError(
-                field,
-                'Title cannot exceed 200 characters'
-            );
-            return false;
-        }
-
-        if (!titleRegex.test(value)) {
-            this.showFieldError(
-                field,
-                'Title contains invalid characters'
-            );
-            return false;
-        }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
     validateDescription(field) {
-        const value = field.value.trim();
-
-        if (!value) {
-            this.showFieldError(field, 'Description is required');
+        const result = ValidationRules.description(field.value);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        if (value.length < 10) {
-            this.showFieldError(
-                field,
-                'Description must be at least 10 characters'
-            );
-            return false;
-        }
-
-        if (value.length > 500) {
-            this.showFieldError(
-                field,
-                'Description cannot exceed 500 characters'
-            );
-            return false;
-        }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
     validateRequired(field, message) {
-        if (!field.value.trim()) {
-            this.showFieldError(field, message);
+        const result = ValidationRules.required(field.value, message);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
-    getCurrentISTDateTime() {
-        const now = new Date();
-
-        const istOffsetMilliseconds = 5.5 * 60 * 60 * 1000;
-        const ist = new Date(now.getTime() + istOffsetMilliseconds);
-        const year = ist.getUTCFullYear();
-        const month = String(ist.getUTCMonth() + 1).padStart(2, '0');
-        const day = String(ist.getUTCDate()).padStart(2, '0');
-        const hours = String(ist.getUTCHours()).padStart(2, '0');
-        const minutes = String(ist.getUTCMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
-    }
-
     validateActivityDate(field) {
-        if (!field.value) {
-            this.showFieldError(
-                field,
-                'Activity date and time are required'
-            );
+        const result = ValidationRules.activityDate(field.value);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        const selectedDateTime = field.value;
-        const currentDateTime = this.getCurrentISTDateTime();
-
-        if (selectedDateTime <= currentDateTime) {
-            this.showFieldError(
-                field,
-                'Activity must be scheduled for a future date'
-            );
-            return false;
-        }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 
     validateMaxParticipants(field) {
-        const value = Number(field.value);
-
-        if (!field.value) {
-            this.showFieldError(
-                field,
-                'Maximum participants is required'
-            );
+        const currentParticipants = this.activity ? this.activity.current_participants : 0;
+        const result = ValidationRules.maxParticipants(field.value, currentParticipants);
+        if (!result.valid) {
+            showFieldError(field, result.message);
             return false;
         }
-
-        if (!Number.isInteger(value) || value <= 0) {
-            this.showFieldError(
-                field,
-                'Maximum participants must be greater than zero'
-            );
-            return false;
-        }
-
-        const currentParticipants = this.activity
-            ? this.activity.current_participants
-            : 0;
-
-        if (value < currentParticipants) {
-            this.showFieldError(
-                field,
-                `Cannot be less than the current number of participants (${currentParticipants})`
-            );
-            return false;
-        }
-
-        this.clearFieldError(field);
+        clearFieldError(field);
         return true;
     }
 

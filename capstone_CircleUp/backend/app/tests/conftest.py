@@ -88,7 +88,7 @@ def register_user(client):
         }
         payload.update(overrides)
         response = client.post("/auth/register", json=payload)
-        assert response.status_code == 200, response.text
+        assert response.status_code == 201, response.text
         created.append(response.json())
         return response.json(), payload
 
@@ -147,7 +147,7 @@ def create_activity(client, auth_user, activity_payload):
             json=payload,
             headers=headers or auth_user["headers"],
         )
-        assert response.status_code == 200, response.text
+        assert response.status_code == 201, response.text
         return response.json()
 
     return _create

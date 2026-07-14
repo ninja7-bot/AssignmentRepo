@@ -35,6 +35,8 @@ class AuthManager {
 
         registerForm.addEventListener('submit', (e) => this.handleRegister(e));
 
+        populateCityDropdown(document.getElementById('city'));
+
         const fields = ['name', 'email', 'phone_number', 'password', 'confirm_password', 'bio'];
         const validators = {
             name: () => this.validateName(),
@@ -55,165 +57,60 @@ class AuthManager {
 
     // --- VALIDATIONS -------------------------
     validateLoginEmail() {
-        const emailField = document.getElementById("email");
-        const error = document.getElementById("emailError");
-
-        const value = emailField.value.trim();
-
-        if (!value) {
-            error.textContent = "Email is required.";
-            return false;
-        }
-
-        if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value)) {
-            error.textContent = "Please enter a valid gmail address.";
-            return false;
-        }
-
-        error.textContent = "";
-        return true;
+        const value = document.getElementById("email").value;
+        const result = ValidationRules.email(value);
+        setFieldErrorById('email', 'emailError', result.valid ? '' : result.message);
+        return result.valid;
     }
 
     validateLoginPassword() {
-        const passwordField = document.getElementById("password");
-        const error = document.getElementById("passwordError");
-
-        const value = passwordField.value;
-
-        if (!value) {
-            error.textContent = "Password is required.";
-            return false;
-        }
-
-        error.textContent = "";
-        return true;
+        const value = document.getElementById("password").value;
+        const result = ValidationRules.required(value, 'Password is required.');
+        setFieldErrorById('password', 'passwordError', result.valid ? '' : result.message);
+        return result.valid;
     }
 
     validateName() {
-        const nameField = document.getElementById('name');
-        const error = document.getElementById('nameError');
-        const value = nameField.value.trim();
-
-        if (!value) {
-            error.textContent = 'Name is required.';
-            return false;
-        }
-
-        if (value.length < 3) {
-            error.textContent = 'Name must be at least 3 characters.';
-            return false;
-        }
-
-        if (!/^[A-Za-z\s]+$/.test(value)) {
-            error.textContent = 'Name must contain alphabets only.';
-            return false;
-        }
-
-        error.textContent = '';
-        nameField.classList.remove('error');
-        return true;
+        const value = document.getElementById('name').value;
+        const result = ValidationRules.name(value);
+        setFieldErrorById('name', 'nameError', result.valid ? '' : result.message);
+        return result.valid;
     }
 
     validateEmail() {
-        const emailField = document.getElementById('email');
-        const error = document.getElementById('emailError');
-        const value = emailField.value.trim();
-
-        if (!value) {
-            error.textContent = 'Email is required.';
-            return false;
-        }
-
-        if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value)) {
-            error.textContent = 'Please enter a valid gmail address.';
-            return false;
-        }
-
-        error.textContent = '';
-        emailField.classList.remove('error');
-        return true;
+        const value = document.getElementById('email').value;
+        const result = ValidationRules.email(value);
+        setFieldErrorById('email', 'emailError', result.valid ? '' : result.message);
+        return result.valid;
     }
 
     validatePhoneNumber() {
-        const phoneField = document.getElementById('phone_number');
-        const error = document.getElementById('phoneError');
-        const value = phoneField.value.trim();
-
-        if (!value) {
-            error.textContent = 'Phone number is required.';
-            return false;
-        }
-
-        if (!/^[6-9]\d{9}$/.test(value)) {
-            error.textContent = 'Please enter a valid 10-digit Indian phone number.';
-            return false;
-        }
-
-        error.textContent = '';
-        phoneField.classList.remove('error');
-        return true;
+        const value = document.getElementById('phone_number').value;
+        const result = ValidationRules.phoneNumber(value);
+        setFieldErrorById('phone_number', 'phoneError', result.valid ? '' : result.message);
+        return result.valid;
     }
 
     validatePassword() {
-        const passwordField = document.getElementById('password');
-        const error = document.getElementById('passwordError');
-        const value = passwordField.value.trim();
-
-        const checks = [
-            { test: !value, message: 'Password is required.' },
-            { test: value.length < 8, message: 'Password must be at least 8 characters.' },
-            { test: !/[A-Z]/.test(value), message: 'Password must contain at least one uppercase letter.' },
-            { test: !/[a-z]/.test(value), message: 'Password must contain at least one lowercase letter.' },
-            { test: !/[0-9]/.test(value), message: 'Password must contain at least one number.' },
-            { test: !/[!@#$%^&*(),.?":{}|<>]/.test(value), message: 'Password must contain at least one special character.' }
-        ];
-
-        for (const check of checks) {
-            if (check.test) {
-                error.textContent = check.message;
-                return false;
-            }
-        }
-
-        error.textContent = '';
-        passwordField.classList.remove('error');
-        return true;
+        const value = document.getElementById('password').value;
+        const result = ValidationRules.password(value);
+        setFieldErrorById('password', 'passwordError', result.valid ? '' : result.message);
+        return result.valid;
     }
 
     validateConfirmPassword() {
-        const confirmPasswordField = document.getElementById('confirm_password');
-        const error = document.getElementById('confirmPasswordError');
-        const passwordValue = document.getElementById('password').value.trim();
-        const confirmPasswordValue = confirmPasswordField.value.trim();
-
-        if (!confirmPasswordValue) {
-            error.textContent = 'Please confirm your password.';
-            return false;
-        }
-
-        if (passwordValue !== confirmPasswordValue) {
-            error.textContent = 'Passwords do not match.';
-            return false;
-        }
-
-        error.textContent = '';
-        confirmPasswordField.classList.remove('error');
-        return true;
+        const value = document.getElementById('confirm_password').value;
+        const passwordValue = document.getElementById('password').value;
+        const result = ValidationRules.confirmPassword(value, passwordValue);
+        setFieldErrorById('confirm_password', 'confirmPasswordError', result.valid ? '' : result.message);
+        return result.valid;
     }
 
     validateBio() {
-        const bioField = document.getElementById('bio');
-        const error = document.getElementById('bioError');
-        const value = bioField.value.trim();
-
-        if (value.length > 500) {
-            error.textContent = 'Bio must not exceed 500 characters.';
-            return false;
-        }
-
-        error.textContent = '';
-        bioField.classList.remove('error');
-        return true;
+        const value = document.getElementById('bio').value;
+        const result = ValidationRules.bio(value);
+        setFieldErrorById('bio', 'bioError', result.valid ? '' : result.message);
+        return result.valid;
     }
 
     /**Handle Login by the User. */
@@ -304,7 +201,7 @@ class AuthManager {
             console.error('Registration failed:', error);
 
             if (error instanceof ApiError) {
-                if (error.status === 400 && error.message.includes('Email already registered')) {
+                if (error.status === 409 && error.message.includes('Email already registered')) {
                     showAlert('This email is already registered. Please use a different email.', 'error');
                 } else if (error.isValidationError()) {
                     showAlert('Please check your input and try again.', 'error');
@@ -327,26 +224,6 @@ class AuthManager {
         );
     }
 
-    // --- ERRORS -------------------------
-    showFieldError(fieldName, message) {
-        const field = document.getElementById(fieldName);
-        if (!field) return;
-
-        field.classList.add('error');
-
-        const existingError = field.parentNode.querySelector('.error-message');
-        if (existingError) existingError.remove();
-
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = message;
-        field.parentNode.appendChild(errorDiv);
-    }
-
-    clearFormErrors() {
-        document.querySelectorAll('.form-control.error').forEach(field => field.classList.remove('error'));
-        document.querySelectorAll('.error-message').forEach(error => error.remove());
-    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {

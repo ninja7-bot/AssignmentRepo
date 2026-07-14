@@ -46,6 +46,5 @@ def test_get_missing_public_profile_returns_404(client, auth_user):
 
 def test_delete_current_account(client, auth_user):
     response = client.delete("/users/me", headers=auth_user["headers"])
-    assert response.status_code == 200
-    assert response.json() == {"message": "Account deleted successfully"}
+    assert response.status_code == 204
     assert client.get("/users/me", headers=auth_user["headers"]).status_code == 401

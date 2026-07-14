@@ -57,6 +57,9 @@ class UserRepository(BaseRepository[User]):
         if update_data.email and update_data.email != user.email:
             if self.email_exists(update_data.email, exclude_user_id=user_id):
                 raise ValueError("Email already registered")
+        if update_data.phone_number and update_data.phone_number != user.phone_number:
+            if self.phone_exists(update_data.phone_number, exclude_user_id=user_id):
+                raise ValueError("Phone Number already registered")
 
         return self.update(user_id, update_data.model_dump(exclude_unset=True))
 

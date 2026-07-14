@@ -3,7 +3,7 @@ Activity Related Routes, namely, create, update, delete, list all, list user spe
 Route: /activities/
 """
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 from datetime import datetime
 from ..database import get_db
@@ -18,7 +18,7 @@ logger = logging.getLogger("circleup")
 
 router = APIRouter(prefix="/activities", tags=["activities"])
 
-@router.post("/", response_model=ActivityResponse)
+@router.post("/", response_model=ActivityResponse, status_code=status.HTTP_201_CREATED)
 def create_activity(
     activity_data: ActivityCreate,
     current_user: User = Depends(get_current_user),
@@ -127,7 +127,7 @@ def update_activity(
 
     return r
 
-@router.delete("/{activity_id}")
+@router.delete("/{activity_id}", status_code=status.HTTP_204_NO_CONTENT)
 def cancel_activity(
     activity_id: int,
     current_user: User = Depends(get_current_user),
